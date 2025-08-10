@@ -9,11 +9,13 @@ const primaryFont = IBM_Plex_Sans({
   subsets: ['latin'],
 });
 
-
 export const metadata: Metadata = {
-  title: 'Gospool Admin',
+  title: {
+    default: 'Gospool Admin',
+    template: '%s | Gospool Admin',
+  },
   description: 'We are going to ask for this later',
-  icons: '/assets/favicon.png'
+  icons: '/assets/favicon.png',
 };
 
 export default function RootLayout({
@@ -23,11 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${primaryFont.className} antialiased`}
-      >
-        {children}
-      </body>
+      <body className={`${primaryFont.className} antialiased`}>{children}</body>
     </html>
   );
 }
