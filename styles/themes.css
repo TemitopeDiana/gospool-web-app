@@ -1,5 +1,14 @@
-@theme inline {
+@theme {
   --color-primary: #0d4740;
   --color-primary-700: #0d4740;
-  --color-text: #1d1c1e;
+  --color-text-200: #1d1c1e;
+  --color-gray: #f2f4f7;
+
+  --breakpoint-xxs: 320px;
+  --breakpoint-xs: 390px;
+  --breakpoint-xsm: 480px;
+
+  --radius-8: 8px;
+  --radius-20: 20px;
+  --radius-40: 40px;
 }
