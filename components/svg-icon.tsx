@@ -8,7 +8,7 @@ interface ISvgProps extends SVGProps<SVGSVGElement> {
 const SvgIcon: FC<ISvgProps> = ({ name, ...props }) => {
   return (
     <svg fill="currentColor" {...props}>
-      <use xlinkHref={`/sprite.svg#${name}`} />
+      <use xlinkHref={`/assets/sprite.svg#${name}`} />
     </svg>
   );
 };

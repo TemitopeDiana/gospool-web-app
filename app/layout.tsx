@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 
-import { IBM_Plex_Sans } from 'next/font/google';
+import { Poppins } from 'next/font/google';
 
 import '@/styles/globals.css';
 
-const primaryFont = IBM_Plex_Sans({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
+const primaryFont = Poppins({
+  variable: '--font-poppins',
+  weight: ['400', '500', '600', '700'],
 });
 
 export const metadata: Metadata = {
