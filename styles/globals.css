@@ -2,21 +2,46 @@
 @import './themes.css';
 
 @layer base {
+  * {
+    @apply border-gray-100;
+  }
   .html,
   body {
-    @apply w-screen overflow-x-hidden;
-  }
-  body {
-    @apply bg-background text-foreground;
+    @apply w-screen overflow-x-hidden bg-background text-foreground text-a-12 md:text-a-16;
   }
 
   button {
     @apply cursor-pointer;
   }
+
+  input,
+  textarea {
+    @apply outline-none focus:border-gray-300 text-a-16 relative disabled:cursor-not-allowed;
+  }
 }
 
-@layer components {
+@layer utilities {
   .blurred-bg {
-    @apply backdrop-blur-3xl bg-red-600;
+    @apply backdrop-blur-3xl bg-primary/80;
+  }
+
+  .dashboard-heading-text {
+    @apply font-medium text-a-20 md:text-a-30;
+  }
+
+  .dashboard-card {
+    @apply bg-white rounded-xl p-4 md:p-5;
+  }
+
+  .dashboard-list-item {
+    @apply flex gap-2 justify-between py-4 flex-wrap [&>p]:text-gray-900 [&>p:first-of-type]:text-gray-500;
+  }
+
+  .location-info {
+    @apply relative gap-4 before:rounded-full flex-nowrap  before:border-[3px] before:w-3 before:h-3 flex before:bg-white before:block before:aspect-square [&>span]:line-clamp-1;
+  }
+
+  .option-menu {
+    @apply min-w-a-150 border bg-white border-gray-100 rounded-8 p-1 [&>*]:not-last:border-b   [&>*]:flex [&>*]:w-full [&>*]:gap-2 [&>*]:items-center [&>*]:p-2 [&_svg]:h-5 [&_svg]:w-5 text-a-14;
   }
 }
