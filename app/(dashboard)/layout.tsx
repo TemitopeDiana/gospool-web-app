@@ -23,7 +23,7 @@ const menu: {
   },
   {
     label: 'Passengers',
-    link: '#',
+    link: routes.passengers(),
     svg: 'user-tick',
   },
   {

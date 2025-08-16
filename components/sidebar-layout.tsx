@@ -103,7 +103,9 @@ const SidebarLayout = ({ menu, children }: SidebarLayoutProps) => {
           </div>
         </nav>
 
-        <main className="p-5 lmd:p-8">{children}</main>
+        <main className="p-5 lmd:p-8 [&>*]:max-w-[1000px] [&>*]:mx-auto  ">
+          {children}
+        </main>
       </div>
     </div>
   );

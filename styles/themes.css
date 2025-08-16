@@ -1,12 +1,67 @@
 @theme {
-  --color-primary: #0d4740;
-  --color-primary-700: #0d4740;
   --color-text-200: #1d1c1e;
-  --color-gray: #f2f4f7;
-  --color-gray-100: #f2f4f7;
-  --color-gray-500: #667085;
   --color-background: #ffffff;
   --color-foreground: #1d2939;
+
+  /* primary */
+  --color-primary: #0d4740;
+  --color-primary-100: #bffde0;
+  --color-primary-500: #4ea699;
+
+  /* Gray */
+  --color-gray: #f2f4f7;
+  --color-gray-25: #fcfcfd;
+  --color-gray-50: #f2f4f7;
+  --color-gray-100: #eaeff0;
+  --color-gray-200: #d0d5dd;
+  --color-gray-300: #98a2a3;
+  --color-gray-400: #667085;
+  --color-gray-500: #667085;
+  --color-gray-600: #475467;
+  --color-gray-700: #344054;
+  --color-gray-800: #1d2939;
+  --color-gray-900: #101828;
+
+  /* Red */
+  --color-error-25: #fffefa;
+  --color-error-50: #fff3f2;
+  --color-error-100: #fee4e2;
+  --color-error-200: #fedcda;
+  --color-error-300: #fda298;
+  --color-error-400: #f97066;
+  --color-error-500: #f04438;
+  --color-error-600: #d92d20;
+  --color-error-700: #b42318;
+  --color-error-800: #912018;
+  --color-error-900: #7a271a;
+
+  /* Warning */
+  --color-warning-25: #fff6e5;
+  --color-warning-50: #fffaeb;
+  --color-warning-100: #fef0c7;
+  --color-warning-200: #fedf89;
+  --color-warning-300: #fec84b;
+  --color-warning-400: #fdb022;
+  --color-warning-500: #f79009;
+  --color-warning-600: #dc6803;
+  --color-warning-700: #b54708;
+  --color-warning-800: #93370d;
+  --color-warning-900: #7a2e0e;
+
+  /* Green */
+  --color-green-25: #f6fef9;
+  --color-green-50: #ecfdf3;
+  --color-green-100: #d1fadf;
+  --color-green-200: #abefc5;
+  --color-green-300: #86e9a6;
+  --color-green-400: #23d563;
+  --color-green-500: #12b78a;
+  --color-green-600: #039855;
+  --color-green-700: #027448;
+  --color-green-800: #05603a;
+  --color-green-900: #054f31;
+
+  --color-base-black: #1d1c1e;
 
   --breakpoint-xxs: 320px;
   --breakpoint-xs: 390px;
@@ -21,6 +76,7 @@
   --radius-40: 40px;
 
   --spacing-a-10: 10px;
+  --spacing-a-150: 150px;
   --spacing-a-250: 250px;
   --spacing-a-300: 300px;
   --spacing-a-500: 500px;
@@ -36,4 +92,14 @@
   --text-a-30: 30px;
   --text-a-32: 32px;
   --text-a-34: 34px;
+
+  --z-1: 1;
+  --z-2: 2;
+  --z-3: 3;
+  --z-4: 4;
+  --z-5: 5;
+  --z-6: 6;
+  --z-7: 7;
+  --z-8: 8;
+  --z-9: 9;
 }
