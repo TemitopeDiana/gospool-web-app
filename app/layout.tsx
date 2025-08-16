@@ -7,6 +7,7 @@ import '@/styles/globals.css';
 const primaryFont = Poppins({
   variable: '--font-poppins',
   weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
