@@ -8,4 +8,12 @@ export type IconName =
   | 'bus'
   | 'calendar'
   | 'speaker'
-  | 'bell';
+  | 'bell'
+  | 'search'
+  | 'arrow-down'
+  | 'arrow-right'
+  | 'dotted-menu'
+  | 'document-text'
+  | 'star'
+  | 'eye'
+  | 'trash';
