@@ -22,7 +22,7 @@
 
 @layer utilities {
   .blurred-bg {
-    @apply backdrop-blur-3xl bg-primary/80;
+    @apply backdrop-blur-lg bg-[#344054B2]/10 inset-0;
   }
 
   .dashboard-heading-text {

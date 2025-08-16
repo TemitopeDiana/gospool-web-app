@@ -21,7 +21,7 @@ const Popover = ({ children, trigger, ...props }: IPopover) => {
       <Portal>
         <Content {...props}>
           {children}
-          <Arrow fill='white' stroke='#d0d5dd' strokeWidth={2} />
+          <Arrow fill="white" stroke="#d0d5dd" strokeWidth={2} />
         </Content>
       </Portal>
     </Root>
