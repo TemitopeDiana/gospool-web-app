@@ -16,4 +16,8 @@ export type IconName =
   | 'document-text'
   | 'star'
   | 'eye'
-  | 'trash';
+  | 'trash'
+  | 'right-arrow'
+  | 'edit'
+  | 'eye'
+  | 'eye-off';
