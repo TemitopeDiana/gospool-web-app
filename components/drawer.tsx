@@ -85,7 +85,7 @@ const Drawer = forwardRef<unknown, IDrawerProps>(
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className={`relative ml-auto w-full max-w-[700px] border-l h-screen overflow-y-auto bg-background shadow-lg`}
+                className={`relative ml-auto w-full max-w-[500px] border-l h-screen overflow-y-auto bg-background shadow-lg`}
               >
                 <Content
                   ref={ref as ForwardedRef<HTMLDivElement>}
@@ -99,9 +99,7 @@ const Drawer = forwardRef<unknown, IDrawerProps>(
                 >
                   <div className="flex justify-between gap-2 !pb-4 bg-background border-b sticky top-0 z-1">
                     <div className="flex-1  ">
-                      <Title className="md:text-[24px] font-semibold">
-                        {title}
-                      </Title>
+                      <Title className="text-a-16 font-semibold">{title}</Title>
                       <Description className="text-gray-500 font-normal">
                         {description}
                       </Description>

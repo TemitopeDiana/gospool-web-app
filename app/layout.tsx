@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Toaster } from 'sonner';
 
 import { Poppins } from 'next/font/google';
 
@@ -26,7 +27,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${primaryFont.className} antialiased`}>{children}</body>
+      <body className={`${primaryFont.className} antialiased`}>
+        {children}
+        <Toaster position="top-center" expand richColors />
+      </body>
     </html>
   );
 }
