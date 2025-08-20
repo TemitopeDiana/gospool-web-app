@@ -1,8 +1,7 @@
 'use client';
 
 import dayjs from 'dayjs';
-import { GoogleMapsEmbed } from '@next/third-parties/google';
-
+import { useRouter } from 'next/navigation';
 import {
   CartesianGrid,
   Line,
@@ -11,10 +10,18 @@ import {
   Tooltip,
   XAxis,
 } from 'recharts';
+import { toast } from 'sonner';
+
 import { Button } from './button';
-import Popover from './popover';
-import SvgIcon from './svg-icon';
+import ConfirmActionCard from './confirm-action-card';
 import Drawer from './drawer';
+import ExtendedRideDetails from './extended-ride-details';
+import Modal from './modal-component';
+import Popover from './popover';
+import StarRating from './start-rating';
+import SvgIcon from './svg-icon';
+
+import { routes } from '@/lib/routes';
 
 const data = [
   {
@@ -38,6 +45,8 @@ const data = [
 ];
 
 const RideDetails = () => {
+  const router = useRouter();
+
   return (
     <div>
       <div className="flex">
@@ -103,15 +112,7 @@ const RideDetails = () => {
 
         <div className="flex justify-between items-start mt-5">
           <div className="flex-1">
-            <div className="flex gap-1">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <SvgIcon
-                  key={i}
-                  name="star"
-                  className="w-5 h-5 text-warning-400"
-                />
-              ))}
-            </div>
+            <StarRating rating={4.1} />
 
             <p className="my-2 line-clamp-1 text-gray-600">
               The driver was nice, and he arrived on time
@@ -141,21 +142,34 @@ const RideDetails = () => {
                 title="Ride details"
                 description={''}
               >
-                <div>
-                  <GoogleMapsEmbed
-                    apiKey={'AIzaSyCpuDCAiyXIWyCEKwsyo1mlhizD-BnI8mM'}
-                    height={200}
-                    width="100%"
-                    mode="place"
-                    q="Brooklyn+Bridge,New+York,NY"
-                  />
-                </div>
+                <ExtendedRideDetails />
               </Drawer>
 
-              <div className="text-error-700">
-                <SvgIcon name="trash" />
-                <p>Delete</p>
-              </div>
+              <Modal
+                hideCloseButton
+                trigger={
+                  <div className="text-error-700">
+                    <SvgIcon name="trash" />
+                    <p>Delete</p>
+                  </div>
+                }
+              >
+                {(close) => (
+                  <ConfirmActionCard
+                    title="Delete Passenger"
+                    description="What action would you like to take?"
+                    close={close}
+                    confirmAction={{
+                      buttonText: 'Delete',
+                      onClick: () => {
+                        toast.success('I was clicked');
+                        router.push(routes.passengers());
+                      },
+                    }}
+                    dangerColor
+                  />
+                )}
+              </Modal>
             </div>
           </Popover>
         </div>

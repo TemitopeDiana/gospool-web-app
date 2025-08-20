@@ -1,12 +1,16 @@
+'use client';
+import { Description, Title } from '@radix-ui/react-dialog';
 import dayjs from 'dayjs';
 import Image from 'next/image';
-
-import { Button } from './button';
-import SvgIcon from './svg-icon';
-import Popover from './popover';
 import Link from 'next/link';
-import { routes } from '@/lib/routes';
+import { toast } from 'sonner';
+
 import { DATE_FORMAT_DMY } from '@/lib/constants';
+import { routes } from '@/lib/routes';
+import { Button } from './button';
+import Modal from './modal-component';
+import Popover from './popover';
+import SvgIcon from './svg-icon';
 
 const PassengerPageComponent = () => {
   return (
@@ -14,7 +18,49 @@ const PassengerPageComponent = () => {
       <div className="flex justify-between mb-5">
         <div className="dashboard-heading-text">Passenger</div>
 
-        <Button>Download</Button>
+        <Modal
+          trigger={<Button>Download</Button>}
+          disableOutsideClick
+          hideCloseButton
+        >
+          {(close) => (
+            <div className="px-5 py-10 bg-white rounded-20 mx-auto shadow-lg focus:outline-none md:px-10 max-w-[442px]">
+              <Title className="text-xl font-semibold mb-6 md:text-3xl capitalize">
+                Download Data
+              </Title>
+
+              <Description className="text-sm text-gray-500 font-normal mb-3">
+                Download as
+              </Description>
+
+              <div className="flex w-max gap-3 items-center ">
+                <Button variant="gray">
+                  <SvgIcon name="csv" className="w-5 h-5 text-black" />
+                  CSV
+                </Button>
+                <Button variant="gray">
+                  <SvgIcon name="pdf" className="w-5 h-5 text-black" />
+                  PDF
+                </Button>
+              </div>
+
+              <div className="flex w-full justify-between mt-10 gap-5">
+                <Button variant="outline" onClick={close}>
+                  Cancel
+                </Button>
+
+                <Button
+                  onClick={() => {
+                    toast.success('Download started');
+                    close();
+                  }}
+                >
+                  Download
+                </Button>
+              </div>
+            </div>
+          )}
+        </Modal>
       </div>
 
       <div className="dashboard-card">

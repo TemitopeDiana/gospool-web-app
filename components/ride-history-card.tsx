@@ -1,6 +1,6 @@
-import React from 'react';
-import SvgIcon from './svg-icon';
 import dayjs from 'dayjs';
+
+import SvgIcon from './svg-icon';
 
 const RideHistory = () => {
   return (
@@ -13,10 +13,10 @@ const RideHistory = () => {
         <div className="flex-1">
           <div className="location-info before:border-primary font-medium pb-2 isolate text-gray-800 before:mt-1 ">
             <span className="absolute w-1 left-[5px] h-full border-l-2 border-dotted top-3.5 border-primary -z-1"></span>
-            <span>Berger Bus stop</span>
+            <span className="line-clamp-1">Berger Bus stop</span>
           </div>
           <p className="location-info before:border-gray-900 before:mt-[2px]">
-            <span>
+            <span className="line-clamp-1">
               24 Calvary street, Isaac Johnson drive, Victoria island, Lagos,
               Nigeria.
             </span>
