@@ -18,7 +18,7 @@ const menu: {
 
   {
     label: 'Drivers',
-    link: '#',
+    link: routes.drivers(),
     svg: 'car',
   },
   {
