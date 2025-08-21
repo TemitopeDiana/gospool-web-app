@@ -21,10 +21,15 @@ export type IconName =
   | 'eye'
   | 'eye-off'
   | 'pdf'
-  | 'csv';
+  | 'csv'
+  | 'flag'
+  | 'check'
+  | 'refresh';
 
 export const iconNames: IconName[] = [
   'menu',
+  'refresh',
+  'check',
   'close',
   'church',
   'car',
@@ -47,4 +52,5 @@ export const iconNames: IconName[] = [
   'eye-off',
   'pdf',
   'csv',
+  'flag',
 ];

@@ -227,6 +227,28 @@
          </g>
       </symbol>
 
+      <symbol fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="flag">
+         <path d="M5.1499 2V22" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10"
+            stroke-linecap="round" stroke-linejoin="round"></path>
+         <path
+            d="M5.1499 4H16.3499C19.0499 4 19.6499 5.5 17.7499 7.4L16.5499 8.6C15.7499 9.4 15.7499 10.7 16.5499 11.4L17.7499 12.6C19.6499 14.5 18.9499 16 16.3499 16H5.1499"
+            stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
+            stroke-linejoin="round"></path>
+      </symbol>
 
+      <symbol fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="check">
+         <path d="M4.99951 12.0001L9.99951 17.0001L19.9995 7.00012" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+      </symbol>
+
+      <symbol fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 17" id="refresh">
+         <path
+            d="M9.6987 14.9468C12.5587 14.1935 14.6654 11.5935 14.6654 8.50016C14.6654 4.82016 11.7054 1.8335 7.9987 1.8335C3.55203 1.8335 1.33203 5.54016 1.33203 5.54016M1.33203 5.54016V2.50016M1.33203 5.54016H2.67203H4.29203"
+            stroke="currentColor" stroke-width="1.03125" stroke-linecap="round"
+            stroke-linejoin="round"></path>
+         <path d="M1.33203 8.50024C1.33203 12.1802 4.3187 15.1669 7.9987 15.1669"
+            stroke="currentColor" stroke-width="1.03125" stroke-linecap="round"
+            stroke-linejoin="round" stroke-dasharray="2.06 2.06"></path>
+      </symbol>
    </def>
 </svg>
