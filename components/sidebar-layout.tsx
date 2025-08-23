@@ -59,7 +59,7 @@ const SidebarLayout = ({ menu, children }: SidebarLayoutProps) => {
         </ul>
       </aside>
 
-      <div className="min-h-screen bg-gray-100 flex-1">
+      <div className="min-h-screen w-full bg-gray-100 flex-1">
         <nav className="bg-white px-5 lmd:px-8 sticky shadow top-0 left-0 py-4 z-10 flex items-center">
           <Link
             href={routes.home()}

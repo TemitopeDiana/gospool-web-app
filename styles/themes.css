@@ -64,14 +64,16 @@
   --color-base-black: #1d1c1e;
 
   --breakpoint-xxs: 350px;
-  --breakpoint-xs: 390px;
+  --breakpoint-xss: 390px;
   --breakpoint-xsm: 480px;
+  --breakpoint-xmd: 600px;
 
   --breakpoint-xs: 300px;
   --breakpoint-lmd: 800px;
   --breakpoint-2xl: 1400px;
 
   --radius-8: 8px;
+  --radius-12: 12px;
   --radius-20: 20px;
   --radius-40: 40px;
 

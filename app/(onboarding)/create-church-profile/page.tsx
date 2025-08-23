@@ -1,9 +1,11 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import Input from '@/components/input';
 import { Button } from '@/components/button';
+import { routes } from '@/lib/routes';
 
 const CreateChurchProfile = () => {
   const methods = useForm();
@@ -57,12 +59,14 @@ const CreateChurchProfile = () => {
             </FormProvider>
           </div>
 
-          <Button
-            variant="default"
-            className="place-self-end mt-10 py-[13.5px] px-10"
+          <Link
+            href={routes.createSuperAdminProfile()}
+            className="place-self-end mt-10 "
           >
-            Continue
-          </Button>
+            <Button variant="default" className="py-[13.5px] px-10">
+              Continue
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

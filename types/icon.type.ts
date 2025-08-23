@@ -20,4 +20,9 @@ export type IconName =
   | 'right-arrow'
   | 'edit'
   | 'eye'
-  | 'eye-off';
+  | 'eye-off'
+  | 'profile'
+  | 'profile-users'
+  | 'download'
+  | 'refresh'
+  | 'generate';
