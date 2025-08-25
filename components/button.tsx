@@ -5,7 +5,7 @@ import ShowView from './show-view';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'whitespace-nowrap rounded-full text-sm font-medium px-5 py-2 border border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/[0.5] btn focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30 disabled:pointer-events-none',
+  'whitespace-nowrap rounded-full flex gap-2 items-center text-a-14 font-medium px-5 py-2 border border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/[0.5] btn focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30 disabled:pointer-events-none',
   {
     variants: {
       variant: {
@@ -13,7 +13,7 @@ const buttonVariants = cva(
         primaryII: 'bg-primary-100 text-primary hover:bg-primary-200',
         outline:
           'bg-transparent border-gray-200 text-gray-900 hover:bg-gray-50',
-        gray: 'bg-gray-200 text-white hover:bg-gray-300',
+        gray: 'bg-gray-50 text-gray-800 hover:bg-gray-300',
         danger: 'bg-error-700 text-white hover:bg-error-400',
       },
       size: {

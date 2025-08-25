@@ -5,6 +5,7 @@
 
   /* primary */
   --color-primary: #0d4740;
+  --color-primary-20: #bffde033;
   --color-primary-100: #bffde0;
   --color-primary-500: #4ea699;
 
@@ -78,6 +79,7 @@
   --radius-40: 40px;
 
   --spacing-a-10: 10px;
+  --spacing-a-60: 60px;
   --spacing-a-150: 150px;
   --spacing-a-250: 250px;
   --spacing-a-300: 300px;

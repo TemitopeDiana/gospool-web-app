@@ -1,12 +1,14 @@
-import { routes } from '@/lib/routes';
-import { cn } from '@/lib/utils';
-import { IconName } from '@/types/icon.type';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import SvgIcon from './svg-icon';
-import MobileSideBar from './mobile-sidebar';
 import { ReactNode } from 'react';
+
+import MobileSideBar from './mobile-sidebar';
+import SvgIcon from './svg-icon';
+
+import { routes } from '@/lib/routes';
+import { cn } from '@/lib/utils';
+import { IconName } from '@/types/icon.type';
 
 export interface SidebarItems {
   label: string;
@@ -30,18 +32,20 @@ const SidebarLayout = ({ menu, children }: SidebarLayoutProps) => {
 
   return (
     <div className="flex">
-      <aside className="bg-primary text-white w-full max-lg:hidden max-w-a-300 p-8">
-        <Link href={routes.home()} className="relative block w-32 h-6">
-          <Image
-            src="/assets/logo-white.png"
-            alt="gospool logo"
-            fill
-            sizes="128px"
-            className="object-contain"
-          />
-        </Link>
+      <aside className="bg-primary text-white w-full sticky top-0 left-0 h-screen overflow-y-auto max-lg:hidden max-w-a-300 p-8 pt-0">
+        <div className="p-8 pl-0 sticky top-0 bg-primary mb-4">
+          <Link href={routes.home()} className="block relative  w-32 h-6">
+            <Image
+              src="/assets/logo-white.png"
+              alt="gospool logo"
+              fill
+              sizes="128px"
+              className="object-contain"
+            />
+          </Link>
+        </div>
 
-        <ul className="mt-10">
+        <ul className="">
           {menu.map((item) => (
             <li key={item.label}>
               <Link

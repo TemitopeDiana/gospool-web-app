@@ -9,6 +9,8 @@ const createSuperAdminProfile = () => '/create-super-admin-profile';
 const branchPage = (churchId: string, branchId: string) =>
   `${churches()}/${churchId}/${branchId}`;
 const addBranch = () => '/add-branch';
+const drivers = () => '/drivers';
+const driverProfile = (driverId: string) => `${drivers()}/${driverId}`;
 
 export const routes = {
   home,
@@ -19,4 +21,6 @@ export const routes = {
   createSuperAdminProfile,
   branchPage,
   addBranch,
+  drivers,
+  driverProfile,
 };

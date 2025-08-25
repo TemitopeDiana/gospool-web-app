@@ -110,6 +110,6 @@
   }
 
   .option-menu {
-    @apply min-w-a-150 border bg-white border-gray-100 rounded-8 p-1 [&>*]:not-last:border-b   [&>*]:flex [&>*]:w-full [&>*]:gap-2 [&>*]:items-center [&>*]:p-2 [&_svg]:h-5 [&_svg]:w-5 text-a-14;
+    @apply min-w-a-150 border bg-white border-gray-100 rounded-8 p-1 [&>*]:not-last:border-b transition-colors ease-in-out [&>*]:flex [&>*]:w-full [&>*]:gap-2 [&>*]:items-center [&>*]:p-2 [&>*]:hover:bg-primary-20 [&_svg]:h-5 [&_svg]:w-5 text-a-14;
   }
 }

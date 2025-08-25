@@ -24,4 +24,37 @@ export type IconName =
   | 'profile-users'
   | 'download'
   | 'refresh'
-  | 'generate';
+  | 'generate'
+  | 'pdf'
+  | 'csv'
+  | 'flag'
+  | 'check';
+
+export const iconNames: IconName[] = [
+  'menu',
+  'refresh',
+  'check',
+  'close',
+  'church',
+  'car',
+  'user-tick',
+  'routing',
+  'bus',
+  'calendar',
+  'speaker',
+  'bell',
+  'search',
+  'arrow-down',
+  'arrow-right',
+  'dotted-menu',
+  'document-text',
+  'star',
+  'eye',
+  'trash',
+  'edit',
+  'eye',
+  'eye-off',
+  'pdf',
+  'csv',
+  'flag',
+];

@@ -1,7 +1,6 @@
 'use client';
 import { Description, Title } from '@radix-ui/react-dialog';
 import dayjs from 'dayjs';
-import Image from 'next/image';
 import Link from 'next/link';
 import { toast } from 'sonner';
 
@@ -11,12 +10,13 @@ import { Button } from './button';
 import Modal from './modal-component';
 import Popover from './popover';
 import SvgIcon from './svg-icon';
+import StatusTag from './status-tag';
 
-const PassengerPageComponent = () => {
+const DriversPageComponent = () => {
   return (
-    <div>
+    <>
       <div className="flex justify-between mb-5">
-        <div className="dashboard-heading-text">Passenger</div>
+        <div className="dashboard-heading-text">Drivers</div>
 
         <Modal
           trigger={<Button>Download</Button>}
@@ -64,15 +64,20 @@ const PassengerPageComponent = () => {
       </div>
 
       <div className="dashboard-card">
-        <div className="flex justify-between gap-4 mb-4">
-          <div className="flex gap-2 items-center px-3  bg-gray-50 rounded-xl w-full max-w-a-300">
-            <SvgIcon name="search" className="w-5 h-5 text-gray-500" />
-            <input type="search" name="" id="" className="flex-1 py-2" />
+        <div className="flex justify-between items-center mb-5 gap-3">
+          <div className="flex gap-2 ">
+            <Button>Pending</Button>
+            <Button variant="outline">Approved</Button>
           </div>
-
-          <div className="flex gap-2 justify-between items-center px-3  bg-gray-50 rounded-xl w-full max-w-32">
-            All
-            <SvgIcon name="arrow-down" className="w-4 h-4 text-gray-500" />
+          <div className="flex justify-between gap-4 mb-4">
+            <div className="flex gap-2 items-center px-3  bg-gray-50 rounded-xl w-full max-w-a-300">
+              <SvgIcon name="search" className="w-5 h-5 text-gray-500" />
+              <input type="search" name="" id="" className="flex-1 py-2" />
+            </div>
+            <div className="flex gap-2 justify-between items-center px-3  bg-gray-50 rounded-xl w-full max-w-32">
+              All
+              <SvgIcon name="arrow-down" className="w-4 h-4 text-gray-500" />
+            </div>
           </div>
         </div>
 
@@ -80,10 +85,10 @@ const PassengerPageComponent = () => {
           <table className="w-full text-left text-a-14">
             <thead className="rounded-xl overflow-hidden">
               <tr className="bg-gray-50  [&>th]:px-4 [&>th]:py-3 [&>th]:font-medium text-base-black">
-                <th>Date joined</th>
+                <th>Date requested</th>
                 <th>Name</th>
-                <th>Churches</th>
                 <th>Department</th>
+                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -98,20 +103,11 @@ const PassengerPageComponent = () => {
                     {dayjs('2025-01-12').format(DATE_FORMAT_DMY)}
                   </td>
                   <td className="px-4 py-3">Paul Oluwatoni</td>
-                  <td className="px-4 py-3 flex items-center gap-2">
-                    <Image
-                      src="/assets/favicon.png"
-                      alt="logo"
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
-                    <div>
-                      <p className="font-medium">Harvesters</p>
-                      <p className="text-a-12 text-gray-500">Gbagada</p>
-                    </div>
-                  </td>
                   <td className="px-4 py-3">Tech</td>
+
+                  <td className="px-4 py-3">
+                    <StatusTag warning text="Pending" />
+                  </td>
                   <td className="px-4 py-3 text-gray-500 ">
                     <Popover
                       trigger={
@@ -120,12 +116,23 @@ const PassengerPageComponent = () => {
                         </button>
                       }
                     >
-                      <div className="w-full bg-white border border-gray-100 text-a-12 rounded font-semibold [&>*]:block [&>*]:py-3 [&>*]:px-5">
-                        <Link
-                          href={`${routes.passengerProfile(idx.toString())}`}
-                        >
-                          View Profile
+                      <div className="option-menu">
+                        <Link href={routes.driverProfile('1')}>
+                          <SvgIcon name="eye" />
+                          <p>View</p>
                         </Link>
+                        <button>
+                          <SvgIcon name="check" />
+                          <p>Approve</p>
+                        </button>
+                        <button>
+                          <SvgIcon name="refresh" />
+                          <p>Return</p>
+                        </button>
+                        <button className="text-error-700">
+                          <SvgIcon name="flag" />
+                          <p>Reject</p>
+                        </button>
                       </div>
                     </Popover>
                   </td>
@@ -135,8 +142,8 @@ const PassengerPageComponent = () => {
           </table>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default PassengerPageComponent;
+export default DriversPageComponent;
