@@ -6,6 +6,7 @@ import SvgIcon from '@/components/svg-icon';
 import { IconName } from '@/types/icon.type';
 import { Button } from '@/components/button';
 import { routes } from '@/lib/routes';
+import Modal from '@/components/modal';
 
 const churchData = [
   {
@@ -122,7 +123,7 @@ export default function Home() {
               <tbody>
                 {churchData.map((el, index) => (
                   <tr key={index}>
-                    <td>{el.name}</td>
+                    <td className="capitalize">{el.name}</td>
                     <td className="py-6 px-3 capitalize">{el.churchOwner}</td>
                     <td>{el.branches}</td>
                     <td>
@@ -152,10 +153,48 @@ export default function Home() {
                             </Link>
                           </li>
                           <li className="text-error-700">
-                            <Link href="" className="flex items-center gap-2">
-                              <SvgIcon name="trash" className="h-4 w-4" />
-                              Delete
-                            </Link>
+                            <Modal
+                              trigger={
+                                <Link
+                                  href=""
+                                  className="flex items-center gap-2"
+                                >
+                                  <SvgIcon name="trash" className="h-4 w-4" />
+                                  Delete
+                                </Link>
+                              }
+                              title="Remove CCI"
+                              description="Current members will need to update their church. Prefer to disable it instead?"
+                              iconName="trash"
+                              iconSizeClassName="w-8 h-8 text-error-700"
+                              maxWidthClassName="max-w-[442px]"
+                              iconContainerClassName="w-18 h-18 rounded-40 bg-error-50 flex items-center justify-center"
+                              onClose={() => console.log('closed')}
+                            >
+                              {(close) => (
+                                <div className="w-full mt-10 flex flex-wrap gap-2 md:gap-3 xss:justify-center">
+                                  <Button
+                                    onClick={close}
+                                    variant="outline"
+                                    className="block py-[13.5px] md:px-7"
+                                  >
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    variant="primaryII"
+                                    className="block py-[13.5px] md:px-7"
+                                  >
+                                    Disable
+                                  </Button>
+                                  <Button
+                                    variant="danger"
+                                    className="block py-[13.5px] md:px-7"
+                                  >
+                                    Remove
+                                  </Button>
+                                </div>
+                              )}
+                            </Modal>
                           </li>
                         </ul>
                       </Popover>

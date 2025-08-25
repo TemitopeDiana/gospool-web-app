@@ -17,7 +17,6 @@ export type IconName =
   | 'star'
   | 'eye'
   | 'trash'
-  | 'right-arrow'
   | 'edit'
   | 'eye'
   | 'eye-off'

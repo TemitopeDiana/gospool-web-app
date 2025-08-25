@@ -45,7 +45,7 @@
   }
 
   thead th {
-    @apply px-3 py-[9px] font-medium text-base-black;
+    @apply px-3 py-[9px] font-medium text-base-black capitalize;
   }
 
   tbody tr {
@@ -57,7 +57,7 @@
   }
 
   tbody td {
-    @apply px-3 py-6 capitalize;
+    @apply px-3 py-6;
   }
 }
 

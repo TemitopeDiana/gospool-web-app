@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import { Button } from '@/components/button';
 import SvgIcon from '@/components/svg-icon';
@@ -9,9 +10,7 @@ import Popover from '@/components/popover';
 import churchLogo from '@/public/assets/default-church-logo.png';
 import profilePic from '@/public/assets/profile-pic.png';
 import { routes } from '@/lib/routes';
-
 import { IconName } from '@/types/icon.type';
-import { useState } from 'react';
 
 const cards: { name: string; iconName: IconName; team: number }[] = [
   { name: 'drivers', iconName: 'car', team: 100 },
@@ -26,7 +25,7 @@ const branchData = [
 
 // const branchData: any[] =[]
 
-const compactNumber = (n: number): string => {
+export const compactNumber = (n: number): string => {
   try {
     return new Intl.NumberFormat('en', {
       notation: 'compact',
@@ -46,12 +45,12 @@ function ChurchProfile() {
 
   return (
     <div>
-      <div className="bg-background rounded-20 p-5 flex flex-col gap-2 xsm:gap-5 md:gap-[35px]">
+      <div className="bg-background rounded-20 p-5 flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
         {/* top  */}
         <div className="flex flex-col gap-2 xsm:flex-row xsm:gap-0 xsm:justify-between">
           {/* top-left  */}
           <div className="flex items-center gap-3">
-            <div className="relative w-12 h-12">
+            <div className="relative w-12 h-12 xl:w-16 xl:h-16">
               <Image src={churchLogo} alt="church logo" fill sizes="100%" />
             </div>
             <div>
@@ -63,7 +62,9 @@ function ChurchProfile() {
           {/* top-right  */}
 
           <div className="xxs:flex items-center gap-4">
-            <Button variant="outline">Add branch</Button>
+            <Link href={routes.addBranch()}>
+              <Button variant="outline">Add branch</Button>
+            </Link>
 
             <Popover
               trigger={
@@ -132,7 +133,7 @@ function ChurchProfile() {
           </div>
 
           {/* bottom-right  */}
-          <div className="md:flex flex-1 md:gap-5">
+          <div className="md:flex flex-1 md:gap-5 max-w-[150px] md:max-w-none">
             {cards.map((el, index) => (
               <div key={index} className="flex items-center gap-2 mb-2 md:mb-0">
                 <div className="w-10 h-10 bg-gray-50 rounded-[48px] flex items-center justify-center">
@@ -217,7 +218,7 @@ function ChurchProfile() {
                         <ul className="table-action-popover">
                           <li>
                             <Link
-                              href={`${routes.churchProfile(index.toString())}`}
+                              href={`${routes.branchPage(index.toString(), index.toString())}`}
                               className="flex items-center gap-2"
                             >
                               <SvgIcon

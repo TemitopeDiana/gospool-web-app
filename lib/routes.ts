@@ -6,6 +6,9 @@ const passengerProfile = (passengerId: string) =>
 const createChurchProfile = () => '/create-church-profile';
 const churchProfile = (churchId: string) => `${churches()}/${churchId}`;
 const createSuperAdminProfile = () => '/create-super-admin-profile';
+const branchPage = (churchId: string, branchId: string) =>
+  `${churches()}/${churchId}/${branchId}`;
+const addBranch = () => '/add-branch';
 
 export const routes = {
   home,
@@ -14,4 +17,6 @@ export const routes = {
   churchProfile,
   createChurchProfile,
   createSuperAdminProfile,
+  branchPage,
+  addBranch,
 };
