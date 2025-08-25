@@ -10,10 +10,8 @@ import Popover from '@/components/popover';
 import churchLogo from '@/public/assets/default-church-logo.png';
 import profilePic from '@/public/assets/profile-pic.png';
 import { routes } from '@/lib/routes';
-
 import { IconName } from '@/types/icon.type';
-
-import { compactNumber } from '../page';
+import { compactNumber } from '@/lib/format';
 
 const cards: { name: string; iconName: IconName; team: number }[] = [
   { name: 'drivers', iconName: 'car', team: 100 },

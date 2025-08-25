@@ -11,6 +11,7 @@ import churchLogo from '@/public/assets/default-church-logo.png';
 import profilePic from '@/public/assets/profile-pic.png';
 import { routes } from '@/lib/routes';
 import { IconName } from '@/types/icon.type';
+import { compactNumber } from '@/lib/format';
 
 const cards: { name: string; iconName: IconName; team: number }[] = [
   { name: 'drivers', iconName: 'car', team: 100 },
@@ -24,19 +25,6 @@ const branchData = [
 ];
 
 // const branchData: any[] =[]
-
-export const compactNumber = (n: number): string => {
-  try {
-    return new Intl.NumberFormat('en', {
-      notation: 'compact',
-      maximumFractionDigits: 1,
-    }).format(n);
-  } catch {
-    if (n >= 1_000_000) return `${Math.round(n / 100_000) / 10}M`;
-    if (n >= 1_000) return `${Math.round(n / 100) / 10}K`;
-    return String(n);
-  }
-};
 
 const displayData = ['branches', 'passengers', 'drivers', 'team'];
 
