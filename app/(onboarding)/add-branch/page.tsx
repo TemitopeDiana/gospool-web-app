@@ -62,7 +62,7 @@ function AddBranch() {
           <div className="view-branches-menu">
             <Drawer
               trigger={
-                <button className="p-2 bg-gray rounded-40 flex justify-between h-10 w-[122px] md:w-[132px] ml-auto mt-4 xsm:mt-0 items-center">
+                <button className="p-2 bg-gray rounded-40 flex gap-1 h-10 w-[124px] md:w-[132px] ml-auto mt-4 xsm:mt-0 items-center">
                   <Image
                     src={churchLogo}
                     alt="church logo"
@@ -72,13 +72,13 @@ function AddBranch() {
                     priority
                   />
                   <p className="flex">
-                    <span className="font-semibold mr-1">1</span> branch
+                    <span className="font-semibold mr-1">10</span> branch
                   </p>
 
-                  <div className="">
+                  <div className="h-5 w-5">
                     <SvgIcon
-                      name="right-arrow"
-                      className="text-color-text-200 w-5 h-5  [&>use]:h-5 [&>use]:w-5"
+                      name="arrow-right"
+                      className="text-color-text-200 w-full h-full [&>use]:h-5 [&>use]:w-5"
                     />
                   </div>
                 </button>

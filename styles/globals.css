@@ -10,13 +10,81 @@
     @apply w-screen overflow-x-hidden bg-background text-foreground text-a-12 md:text-a-16;
   }
 
-  button {
+  button,
+  a {
     @apply cursor-pointer;
   }
 
   input,
   textarea {
     @apply outline-none focus:border-gray-300 text-a-16 relative disabled:cursor-not-allowed;
+  }
+
+  table {
+    @apply w-full overflow-x-auto rounded-t-xl max-h-90;
+  }
+
+  thead {
+    @apply rounded-xl overflow-hidden;
+  }
+
+  thead th {
+    @apply px-3 py-[9px] font-medium text-base-black;
+  }
+
+  thead th:first-child {
+    @apply rounded-bl-xl;
+  }
+
+  thead th:last-child {
+    @apply rounded-br-xl;
+  }
+
+  thead tr {
+    @apply bg-gray-50 whitespace-nowrap sticky top-0  text-left;
+  }
+
+  thead th {
+    @apply px-3 py-[9px] font-medium text-base-black capitalize;
+  }
+
+  tbody tr {
+    @apply border-b border-gray-100 hover:bg-gray-50;
+  }
+
+  tbody tr:last-child {
+    @apply border-b-0;
+  }
+
+  tbody td {
+    @apply px-3 py-6;
+  }
+}
+
+@layer components {
+  .table-wrapper {
+    @apply w-full overflow-x-auto rounded-t-xl max-h-90;
+  }
+
+  .table-image {
+    @apply flex items-center gap-2;
+  }
+
+  .table-action-popover {
+    @apply w-full bg-white border border-gray-100 text-a-12 rounded [&>*]:block [&>*]:py-3 [&>*]:px-5;
+  }
+
+  .toggle-button {
+    @apply border-0 rounded-full w-9 h-5 relative flex items-center cursor-pointer transition-colors duration-150 focus:outline-none bg-gray-100;
+  }
+
+  .toggle-button::after {
+    @apply w-4 h-4 absolute left-[2px] top-1/2 transform -translate-y-1/2 will-change-transform bg-white rounded-full shadow-md transition-transform duration-150;
+    content: '';
+  }
+
+  .toggle-button.active::after {
+    @apply transform translate-x-[98%] -translate-y-1/2;
   }
 }
 

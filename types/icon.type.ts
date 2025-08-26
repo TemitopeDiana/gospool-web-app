@@ -11,20 +11,24 @@ export type IconName =
   | 'bell'
   | 'search'
   | 'arrow-down'
+  | 'arrow-right'
   | 'dotted-menu'
   | 'document-text'
   | 'star'
   | 'eye'
   | 'trash'
-  | 'right-arrow'
   | 'edit'
   | 'eye'
   | 'eye-off'
+  | 'profile'
+  | 'profile-users'
+  | 'download'
+  | 'refresh'
+  | 'generate'
   | 'pdf'
   | 'csv'
   | 'flag'
-  | 'check'
-  | 'refresh';
+  | 'check';
 
 export const iconNames: IconName[] = [
   'menu',
@@ -41,12 +45,12 @@ export const iconNames: IconName[] = [
   'bell',
   'search',
   'arrow-down',
+  'arrow-right',
   'dotted-menu',
   'document-text',
   'star',
   'eye',
   'trash',
-  'right-arrow',
   'edit',
   'eye',
   'eye-off',
