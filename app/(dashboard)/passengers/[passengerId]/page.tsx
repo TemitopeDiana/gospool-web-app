@@ -1,3 +1,6 @@
+import dayjs from 'dayjs';
+import Image from 'next/image';
+
 import { Button } from '@/components/button';
 import Popover from '@/components/popover';
 import RideDetails from '@/components/ride-details';
@@ -5,12 +8,8 @@ import RideHistory from '@/components/ride-history-card';
 import SvgIcon from '@/components/svg-icon';
 import Tabs from '@/components/tabs';
 import { DATE_FORMAT_DMY } from '@/lib/constants';
-import dayjs from 'dayjs';
-import Image from 'next/image';
 
-const calculateAge = (birthDate: string) => {
-  return dayjs().diff(dayjs(birthDate), 'year');
-};
+import { calculateAge } from '@/utils/calculate-age';
 
 const PassengerProfile = () => {
   const birthDate = '2023-07-02';

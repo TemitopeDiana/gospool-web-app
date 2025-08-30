@@ -86,12 +86,6 @@
   .toggle-button.active::after {
     @apply transform translate-x-[98%] -translate-y-1/2;
   }
-}
-
-@layer utilities {
-  .blurred-bg {
-    @apply backdrop-blur-lg bg-[#344054B2]/10 inset-0;
-  }
 
   .dashboard-heading-text {
     @apply font-medium text-a-20 md:text-a-30;
@@ -99,6 +93,12 @@
 
   .dashboard-card {
     @apply bg-white rounded-xl p-4 md:p-5;
+  }
+}
+
+@layer utilities {
+  .blurred-bg {
+    @apply backdrop-blur-lg bg-[#344054B2]/10 inset-0;
   }
 
   .dashboard-list-item {
