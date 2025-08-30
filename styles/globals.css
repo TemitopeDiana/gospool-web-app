@@ -1,13 +1,115 @@
 @import 'tailwindcss';
 @import './themes.css';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@layer base {
+  * {
+    @apply border-gray-100;
+  }
+  .html,
+  body {
+    @apply w-screen overflow-x-hidden bg-background text-foreground text-a-12 md:text-a-16;
+  }
+
+  button,
+  a {
+    @apply cursor-pointer;
+  }
+
+  input,
+  textarea {
+    @apply outline-none focus:border-gray-300 text-a-16 relative disabled:cursor-not-allowed;
+  }
+
+  table {
+    @apply w-full overflow-x-auto rounded-t-xl max-h-90;
+  }
+
+  thead {
+    @apply rounded-xl overflow-hidden;
+  }
+
+  thead th {
+    @apply px-3 py-[9px] font-medium text-base-black;
+  }
+
+  thead th:first-child {
+    @apply rounded-bl-xl;
+  }
+
+  thead th:last-child {
+    @apply rounded-br-xl;
+  }
+
+  thead tr {
+    @apply bg-gray-50 whitespace-nowrap sticky top-0  text-left;
+  }
+
+  thead th {
+    @apply px-3 py-[9px] font-medium text-base-black capitalize;
+  }
+
+  tbody tr {
+    @apply border-b border-gray-100 hover:bg-gray-50;
+  }
+
+  tbody tr:last-child {
+    @apply border-b-0;
+  }
+
+  tbody td {
+    @apply px-3 py-6;
+  }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .table-wrapper {
+    @apply w-full overflow-x-auto rounded-t-xl max-h-90;
+  }
+
+  .table-image {
+    @apply flex items-center gap-2;
+  }
+
+  .table-action-popover {
+    @apply w-full bg-white border border-gray-100 text-a-12 rounded [&>*]:block [&>*]:py-3 [&>*]:px-5;
+  }
+
+  .toggle-button {
+    @apply border-0 rounded-full w-9 h-5 relative flex items-center cursor-pointer transition-colors duration-150 focus:outline-none bg-gray-100;
+  }
+
+  .toggle-button::after {
+    @apply w-4 h-4 absolute left-[2px] top-1/2 transform -translate-y-1/2 will-change-transform bg-white rounded-full shadow-md transition-transform duration-150;
+    content: '';
+  }
+
+  .toggle-button.active::after {
+    @apply transform translate-x-[98%] -translate-y-1/2;
+  }
+
+  .dashboard-heading-text {
+    @apply font-medium text-a-20 md:text-a-30;
+  }
+
+  .dashboard-card {
+    @apply bg-white rounded-xl p-4 md:p-5;
+  }
+}
+
+@layer utilities {
+  .blurred-bg {
+    @apply backdrop-blur-lg bg-[#344054B2]/10 inset-0;
+  }
+
+  .dashboard-list-item {
+    @apply flex gap-2 justify-between py-4 flex-wrap [&>p]:text-gray-900 [&>p:first-of-type]:text-gray-500;
+  }
+
+  .location-info {
+    @apply relative gap-4 before:rounded-full flex-nowrap  before:border-[3px] before:w-3 before:h-3 flex before:bg-white before:block before:aspect-square [&>span]:line-clamp-1;
+  }
+
+  .option-menu {
+    @apply min-w-a-150 border bg-white border-gray-100 rounded-8 p-1 [&>*]:not-last:border-b transition-colors ease-in-out [&>*]:flex [&>*]:w-full [&>*]:gap-2 [&>*]:items-center [&>*]:p-2 [&>*]:hover:bg-primary-20 [&_svg]:h-5 [&_svg]:w-5 text-a-14;
+  }
 }
