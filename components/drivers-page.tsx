@@ -4,19 +4,20 @@ import dayjs from 'dayjs';
 import Link from 'next/link';
 import { toast } from 'sonner';
 
-import { DATE_FORMAT_DMY } from '@/lib/constants';
-import { routes } from '@/lib/routes';
 import { Button } from './button';
 import Modal from './modal-component';
 import Popover from './popover';
-import SvgIcon from './svg-icon';
 import StatusTag from './status-tag';
+import SvgIcon from './svg-icon';
+
+import { DATE_FORMAT_DMY } from '@/lib/constants';
+import { routes } from '@/lib/routes';
 
 const DriversPageComponent = () => {
   return (
     <>
       <div className="flex justify-between mb-5">
-        <div className="dashboard-heading-text">Drivers</div>
+        <h1 className="dashboard-heading-text">Drivers</h1>
 
         <Modal
           trigger={<Button>Download</Button>}
