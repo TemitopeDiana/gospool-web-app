@@ -31,6 +31,7 @@ interface IModalProps {
   imageURL?: StaticImageData;
   imageClassName?: string;
   maxWidthClassName?: string; // e.g. 'max-w-lg' or 'max-w-2xl'
+  titleContainerClassName?: string;
 }
 
 export type DrawerRefActions = {
@@ -55,6 +56,7 @@ const Modal = forwardRef<DrawerRefActions, IModalProps>(
       imageURL,
       imageClassName,
       maxWidthClassName = 'max-w-lg',
+      titleContainerClassName,
     },
     ref
   ) => {
@@ -111,7 +113,7 @@ const Modal = forwardRef<DrawerRefActions, IModalProps>(
                 )}
 
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
+                  <div className={cn('flex-1', titleContainerClassName)}>
                     {title && (
                       <Title className="text-xl font-semibold mb-2 md:text-3xl capitalize">
                         {title}

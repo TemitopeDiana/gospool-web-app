@@ -233,7 +233,7 @@ function ChurchProfile() {
         ) : (
           <div className="w-[146px] my-30 mx-auto text-center">
             <Image
-              src="/assets/EmptyInbox.png"
+              src="/assets/empty-inbox.png"
               alt="empty-inbox-image"
               width={64}
               height={64}

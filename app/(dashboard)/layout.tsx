@@ -28,7 +28,7 @@ const menu: {
   },
   {
     label: 'Rides',
-    link: '#',
+    link: routes.rides(),
     svg: 'routing',
   },
   {
