@@ -299,5 +299,30 @@
          <path d="M4.99951 12.0001L9.99951 17.0001L19.9995 7.00012" stroke="currentColor"
             stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
       </symbol>
+
+      <symbol fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" id="location">
+         <path
+            d="M8.0009 8.95395C9.14965 8.95395 10.0809 8.0227 10.0809 6.87395C10.0809 5.72519 9.14965 4.79395 8.0009 4.79395C6.85215 4.79395 5.9209 5.72519 5.9209 6.87395C5.9209 8.0227 6.85215 8.95395 8.0009 8.95395Z"
+            stroke="currentColor" stroke-width="1.04648"></path>
+         <path
+            d="M2.41281 5.65968C3.72615 -0.113657 12.2795 -0.106991 13.5861 5.66634C14.3528 9.05301 12.2461 11.9197 10.3995 13.693C9.05948 14.9863 6.93948 14.9863 5.59281 13.693C3.75281 11.9197 1.64615 9.04634 2.41281 5.65968Z"
+            stroke="currentColor" stroke-width="1.04648"></path>
+      </symbol>
+
+      <symbol fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17 16" id="ellipse">
+         <path
+            d="M8.03711 2C11.3798 2.00009 14.0742 4.69502 14.0742 8C14.0742 11.305 11.3798 13.9999 8.03711 14C4.6943 14 2 11.305 2 8C2 4.69497 4.6943 2 8.03711 2Z"
+            fill="white" stroke="currentColor" stroke-width="4"></path>
+      </symbol>
+
+      <symbol fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" id="warning">
+         <path d="M10 6.45801V10.833" stroke="#FFFBFA" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round"></path>
+         <path
+            d="M17.5665 7.15035V12.8503C17.5665 13.7837 17.0665 14.6504 16.2582 15.1254L11.3082 17.9837C10.4998 18.4504 9.49981 18.4504 8.68315 17.9837L3.73314 15.1254C2.92481 14.6587 2.4248 13.792 2.4248 12.8503V7.15035C2.4248 6.21702 2.92481 5.35032 3.73314 4.87532L8.68315 2.01699C9.49148 1.55033 10.4915 1.55033 11.3082 2.01699L16.2582 4.87532C17.0665 5.35032 17.5665 6.20869 17.5665 7.15035Z"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+         <path d="M10 13.5V13.5833" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round"></path>
+      </symbol>
    </def>
 </svg>
