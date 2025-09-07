@@ -49,9 +49,56 @@ function Bus() {
     <div className="w-full max-w-[900px] mx-auto">
       <div className="flex items-center justify-between mb-5 mt-[14px]">
         <p className="text-xl xsm:text-3xl font-medium ">Bus</p>
-        <Button variant="default" className="md:px-10 md:py-[13.5px]">
-          Add bus
-        </Button>
+        <Modal
+          trigger={
+            <Button variant="default" className="md:px-10 md:py-[13.5px]">
+              Add bus
+            </Button>
+          }
+          title="Add bus profile"
+          contentCardClassName="text-left"
+          maxWidthClassName="w-[720px]"
+        >
+          <FormProvider {...methods}>
+            <form className="mt-8">
+              <div className="flex flex-col md:flex-row flex-wrap md:items-center gap-6">
+                <Input
+                  type="text"
+                  name="bus-type"
+                  label="Bus type"
+                  className="flex-1"
+                />
+                <Input
+                  type="text"
+                  name="year"
+                  label="Year"
+                  className="flex-1"
+                />
+                <Input
+                  type="number"
+                  name="available-seats"
+                  label="Available seats"
+                  className="flex-1"
+                />
+              </div>
+              <div className="flex flex-col md:flex-row flex-wrap gap-6 md:items-center mt-6 ">
+                <div className="flex-1 min-w-0">
+                  <Input type="text" name="plate-number" label="Plate number" />
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <Input type="text" name="color" label="Color" />
+                </div>
+              </div>
+              <Button
+                variant="default"
+                className="mt-8 px-[55px] py-[13.5px] ml-auto"
+              >
+                Add bus
+              </Button>
+            </form>
+          </FormProvider>
+        </Modal>
       </div>
       {data.length > 0 ? (
         <div className="bg-background rounded-12 p-5">
