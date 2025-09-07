@@ -259,6 +259,7 @@ function RidesMonitoring() {
                           }
                           title="Email Cynthia"
                           description=""
+                          titleContainerClassName="text-left"
                         >
                           <div className="mt-5">
                             <div className="flex items-start">
@@ -319,9 +320,9 @@ function RidesMonitoring() {
                         }
                         title="Raise an alarm"
                         description="Notify HOD of the issue with the ride"
-                        contentCardClassName="text-left"
+                        titleContainerClassName="text-left"
                       >
-                        <div>
+                        <div className="text-left">
                           <p className="text-xs mt-6">Escalate to</p>
                           <div className="flex flex-1 gap-2 items-center px-3 bg-gray-50 rounded-8 mt-4">
                             <SvgIcon
