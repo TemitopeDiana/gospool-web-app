@@ -12,8 +12,6 @@ const addBranch = () => '/add-branch';
 const drivers = () => '/drivers';
 const driverProfile = (driverId: string) => `${drivers()}/${driverId}`;
 const rides = () => '/rides';
-const bus = () => '/bus';
-const busProfile = (busId: string) => `${bus()}/${busId}`;
 
 export const routes = {
   home,
@@ -27,6 +25,4 @@ export const routes = {
   drivers,
   driverProfile,
   rides,
-  bus,
-  busProfile,
 };

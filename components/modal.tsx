@@ -31,7 +31,7 @@ interface IModalProps {
   imageURL?: StaticImageData;
   imageClassName?: string;
   maxWidthClassName?: string; // e.g. 'max-w-lg' or 'max-w-2xl'
-  contentCardClassName?: string;
+  titleContainerClassName?: string;
 }
 
 export type DrawerRefActions = {
@@ -56,7 +56,7 @@ const Modal = forwardRef<DrawerRefActions, IModalProps>(
       imageURL,
       imageClassName,
       maxWidthClassName = 'max-w-lg',
-      contentCardClassName,
+      titleContainerClassName,
     },
     ref
   ) => {
@@ -96,11 +96,7 @@ const Modal = forwardRef<DrawerRefActions, IModalProps>(
                 'max-h-[90vh] overflow-auto'
               )}
             >
-              <div
-                className={cn(
-                  `px-5 py-10 md:px-10 ${contentCardClassName ? contentCardClassName : 'text-center'}`
-                )}
-              >
+              <div className="px-5 py-10 md:px-10 text-center">
                 {iconName && (
                   <div className={`${iconContainerClassName} mx-auto mb-6`}>
                     <SvgIcon name={iconName} className={iconSizeClassName} />
@@ -111,13 +107,13 @@ const Modal = forwardRef<DrawerRefActions, IModalProps>(
                   <Image
                     src={imageURL}
                     className={`${imageClassName} mx-auto mb-6`}
-                    alt="icon-imgae"
+                    alt="check mark"
                     priority
                   />
                 )}
 
-                <div className="flex justify-between gap-4">
-                  <div className="flex-1">
+                <div className="flex items-start justify-between gap-4">
+                  <div className={cn('flex-1', titleContainerClassName)}>
                     {title && (
                       <Title className="text-xl font-semibold mb-2 md:text-3xl capitalize">
                         {title}

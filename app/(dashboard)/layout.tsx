@@ -33,7 +33,7 @@ const menu: {
   },
   {
     label: 'Bus',
-    link: routes.bus(),
+    link: '#',
     svg: 'bus',
   },
   {

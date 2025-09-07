@@ -60,7 +60,7 @@ const CreateAdminProfile = () => {
                     <Button
                       onClick={close}
                       variant="default"
-                      className="py-[13.5px] px-[47px] mt-10 mx-auto"
+                      className="py-[13.5px] px-[47px] mt-10"
                     >
                       Okay
                     </Button>
