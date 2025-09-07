@@ -1,20 +1,16 @@
 'use client';
-import { useRouter } from 'next/navigation';
 import { FormProvider, useForm } from 'react-hook-form';
 import Image from 'next/image';
+import { Dispatch, SetStateAction } from 'react';
 
 import { Button } from '@/components/button';
-import Input from '@/components/input';
 import PasswordInput from '@/components/password-input';
 
-// import { Metadata } from 'next';
+interface IUpdatePasswordProps {
+  setLogin: Dispatch<SetStateAction<boolean>>;
+}
 
-// export const metadata: Metadata = {
-//   title: 'Sign in',
-// };
-
-const SignInPage = () => {
-  const router = useRouter();
+const UpdatePassword = ({ setLogin }: IUpdatePasswordProps) => {
   const methods = useForm();
 
   return (
@@ -32,27 +28,30 @@ const SignInPage = () => {
 
           <FormProvider {...methods}>
             <form className="mt-8 flex flex-col gap-4">
-              <h1 className="text-xl md:text-2xl font-semibold">Login</h1>
+              <h1 className="text-xl md:text-2xl font-semibold">
+                Welcome back, Temitope
+              </h1>
               <div className="flex flex-col gap-5">
-                <Input
-                  type="email"
-                  name="email"
-                  label="Email"
+                <PasswordInput
+                  name="new-password"
+                  label="New Password"
                   placeholder="dolapoEzegwu@gmail.com"
+                  isNewPassword
                 />
                 <PasswordInput
-                  name="temporary-password"
-                  label="Temporary Password"
+                  name="confirm-new-password"
+                  label="Retype Password"
                   placeholder="dolapoEzegwu@gmail.com"
                   isNewPassword
                 />
               </div>
               <Button
+                type="button"
                 variant="default"
                 className="place-self-end py-[13.5px] px-[39px]"
-                onClick={() => router.push('/dashboard')}
+                onClick={() => setLogin(true)}
               >
-                Login
+                Save new password
               </Button>
             </form>
           </FormProvider>
@@ -62,4 +61,4 @@ const SignInPage = () => {
   );
 };
 
-export default SignInPage;
+export default UpdatePassword;

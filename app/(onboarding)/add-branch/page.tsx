@@ -341,7 +341,7 @@ function AddBranch() {
                     <Button
                       onClick={close}
                       variant="default"
-                      className="py-[13.5px] px-[47px] mt-10"
+                      className="py-[13.5px] px-[47px] mt-10 mx-auto"
                     >
                       Okay
                     </Button>
