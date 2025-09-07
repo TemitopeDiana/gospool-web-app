@@ -1,20 +1,17 @@
 'use client';
-import { useRouter } from 'next/navigation';
 import { FormProvider, useForm } from 'react-hook-form';
 import Image from 'next/image';
+import { Dispatch, SetStateAction } from 'react';
 
 import { Button } from '@/components/button';
 import Input from '@/components/input';
 import PasswordInput from '@/components/password-input';
 
-// import { Metadata } from 'next';
+interface IGetStartedProps {
+  setUpdatePassword: Dispatch<SetStateAction<boolean>>;
+}
 
-// export const metadata: Metadata = {
-//   title: 'Sign in',
-// };
-
-const SignInPage = () => {
-  const router = useRouter();
+const GetStarted = ({ setUpdatePassword }: IGetStartedProps) => {
   const methods = useForm();
 
   return (
@@ -32,7 +29,9 @@ const SignInPage = () => {
 
           <FormProvider {...methods}>
             <form className="mt-8 flex flex-col gap-4">
-              <h1 className="text-xl md:text-2xl font-semibold">Login</h1>
+              <h1 className="text-xl md:text-2xl font-semibold">
+                Let's get you started
+              </h1>
               <div className="flex flex-col gap-5">
                 <Input
                   type="email"
@@ -40,17 +39,19 @@ const SignInPage = () => {
                   label="Email"
                   placeholder="dolapoEzegwu@gmail.com"
                 />
+                <Input type="phone" name="phone" label="Phone number" />
                 <PasswordInput
-                  name="temporary-password"
-                  label="Temporary Password"
+                  name="password"
+                  label="Password"
                   placeholder="dolapoEzegwu@gmail.com"
                   isNewPassword
                 />
               </div>
               <Button
                 variant="default"
+                type="button"
                 className="place-self-end py-[13.5px] px-[39px]"
-                onClick={() => router.push('/dashboard')}
+                onClick={() => setUpdatePassword(true)}
               >
                 Login
               </Button>
@@ -62,4 +63,4 @@ const SignInPage = () => {
   );
 };
 
-export default SignInPage;
+export default GetStarted;
