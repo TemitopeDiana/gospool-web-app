@@ -7,13 +7,7 @@ import { Button } from '@/components/button';
 import Input from '@/components/input';
 import PasswordInput from '@/components/password-input';
 
-// import { Metadata } from 'next';
-
-// export const metadata: Metadata = {
-//   title: 'Sign in',
-// };
-
-const SignInPage = () => {
+const SignIn = () => {
   const router = useRouter();
   const methods = useForm();
 
@@ -32,7 +26,9 @@ const SignInPage = () => {
 
           <FormProvider {...methods}>
             <form className="mt-8 flex flex-col gap-4">
-              <h1 className="text-xl md:text-2xl font-semibold">Login</h1>
+              <h1 className="text-xl md:text-2xl font-semibold">
+                Welcome back, Temitope
+              </h1>
               <div className="flex flex-col gap-5">
                 <Input
                   type="email"
@@ -41,8 +37,8 @@ const SignInPage = () => {
                   placeholder="dolapoEzegwu@gmail.com"
                 />
                 <PasswordInput
-                  name="temporary-password"
-                  label="Temporary Password"
+                  name="password"
+                  label="Password"
                   placeholder="dolapoEzegwu@gmail.com"
                   isNewPassword
                 />
@@ -62,4 +58,4 @@ const SignInPage = () => {
   );
 };
 
-export default SignInPage;
+export default SignIn;
