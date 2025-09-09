@@ -16,7 +16,8 @@ export const metadata: Metadata = {
     default: 'Gospool Admin',
     template: '%s | Gospool Admin',
   },
-  description: 'We are going to ask for this later',
+  description:
+    'Gospool removes transportation barriers and creates opportunities for fellowship, ensuring every member can participate fully in church life while building stronger community bonds.',
   icons: '/assets/favicon.png',
 };
 
