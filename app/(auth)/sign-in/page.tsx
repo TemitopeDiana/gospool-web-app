@@ -1,22 +1,13 @@
-'use client';
-import { useRouter } from 'next/navigation';
-import { FormProvider, useForm } from 'react-hook-form';
+import { Metadata } from 'next';
 import Image from 'next/image';
 
-import { Button } from '@/components/button';
-import Input from '@/components/input';
-import PasswordInput from '@/components/password-input';
+import SignInForm from './form';
 
-// import { Metadata } from 'next';
-
-// export const metadata: Metadata = {
-//   title: 'Sign in',
-// };
+export const metadata: Metadata = {
+  title: 'Sign in',
+};
 
 const SignInPage = () => {
-  const router = useRouter();
-  const methods = useForm();
-
   return (
     <div>
       <div className="h-screen bg-primary items-center justify-center flex px-5">
@@ -30,32 +21,7 @@ const SignInPage = () => {
             priority
           />
 
-          <FormProvider {...methods}>
-            <form className="mt-8 flex flex-col gap-4">
-              <h1 className="text-2xl font-semibold">Login</h1>
-              <div className="flex flex-col gap-5">
-                <Input
-                  type="email"
-                  name="email"
-                  label="Email"
-                  placeholder="dolapoEzegwu@gmail.com"
-                />
-                <PasswordInput
-                  name="temporary-password"
-                  label="Temporary Password"
-                  placeholder="dolapoEzegwu@gmail.com"
-                  isNewPassword
-                />
-              </div>
-              <Button
-                variant="default"
-                className="place-self-end py-[13.5px] px-[39px]"
-                onClick={() => router.push('/dashboard')}
-              >
-                Login
-              </Button>
-            </form>
-          </FormProvider>
+          <SignInForm />
         </div>
       </div>
     </div>

@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -9,6 +11,7 @@ import SvgIcon from './svg-icon';
 import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 import { IconName } from '@/types/icon.type';
+import { Role, RoleLabels } from '@/types/user.type';
 
 export interface SidebarItems {
   label: string;
@@ -19,9 +22,18 @@ export interface SidebarItems {
 interface SidebarLayoutProps {
   menu: SidebarItems[];
   children: ReactNode;
+  first_name: string;
+  last_name: string;
+  role: Role;
 }
 
-const SidebarLayout = ({ menu, children }: SidebarLayoutProps) => {
+const SidebarLayout = ({
+  menu,
+  children,
+  first_name,
+  last_name,
+  role,
+}: SidebarLayoutProps) => {
   const location = usePathname();
 
   const isActive = (route: string) => {
@@ -98,8 +110,8 @@ const SidebarLayout = ({ menu, children }: SidebarLayoutProps) => {
               </div>
 
               <div>
-                <p className="font-medium text-a-14">Paul Oluwatoni</p>
-                <p className="text-a-12 text-gray-500">Super Admin</p>
+                <p className="font-medium text-a-14 capitalize">{`${first_name} ${last_name}`}</p>
+                <p className="text-a-12 text-gray-500">{RoleLabels[role]}</p>
               </div>
             </div>
 

@@ -16,15 +16,16 @@ export const metadata: Metadata = {
     default: 'Gospool Admin',
     template: '%s | Gospool Admin',
   },
-  description: 'We are going to ask for this later',
+  description:
+    'Gospool removes transportation barriers and creates opportunities for fellowship, ensuring every member can participate fully in church life while building stronger community bonds.',
   icons: '/assets/favicon.png',
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <html lang="en">
       <body className={`${primaryFont.className} antialiased`}>
@@ -33,4 +34,6 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

@@ -28,7 +28,13 @@ export type IconName =
   | 'pdf'
   | 'csv'
   | 'flag'
-  | 'check';
+  | 'check'
+  | 'location'
+  | 'ellipse'
+  | 'warning'
+  | 'pdf'
+  | 'csv'
+  | 'seats';
 
 export const iconNames: IconName[] = [
   'menu',
@@ -57,4 +63,10 @@ export const iconNames: IconName[] = [
   'pdf',
   'csv',
   'flag',
+  'location',
+  'ellipse',
+  'warning',
+  'pdf',
+  'csv',
+  'seats',
 ];
