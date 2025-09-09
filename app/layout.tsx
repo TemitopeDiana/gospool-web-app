@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   icons: '/assets/favicon.png',
 };
 
-export const RootLayout = ({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
