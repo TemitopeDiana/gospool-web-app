@@ -20,6 +20,7 @@ const SignInPage = () => {
             className="mb-8"
             priority
           />
+
           <SignInForm />
         </div>
       </div>

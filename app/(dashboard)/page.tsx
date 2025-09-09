@@ -176,7 +176,7 @@ export default async function Home() {
                               onClose={() => console.log('closed')}
                             >
                               {(close) => (
-                                <div className="w-full mt-10 flex flex-wrap gap-2 md:gap-3 xss:justify-center">
+                                <div className="w-full mt-10 flex flex-wrap gap-2 md:gap-3 xss:justify-center xss:flex-nowrap">
                                   <Button
                                     onClick={close}
                                     variant="outline"

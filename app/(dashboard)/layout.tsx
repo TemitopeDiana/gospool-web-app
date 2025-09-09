@@ -30,12 +30,12 @@ const menu: {
   },
   {
     label: 'Rides',
-    link: '#',
+    link: routes.rides(),
     svg: 'routing',
   },
   {
     label: 'Bus',
-    link: '#',
+    link: routes.bus(),
     svg: 'bus',
   },
   {
