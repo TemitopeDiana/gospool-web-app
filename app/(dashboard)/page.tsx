@@ -1,12 +1,13 @@
-'use client';
 import Link from 'next/link';
 
+import { Button } from '@/components/button';
+import Modal from '@/components/modal';
 import Popover from '@/components/popover';
 import SvgIcon from '@/components/svg-icon';
-import { IconName } from '@/types/icon.type';
-import { Button } from '@/components/button';
+
+import { currentUser } from '@/actions/current-user';
 import { routes } from '@/lib/routes';
-import Modal from '@/components/modal';
+import { IconName } from '@/types/icon.type';
 
 const churchData = [
   {
@@ -42,14 +43,17 @@ const cards: { name: string; iconName: IconName; number: number }[] = [
   { name: 'Passengers', iconName: 'profile', number: 3 },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const user = await currentUser();
+
   return (
     <div>
       <div className="w-full md:mt-[23px]">
         <div className="xsm:flex justify-between items-center">
           <div>
             <h1 className="text-xl font-medium mb-2 md:text-3xl">
-              Welcome, Inioluwa Soetan
+              Welcome
+              <span className="capitalize">{` ${user.user?.firstName} ${user.user?.lastName}`}</span>
             </h1>
             <p className="text-gray-500 text-xs md:text-base">
               Admin - Gospool
