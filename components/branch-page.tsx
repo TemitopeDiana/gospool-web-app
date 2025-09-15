@@ -1,18 +1,17 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 
 import { Button } from '@/components/button';
-import SvgIcon from '@/components/svg-icon';
 import Popover from '@/components/popover';
+import SvgIcon from '@/components/svg-icon';
 
-import profilePic from '@/public/assets/profile-pic.png';
-import { routes } from '@/lib/routes';
-import { IconName } from '@/types/icon.type';
 import { compactNumber } from '@/lib/format';
+import { routes } from '@/lib/routes';
+import profilePic from '@/public/assets/profile-pic.png';
 import { Branch } from '@/types/church.type';
-import { createBranch } from '@/actions/addBranch';
+import { IconName } from '@/types/icon.type';
 
 interface CardItem {
   name: string;
@@ -28,23 +27,6 @@ interface BranchPageProps {
   churchAddress: string;
   churchLogo?: string;
   churchAdmin: string;
-}
-
-export function SubmitButton() {
-  const [isPending, startTransition] = useTransition();
-
-  return (
-    <button
-      onClick={() =>
-        startTransition(async () => {
-          await createBranch();
-        })
-      }
-      disabled={isPending}
-    >
-      {isPending ? 'Sending...' : 'Send'}
-    </button>
-  );
 }
 
 function BranchPage({
