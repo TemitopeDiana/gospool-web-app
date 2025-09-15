@@ -4,15 +4,14 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 import { Button } from '@/components/button';
-import SvgIcon from '@/components/svg-icon';
 import Popover from '@/components/popover';
+import SvgIcon from '@/components/svg-icon';
 
-import churchLogo from '@/public/assets/default-church-logo.png';
-import profilePic from '@/public/assets/profile-pic.png';
-import { routes } from '@/lib/routes';
-import { IconName } from '@/types/icon.type';
 import { compactNumber } from '@/lib/format';
+import { routes } from '@/lib/routes';
+import profilePic from '@/public/assets/profile-pic.png';
 import { Branch } from '@/types/church.type';
+import { IconName } from '@/types/icon.type';
 
 interface CardItem {
   name: string;
@@ -21,45 +20,54 @@ interface CardItem {
 }
 
 interface BranchPageProps {
-  initialBranches: Branch[];
+  branches: Branch[];
   initialCards: CardItem[];
   initialDisplayData: string[];
+  churchName: string;
+  churchAddress: string;
+  churchLogo?: string;
+  churchAdmin: string;
 }
 
 function BranchPage({
-  initialBranches,
+  branches,
   initialCards,
   initialDisplayData,
+  churchName,
+  churchAddress,
+  churchAdmin,
+  churchLogo = '/assets/default-church-logo.png',
 }: BranchPageProps) {
   const [display, setDisplay] = useState<string>(
     initialDisplayData[0] ?? 'passengers'
   );
-  const [branchData] = useState<Branch[]>(initialBranches);
   const cards = initialCards;
   const displayData = initialDisplayData;
 
   return (
     <div>
-      <div className="bg-background rounded-20 p-5 flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
-        {/* top  */}
+      <div className="bg-red-700 rounded-20 p-5 flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
         <div className="flex flex-col gap-2 xsm:flex-row xsm:gap-0 xsm:justify-between">
           {/* top-left  */}
           <div className="flex flex-wrap items-center gap-3">
             <div className="relative w-12 h-12 xl:w-16 xl:h-16">
-              <Image src={churchLogo} alt="church logo" fill sizes="100%" />
+              <Image
+                src={churchLogo ?? ''}
+                alt="church logo"
+                fill
+                sizes="100%"
+              />
             </div>
             <div>
               <h1 className="font-semibold text-xl md:text-3xl mb-1">
-                CCI Ikeja
+                {churchName}
               </h1>
               <p className="max-w-55 text-xs xl:text-base md:max-w-none">
-                Balmoral Convention Center, 30 Mobolaji Bank Anthony Way,
-                Maryland
+                {churchAddress}
               </p>
             </div>
           </div>
 
-          {/* top-right  */}
           <div className="ml-auto max-w-[140px]">
             <Popover
               trigger={
@@ -111,9 +119,7 @@ function BranchPage({
           </div>
         </div>
 
-        {/* bottom  */}
         <div className="w-full flex flex-col gap-2 xss:flex-row">
-          {/* bottom-left  */}
           <div className="flex flex-1 items-center gap-3 ">
             <div className="flex-none relative w-12 h-12">
               <Image src={profilePic} alt="profile-pic" fill sizes="100%" />
@@ -121,13 +127,12 @@ function BranchPage({
 
             <div>
               <p className="text-gray-800 font-semibold capitalize mb-1">
-                john boscow
+                {churchAdmin}
               </p>
               <p className="text-xs xl:text-base">Current branch leader</p>
             </div>
           </div>
 
-          {/* bottom-right  */}
           <div className="md:flex flex-1 md:gap-5 max-w-[150px] md:max-w-none">
             {cards.map((el, index) => (
               <div key={index} className="flex items-center gap-2 mb-2 md:mb-0">
@@ -144,7 +149,6 @@ function BranchPage({
         </div>
       </div>
 
-      {/* table  */}
       <div className="dashboard-card mt-5">
         <div className="md:flex items-center justify-between">
           <div className="flex justify-between gap-4 mb-4 md:order-2">
@@ -192,16 +196,16 @@ function BranchPage({
             </thead>
 
             <tbody>
-              {branchData.map((el, index) => (
+              {branches?.map((el, index) => (
                 <tr key={index}>
-                  <td>{el.date}</td>
+                  <td>{el.formattedDate}</td>
                   <td className="py-6 px-3 capitalize">{el.name}</td>
                   <td>
                     {display === 'team' ? (
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="relative flex-none w-10 h-10 rounded-full overflow-hidden">
                           <Image
-                            src={el.avatar ?? profilePic}
+                            src={profilePic}
                             alt={el.name ? `${el.name} avatar` : 'avatar'}
                             fill
                             sizes="40px"
@@ -212,7 +216,7 @@ function BranchPage({
                         <div className="min-w-0">
                           <p className="truncate capitalize">{el.name}</p>
                           <p className="text-sm text-gray-500 truncate">
-                            {el.email ?? '—'}
+                            {el.leaderEmail ?? '—'}
                           </p>
                         </div>
                       </div>

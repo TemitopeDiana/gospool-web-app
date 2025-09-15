@@ -1,18 +1,14 @@
 'use server';
 
-// import { apiV1 } from '@/lib/api';
-import { SignIn, SignResponse } from '@/types/auth.type';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { cookies } from 'next/headers';
 
-export const apiV1 = axios.create({
-  baseURL: `${process.env.API_URL}/api/v1`,
-  withCredentials: true,
-});
+import { api } from '@/lib/api';
+import type { SignIn, SignResponse } from '@/types/auth.type';
 
 export const signIn = async (formData: SignIn) => {
   try {
-    const response = await apiV1.post<SignResponse>('/auth/login', formData);
+    const response = await api.post<SignResponse>('/auth/login', formData);
 
     const data = response.data;
 
@@ -24,7 +20,7 @@ export const signIn = async (formData: SignIn) => {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         path: '/',
-        maxAge: 60 * 1,
+        maxAge: 60 * 10,
       });
 
       cookieStore.set('refresh_token', data.refreshToken, {

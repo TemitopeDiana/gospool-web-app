@@ -75,6 +75,7 @@ const SignInForm = () => {
                 message: 'Password cannot be less than 5 characters',
               },
             }}
+            autoComplete="current-password"
           />
         </div>
 

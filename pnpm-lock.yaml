@@ -71,6 +71,9 @@ dependencies:
   validator:
     specifier: ^13.15.15
     version: 13.15.15
+  zod:
+    specifier: ^4.1.8
+    version: 4.1.8
 
 devDependencies:
   '@eslint/eslintrc':
@@ -7362,3 +7365,10 @@ packages:
       }
     engines: { node: '>=10' }
     dev: true
+
+  /zod@4.1.8:
+    resolution:
+      {
+        integrity: sha512-5R1P+WwQqmmMIEACyzSvo4JXHY5WiAFHRMg+zBZKgKS+Q1viRa0C1hmUKtHltoIFKtIdki3pRxkmpP74jnNYHQ==,
+      }
+    dev: false

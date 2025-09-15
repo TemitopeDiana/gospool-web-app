@@ -54,7 +54,6 @@ const CreateSuperAdminProfile = () => {
                   imageURL={checkMark}
                   imageClassName="w-20 h-[85px]"
                   maxWidthClassName="max-w-[442px]"
-                  onClose={() => console.log('closed')}
                 >
                   {(close) => (
                     <Button

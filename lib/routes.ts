@@ -31,4 +31,5 @@ export const routes = {
   rides,
   bus,
   busProfile,
+  churches,
 };
