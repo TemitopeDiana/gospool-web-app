@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 
-import ChurchProfile from '../churchProfile';
+import ChurchProfile from '../../../../components/church-profile';
 
 import { Branch } from '@/types/church.type';
 

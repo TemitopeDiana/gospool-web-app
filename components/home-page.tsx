@@ -1,6 +1,5 @@
 'use client';
 import Link from 'next/link';
-import { useState } from 'react';
 
 import { Button } from '@/components/button';
 import Modal from '@/components/modal';
@@ -8,33 +7,40 @@ import Popover from '@/components/popover';
 import SvgIcon from '@/components/svg-icon';
 
 import { routes } from '@/lib/routes';
+import { Church } from '@/types/church.type';
 import { IconName } from '@/types/icon.type';
-import { ChurchRow } from './page';
-
-interface CardItem {
-  name: string;
-  iconName: IconName;
-  number: number;
-}
 
 interface UserShape {
   user?: { firstName?: string; lastName?: string } | null;
 }
 
 interface HomePageProps {
-  initialUser: UserShape | null;
-  initialCards: CardItem[];
-  initialChurchData: ChurchRow[];
+  user: UserShape | null;
+  churchData: Church[];
+  totalChurches: number;
+  totalRides: number;
+  totalDrivers: number;
+  totalPassengers: number;
 }
 
-export default function HomePage({
-  initialUser,
-  initialCards,
-  initialChurchData,
-}: HomePageProps) {
-  const user = initialUser;
-  const [cards] = useState<CardItem[]>(initialCards);
-  const [churchData] = useState<ChurchRow[]>(initialChurchData);
+const HomePage = ({
+  user,
+  totalChurches,
+  totalRides,
+  totalDrivers,
+  totalPassengers,
+  churchData,
+}: HomePageProps) => {
+  const cards = [
+    { name: 'churches', iconName: 'church' as IconName, count: totalChurches },
+    { name: 'Rides', iconName: 'routing' as IconName, count: totalRides },
+    { name: 'Drivers', iconName: 'car' as IconName, count: totalDrivers },
+    {
+      name: 'Passengers',
+      iconName: 'profile' as IconName,
+      count: totalPassengers,
+    },
+  ];
 
   return (
     <div>
@@ -72,7 +78,7 @@ export default function HomePage({
                   <p className="text-gray-500 text-sm mb-1 capitalize">
                     {card.name}
                   </p>
-                  <p className="font-medium text-xl">{card.number}</p>
+                  <p className="font-medium text-xl">{card.count}</p>
                 </div>
                 <div className="w-[46px] h-[46px] bg-gray-50 rounded-40 flex items-center justify-center">
                   <SvgIcon name={card.iconName} className="w-5 h-5" />
@@ -115,11 +121,11 @@ export default function HomePage({
               </thead>
 
               <tbody>
-                {churchData.map((el, index) => (
+                {churchData?.map((el, index) => (
                   <tr key={index}>
                     <td className="capitalize">{el.name}</td>
-                    <td className="py-6 px-3 capitalize">{el.churchOwner}</td>
-                    <td>{el.branches}</td>
+                    <td className="py-6 px-3 capitalize">{el.adminName}</td>
+                    <td>{el.totalBranches}</td>
                     <td>
                       <button
                         className={`${el.status === 'active' ? 'bg-green-500 active' : 'bg-gray-100'} toggle-button`}
@@ -136,7 +142,7 @@ export default function HomePage({
                         <ul className="table-action-popover">
                           <li>
                             <Link
-                              href={`${routes.churchProfile(index.toString())}`}
+                              href={`${routes.churchProfile(el.uniqueIdentifier)}`}
                               className="flex items-center gap-2"
                             >
                               <SvgIcon
@@ -202,4 +208,6 @@ export default function HomePage({
       </div>
     </div>
   );
-}
+};
+
+export default HomePage;
