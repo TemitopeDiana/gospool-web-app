@@ -7,11 +7,12 @@ import { ReactNode } from 'react';
 
 import MobileSideBar from './mobile-sidebar';
 import SvgIcon from './svg-icon';
+import UserProfileButton from './user-profile-button';
 
 import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
-import { IconName } from '@/types/icon.type';
-import { Role, RoleLabels } from '@/types/user.type';
+import { type IconName } from '@/types/icon.type';
+import { type Role } from '@/types/user.type';
 
 export interface SidebarItems {
   label: string;
@@ -22,24 +23,21 @@ export interface SidebarItems {
 interface SidebarLayoutProps {
   menu: SidebarItems[];
   children: ReactNode;
-  first_name: string;
-  last_name: string;
+  name: string;
   role: Role;
 }
 
-const SidebarLayout = ({
-  menu,
-  children,
-  first_name,
-  last_name,
-  role,
-}: SidebarLayoutProps) => {
-  const location = usePathname();
+const SidebarLayout = ({ menu, children, name, role }: SidebarLayoutProps) => {
+  const pathname = usePathname();
 
   const isActive = (route: string) => {
-    return route === routes.home()
-      ? location === route
-      : location.startsWith(route);
+    if (route === routes.home()) {
+      return (
+        pathname === routes.home() || pathname.startsWith(routes.churches())
+      );
+    }
+
+    return pathname.startsWith(route);
   };
 
   return (
@@ -98,24 +96,11 @@ const SidebarLayout = ({
               <SvgIcon name="bell" className="w-6 h-6 text-primary" />
             </button>
 
-            <div className="flex gap-3 items-center max-lg:hidden">
-              <div className="relative rounded-full w-9 aspect-square overflow-hidden">
-                <Image
-                  src="/assets/user-icon.png"
-                  alt="profile picture"
-                  fill
-                  sizes="100%"
-                  className="object-contain"
-                />
-              </div>
-
-              <div>
-                <p className="font-medium text-a-14 capitalize">{`${first_name} ${last_name}`}</p>
-                <p className="text-a-12 text-gray-500">{RoleLabels[role]}</p>
-              </div>
+            <div className="max-lg:hidden">
+              <UserProfileButton name={name} role={role} />
             </div>
 
-            <MobileSideBar menu={menu} />
+            <MobileSideBar menu={menu} name={name} role={role} />
           </div>
         </nav>
 
