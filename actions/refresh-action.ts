@@ -1,6 +1,6 @@
 'use server';
 
-import { apiV1 } from '@/lib/api';
+import { api } from '@/lib/api';
 import { routes } from '@/lib/routes';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -16,7 +16,7 @@ export const refreshAccessToken = async () => {
   }
 
   try {
-    const response = await apiV1.post<{ token: string }>('/auth/refresh-token');
+    const response = await api.post<{ token: string }>('/auth/refresh-token');
 
     const { token } = response.data;
 

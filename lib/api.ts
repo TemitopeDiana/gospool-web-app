@@ -3,6 +3,11 @@ import { cookies } from 'next/headers';
 import { jwtDecode } from 'jwt-decode';
 import dayjs from 'dayjs';
 
+export const api = axios.create({
+  baseURL: `${process.env.API_URL}/api/v1`,
+  withCredentials: true,
+});
+
 export const apiV1 = axios.create({
   baseURL: `${process.env.API_URL}/api/v1`,
   withCredentials: true,
@@ -14,11 +19,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
 
   if (refreshToken) {
     try {
-      const res = await axios.post(
-        `${process.env.API_URL}/api/v1/auth/refresh-token`,
-        { refreshToken },
-        { withCredentials: true }
-      );
+      const res = await api.post(`/auth/refresh-token`, { refreshToken });
 
       return res.data.token;
     } catch (err) {
