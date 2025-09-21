@@ -41,15 +41,15 @@
   }
 
   thead tr {
-    @apply bg-gray-50 whitespace-nowrap sticky top-0  text-left;
+    @apply bg-gray-50 z-1  px-8 whitespace-nowrap sticky top-0  text-left;
   }
 
   thead th {
-    @apply px-3 py-[9px] font-medium text-base-black capitalize;
+    @apply font-medium py-4 text-base-black capitalize;
   }
 
   tbody tr {
-    @apply border-b border-gray-100 hover:bg-gray-50;
+    @apply border-b py-4 border-gray-100 hover:bg-gray-50/60;
   }
 
   tbody tr:last-child {
@@ -57,13 +57,13 @@
   }
 
   tbody td {
-    @apply px-3 py-6;
+    @apply px-3;
   }
 }
 
 @layer components {
   .table-wrapper {
-    @apply w-full overflow-x-auto rounded-t-xl max-h-90;
+    @apply w-full overflow-x-auto rounded-t-xl max-h-a-500;
   }
 
   .table-image {
@@ -71,7 +71,7 @@
   }
 
   .table-action-popover {
-    @apply w-full bg-white border border-gray-100 text-a-12 rounded [&>*]:block [&>*]:py-3 [&>*]:px-5;
+    @apply w-full min-w-a-150 bg-white border border-gray-100 text-a-12 rounded-8 [&>*]:block [&>*]:py-3 [&>*]:px-5 [&>*]:hover:bg-gray-50/50;
   }
 
   .toggle-button {

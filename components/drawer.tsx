@@ -14,6 +14,7 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ForwardedRef,
+  JSX,
   ReactNode,
   forwardRef,
   useImperativeHandle,
@@ -31,7 +32,7 @@ interface IDrawerProps {
   disableOutsideClick?: boolean;
   className?: string;
   title: string;
-  description: string;
+  description: string | JSX.Element;
 }
 
 export type DrawerRefActions = {
@@ -99,7 +100,9 @@ const Drawer = forwardRef<unknown, IDrawerProps>(
                 >
                   <div className="flex justify-between gap-2 !pb-4 bg-background border-b sticky top-0 z-1">
                     <div className="flex-1  ">
-                      <Title className="text-a-16 font-semibold">{title}</Title>
+                      <Title className="text-a-16 md:text-a-20 font-semibold">
+                        {title}
+                      </Title>
                       <Description className="text-gray-500 font-normal">
                         {description}
                       </Description>

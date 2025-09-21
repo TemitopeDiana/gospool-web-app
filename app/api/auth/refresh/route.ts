@@ -28,7 +28,6 @@ export async function POST() {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       path: '/',
-      maxAge: 60 * 10,
     });
 
     console.log('REFRESH TOKEN KICKED IN');

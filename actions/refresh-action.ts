@@ -24,7 +24,6 @@ export const refreshAccessToken = async () => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 60 * 10,
     });
 
     return token;

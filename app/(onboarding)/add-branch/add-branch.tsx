@@ -210,7 +210,6 @@ function AddBranch({ branches, maxChars, loc }: AddBranchProps) {
                             iconSizeClassName="w-8 h-8 text-error-700"
                             maxWidthClassName="max-w-[442px]"
                             iconContainerClassName="w-18 h-18 rounded-40 bg-error-50 flex items-center justify-center"
-                            onClose={() => console.log('closed')}
                           >
                             {(close) => (
                               <div className="mt-10 flex gap-5 justify-center">
@@ -294,7 +293,6 @@ function AddBranch({ branches, maxChars, loc }: AddBranchProps) {
             imageURL={frame}
             imageClassName="w-20 h-20"
             maxWidthClassName="max-w-[442px]"
-            onClose={() => console.log('closed')}
           >
             {(close) => (
               <div className="mt-10 flex gap-5 justify-center">
@@ -320,7 +318,6 @@ function AddBranch({ branches, maxChars, loc }: AddBranchProps) {
                   imageURL={checkMark}
                   imageClassName="w-20 h-[85px]"
                   maxWidthClassName="max-w-[442px]"
-                  onClose={() => console.log('closed')}
                 >
                   {(close) => (
                     <Button
