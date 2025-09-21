@@ -20,7 +20,6 @@ export const signIn = async (formData: SignIn) => {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         path: '/',
-        maxAge: 60 * 10,
       });
 
       cookieStore.set('refresh_token', data.refreshToken, {

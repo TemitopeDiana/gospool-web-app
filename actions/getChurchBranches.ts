@@ -7,9 +7,7 @@ import { AxiosError } from 'axios';
 
 export const getChurchBranches = async (): Promise<ApiResponse<Branch[]>> => {
   try {
-    const res = await apiV1.get<{ success: boolean; data: Branch[] }>(
-      '/branches'
-    );
+    const res = await apiV1.get('/branches');
 
     return { success: true, data: res.data.data };
   } catch (error: unknown) {
@@ -20,7 +18,6 @@ export const getChurchBranches = async (): Promise<ApiResponse<Branch[]>> => {
       };
     }
 
-    console.error('Unexpected error:', error);
     return { success: false, error: 'Network or unexpected error' };
   }
 };
