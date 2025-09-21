@@ -13,6 +13,7 @@ import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 import { type IconName } from '@/types/icon.type';
 import { type Role } from '@/types/user.type';
+import { useGetUser } from '@/hooks/useGetUser';
 
 export interface SidebarItems {
   label: string;
@@ -28,6 +29,7 @@ interface SidebarLayoutProps {
 }
 
 const SidebarLayout = ({ menu, children, name, role }: SidebarLayoutProps) => {
+  useGetUser();
   const pathname = usePathname();
 
   const isActive = (route: string) => {
