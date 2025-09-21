@@ -60,7 +60,6 @@ apiV1.interceptors.request.use(
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         path: '/',
-        maxAge: 60 * 1,
       });
 
       config.headers.set('Authorization', `Bearer ${token}`);
@@ -76,8 +75,6 @@ apiV1.interceptors.response.use(
   async (error: AxiosError) => {
     if (error.response?.status === 401) {
       const newToken = await refreshAccessToken();
-
-      console.log('MEW TOKEN FROM RESPONSE.USE', newToken);
 
       if (newToken && error.config) {
         error.config.headers?.set('Authorization', `Bearer ${newToken}`);

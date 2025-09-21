@@ -21,6 +21,8 @@ import { Branch } from '@/types/church.type';
 import Tabs from './tabs';
 import ShowView from './show-view';
 import NoDataCard from './no-data-card';
+import Drawer from './drawer';
+import CreateChurchBranch from './forms/create-church-branch.form';
 
 type ProfileType = 'passenger' | 'driver' | 'all' | null;
 type FormatType = 'csv' | 'pdf' | null;
@@ -37,6 +39,7 @@ interface ChurchProfileProps {
   adminName: string;
   churchName: string;
   totalBranches: number;
+  churchId: string;
 }
 
 function ChurchProfile({
@@ -44,6 +47,7 @@ function ChurchProfile({
   totalBranches,
   adminName,
   branches,
+  churchId,
 }: ChurchProfileProps) {
   const methods = useForm();
   const [profile, setProfile] = useState<ProfileType>(null);
@@ -66,10 +70,22 @@ function ChurchProfile({
           </div>
 
           <div className="xxs:flex items-center gap-4">
-            <Link href={routes.addBranch()}>
-              <Button variant="outline">Add branch</Button>
-            </Link>
-
+            <Drawer
+              trigger={<Button variant="outline">Add branch</Button>}
+              title="Add Church Branch"
+              description={
+                <>
+                  Only <strong>Lagos branches</strong> are supported at this
+                  time.
+                </>
+              }
+            >
+              {(close) => (
+                <div>
+                  <CreateChurchBranch close={close} />
+                </div>
+              )}
+            </Drawer>
             <Popover
               trigger={
                 <Button
@@ -98,7 +114,6 @@ function ChurchProfile({
                     }
                     title="Download data"
                     contentCardClassName="text-left"
-                    onClose={() => console.log('closed')}
                   >
                     {(close) => (
                       <div className="mt-6">
@@ -174,7 +189,6 @@ function ChurchProfile({
                             description="We sent the data there!"
                             imageURL={checkMark}
                             imageClassName="w-20 h-20"
-                            onClose={() => console.log('closed')}
                           >
                             <Button className="mx-auto px-[51px] py-[13.5px] mt-10">
                               Okay
@@ -207,7 +221,6 @@ function ChurchProfile({
                     }
                     title="Reassign branch leader"
                     contentCardClassName="text-left"
-                    onClose={() => console.log('closed')}
                   >
                     {(close) => (
                       <div className="mt-6">
@@ -366,7 +379,7 @@ function ChurchProfile({
                                   <ul className="table-action-popover">
                                     <li>
                                       <Link
-                                        href={`${routes.branchPage(index.toString(), index.toString())}`}
+                                        href={`${routes.branchPage(churchId, el.branchIdentifier)}`}
                                         className="flex items-center gap-2"
                                       >
                                         <SvgIcon
