@@ -1,10 +1,8 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
 
 import { Button } from '@/components/button';
-import Popover from '@/components/popover';
 import SvgIcon from '@/components/svg-icon';
 
 import { compactNumber } from '@/lib/format';
@@ -12,41 +10,34 @@ import { routes } from '@/lib/routes';
 import profilePic from '@/public/assets/profile-pic.png';
 import { Branch } from '@/types/church.type';
 import { IconName } from '@/types/icon.type';
-
-interface CardItem {
-  name: string;
-  iconName: IconName;
-  team: number;
-}
+import HoverCard from './hover-card';
 
 interface BranchPageProps {
   branches: Branch[];
-  initialCards: CardItem[];
-  initialDisplayData: string[];
   churchName: string;
   churchAddress: string;
   churchLogo?: string;
   churchAdmin: string;
 }
 
+const cards = [
+  { name: 'drivers', iconName: 'car' as IconName, team: 100 },
+  { name: 'members', iconName: 'profile-users' as IconName, team: 1000 },
+  { name: 'team', iconName: 'profile-users' as IconName, team: 100 },
+];
+
 function BranchPage({
   branches,
-  initialCards,
-  initialDisplayData,
   churchName,
   churchAddress,
   churchAdmin,
   churchLogo = '/assets/default-church-logo.png',
 }: BranchPageProps) {
-  const [display, setDisplay] = useState<string>(
-    initialDisplayData[0] ?? 'passengers'
-  );
-  const cards = initialCards;
-  const displayData = initialDisplayData;
+  const display = 'team';
 
   return (
     <div>
-      <div className="bg-red-700 rounded-20 p-5 flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
+      <div className="rounded-20 p-5 flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
         <div className="flex flex-col gap-2 xsm:flex-row xsm:gap-0 xsm:justify-between">
           {/* top-left  */}
           <div className="flex flex-wrap items-center gap-3">
@@ -69,7 +60,7 @@ function BranchPage({
           </div>
 
           <div className="ml-auto max-w-[140px]">
-            <Popover
+            <HoverCard
               trigger={
                 <Button
                   variant="default"
@@ -115,7 +106,7 @@ function BranchPage({
                   </Link>
                 </li>
               </ul>
-            </Popover>
+            </HoverCard>
           </div>
         </div>
 
@@ -168,20 +159,6 @@ function BranchPage({
               <SvgIcon name="arrow-down" className="w-4 h-4 text-gray-500" />
             </div>
           </div>
-
-          <div className="flex items-center flex-wrap gap-2 mb-5 md:order-1">
-            {displayData.map((el, index) => (
-              <div key={index} className="w-max">
-                <Button
-                  variant={display === el ? 'default' : 'outline'}
-                  className="capitalize px-3 py-[5.5px]"
-                  onClick={() => setDisplay(el)}
-                >
-                  {el}
-                </Button>
-              </div>
-            ))}
-          </div>
         </div>
 
         <div className="table-wrapper">
@@ -227,7 +204,7 @@ function BranchPage({
                     )}
                   </td>
                   <td>
-                    <Popover
+                    <HoverCard
                       trigger={
                         <button className="block w-max">
                           <SvgIcon name="dotted-menu" className="w-7 h-5" />
@@ -254,7 +231,7 @@ function BranchPage({
                           </Link>
                         </li>
                       </ul>
-                    </Popover>
+                    </HoverCard>
                   </td>
                 </tr>
               ))}

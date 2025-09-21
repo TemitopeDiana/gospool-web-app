@@ -5,24 +5,23 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { Button } from '@/components/button';
-import SvgIcon from '@/components/svg-icon';
-import Popover from '@/components/popover';
-import Modal from '@/components/modal';
 import Input from '@/components/input';
-
-import churchLogo from '@/public/assets/default-church-logo.png';
-import profilePic from '@/public/assets/profile-pic.png';
-import checkMark from '@/public/assets/check.png';
-
-import { routes } from '@/lib/routes';
-import { compactNumber } from '@/lib/format';
-import { IconName } from '@/types/icon.type';
-import { Branch } from '@/types/church.type';
-import Tabs from './tabs';
-import ShowView from './show-view';
-import NoDataCard from './no-data-card';
+import Modal from '@/components/modal';
+import SvgIcon from '@/components/svg-icon';
 import Drawer from './drawer';
 import CreateChurchBranch from './forms/create-church-branch.form';
+import NoDataCard from './no-data-card';
+import ShowView from './show-view';
+import Tabs from './tabs';
+
+import { compactNumber } from '@/lib/format';
+import { routes } from '@/lib/routes';
+import checkMark from '@/public/assets/check.png';
+import churchLogo from '@/public/assets/default-church-logo.png';
+import profilePic from '@/public/assets/profile-pic.png';
+import { Branch } from '@/types/church.type';
+import { IconName } from '@/types/icon.type';
+import HoverCard from './hover-card';
 
 type ProfileType = 'passenger' | 'driver' | 'all' | null;
 type FormatType = 'csv' | 'pdf' | null;
@@ -86,7 +85,7 @@ function ChurchProfile({
                 </div>
               )}
             </Drawer>
-            <Popover
+            <HoverCard
               trigger={
                 <Button
                   variant="default"
@@ -281,7 +280,7 @@ function ChurchProfile({
                   </Link>
                 </li>
               </ul>
-            </Popover>
+            </HoverCard>
           </div>
         </div>
 
@@ -366,7 +365,7 @@ function ChurchProfile({
                                 ></button>
                               </td>
                               <td>
-                                <Popover
+                                <HoverCard
                                   trigger={
                                     <button className="block w-max">
                                       <SvgIcon
@@ -402,7 +401,7 @@ function ChurchProfile({
                                       </Link>
                                     </li>
                                   </ul>
-                                </Popover>
+                                </HoverCard>
                               </td>
                             </tr>
                           ))}
