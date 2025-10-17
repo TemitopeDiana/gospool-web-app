@@ -2,18 +2,70 @@
 import { Description, Title } from '@radix-ui/react-dialog';
 import dayjs from 'dayjs';
 import Link from 'next/link';
+import Image from 'next/image';
 import { toast } from 'sonner';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 
 import { Button } from './button';
 import Modal from './modal-component';
 import Popover from './popover';
 import StatusTag from './status-tag';
 import SvgIcon from './svg-icon';
+import ShowView from './show-view';
+import NoDataCard from './no-data-card';
+import { exportDriversCsv, exportDriversPdf } from './export-drivers';
 
 import { DATE_FORMAT_DMY } from '@/lib/constants';
 import { routes } from '@/lib/routes';
+import { Driver } from '@/types/driver.type';
+import { UserProfile } from '@/types/user.type';
+import profilePic from '@/public/assets/profile-pic.png';
 
-const DriversPageComponent = () => {
+interface DriversPageProps {
+  user?: UserProfile | null;
+  driversData?: Driver[];
+  totalDrivers?: number;
+  initialStatus: string;
+}
+
+type downloadFormat = 'csv' | 'pdf';
+
+const DriversPageComponent = ({
+  user,
+  driversData,
+  totalDrivers,
+  initialStatus,
+}: DriversPageProps) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const driverStatus = searchParams.get('status') ?? 'pending';
+  const [downloadFormat, setDownloadFormat] = useState<downloadFormat>('csv');
+
+  const handleFilterChange = (status: string) => {
+    const page = searchParams.get('page') ?? '1';
+    const limit = searchParams.get('limit') ?? '10';
+
+    router.push(`/drivers?status=${status}&page=${page}&limit=${limit}`);
+  };
+
+  const handleDownload = (type: downloadFormat, close: () => void) => {
+    if (!driversData || driversData.length === 0) {
+      toast.error('No drivers to export');
+      return;
+    }
+    if (type === 'csv') {
+      exportDriversCsv(driversData, driverStatus);
+    } else if (type === 'pdf') {
+      exportDriversPdf(driversData, driverStatus);
+    }
+
+    toast.success(`${type.toUpperCase()} download started`);
+    close();
+  };
+
+  console.log(user, totalDrivers);
+
   return (
     <>
       <div className="flex justify-between mb-5">
@@ -35,11 +87,27 @@ const DriversPageComponent = () => {
               </Description>
 
               <div className="flex w-max gap-3 items-center ">
-                <Button variant="gray">
+                <Button
+                  variant="gray"
+                  onClick={() => setDownloadFormat('csv')}
+                  className={
+                    downloadFormat === 'csv'
+                      ? 'bg-green-400 text-background'
+                      : ''
+                  }
+                >
                   <SvgIcon name="csv" className="w-5 h-5 text-black" />
                   CSV
                 </Button>
-                <Button variant="gray">
+                <Button
+                  variant="gray"
+                  onClick={() => setDownloadFormat('pdf')}
+                  className={
+                    downloadFormat === 'pdf'
+                      ? 'bg-green-400 text-background '
+                      : ''
+                  }
+                >
                   <SvgIcon name="pdf" className="w-5 h-5 text-black" />
                   PDF
                 </Button>
@@ -52,7 +120,7 @@ const DriversPageComponent = () => {
 
                 <Button
                   onClick={() => {
-                    toast.success('Download started');
+                    handleDownload(downloadFormat, close);
                     close();
                   }}
                 >
@@ -65,13 +133,23 @@ const DriversPageComponent = () => {
       </div>
 
       <div className="dashboard-card">
-        <div className="flex justify-between items-center mb-5 gap-3">
+        <div className="flex flex-wrap justify-between items-center mb-5 gap-3">
           <div className="flex gap-2 ">
-            <Button>Pending</Button>
-            <Button variant="outline">Approved</Button>
+            <Button
+              variant={initialStatus === 'pending' ? 'default' : 'outline'}
+              onClick={() => handleFilterChange('pending')}
+            >
+              Pending
+            </Button>
+            <Button
+              variant={initialStatus === 'approved' ? 'default' : 'outline'}
+              onClick={() => handleFilterChange('approved')}
+            >
+              Approved
+            </Button>
           </div>
-          <div className="flex justify-between gap-4 mb-4">
-            <div className="flex gap-2 items-center px-3  bg-gray-50 rounded-xl w-full max-w-a-300">
+          <div className="flex justify-between gap-4">
+            <div className="flex flex-1 gap-2 items-center px-3 bg-gray-50 rounded-xl w-35  max-w-a-300">
               <SvgIcon name="search" className="w-5 h-5 text-gray-500" />
               <input type="search" name="" id="" className="flex-1 py-2" />
             </div>
@@ -82,66 +160,134 @@ const DriversPageComponent = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto rounded-t-xl ">
-          <table className="w-full text-left text-a-14">
-            <thead className="rounded-xl overflow-hidden">
-              <tr className="bg-gray-50  [&>th]:px-4 [&>th]:py-3 [&>th]:font-medium text-base-black">
-                <th>Date requested</th>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {Array.from({ length: 4 }).map((_, idx) => (
-                <tr
-                  key={idx}
-                  className="border-b border-gray-100 hover:bg-gray-50"
-                >
-                  <td className="px-4 py-3">
-                    {dayjs('2025-01-12').format(DATE_FORMAT_DMY)}
-                  </td>
-                  <td className="px-4 py-3">Paul Oluwatoni</td>
-                  <td className="px-4 py-3">Tech</td>
-
-                  <td className="px-4 py-3">
-                    <StatusTag warning text="Pending" />
-                  </td>
-                  <td className="px-4 py-3 text-gray-500 ">
-                    <Popover
-                      trigger={
-                        <button className="m-auto block w-max">
-                          <SvgIcon name="dotted-menu" className="w-7 h-5" />
-                        </button>
-                      }
-                    >
-                      <div className="option-menu">
-                        <Link href={routes.driverProfile('1')}>
-                          <SvgIcon name="eye" />
-                          <p>View</p>
-                        </Link>
-                        <button>
-                          <SvgIcon name="check" />
-                          <p>Approve</p>
-                        </button>
-                        <button>
-                          <SvgIcon name="refresh" />
-                          <p>Return</p>
-                        </button>
-                        <button className="text-error-700">
-                          <SvgIcon name="flag" />
-                          <p>Reject</p>
-                        </button>
-                      </div>
-                    </Popover>
-                  </td>
+        <ShowView when={!!driversData?.length}>
+          <div className="overflow-x-auto rounded-t-xl ">
+            <table className="w-full text-left text-a-14">
+              <thead className="rounded-xl overflow-hidden">
+                <tr className="bg-gray-50  [&>th]:px-4 [&>th]:py-3 [&>th]:font-medium text-base-black">
+                  <th>
+                    {driverStatus === 'pending'
+                      ? 'Date requested'
+                      : 'Date joined'}
+                  </th>
+                  <th>Name</th>
+                  <th>Church</th>
+                  <th>Department</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+
+              <tbody>
+                {driversData?.map((el, idx) => (
+                  <tr
+                    key={idx}
+                    className="border-b border-gray-100 hover:bg-gray-50"
+                  >
+                    <td className="px-4 py-3">
+                      {driverStatus === 'pending'
+                        ? '--'
+                        : dayjs(el.driverVerifiedAt).format(DATE_FORMAT_DMY)}
+                    </td>
+                    <td className="px-4 py-3">
+                      {el.firstName + ' ' + el.lastName}
+                    </td>
+                    <td>
+                      {' '}
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="relative flex-none w-10 h-10 rounded-full overflow-hidden">
+                          <Image
+                            src={profilePic} //dynamic -- to be updated later
+                            alt={
+                              el.churchName
+                                ? `${el.churchName} avatar`
+                                : 'avatar'
+                            }
+                            fill
+                            sizes="40px"
+                            className="object-cover"
+                          />
+                        </div>
+
+                        <div className="min-w-0">
+                          <p className="truncate capitalize">
+                            {el.churchName || '--'}
+                          </p>
+                          <p className="text-sm text-gray-500 truncate">
+                            {el.branchName || '—-'}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">{el.departmentName}</td>
+
+                    <td className="px-4 py-3">
+                      {el.driverVerificationStatus === 'pending' ? (
+                        <StatusTag warning text="Pending" />
+                      ) : (
+                        <StatusTag text="Active" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-gray-500 ">
+                      <Popover
+                        trigger={
+                          <button className="m-auto block w-max">
+                            <SvgIcon name="dotted-menu" className="w-7 h-5" />
+                          </button>
+                        }
+                      >
+                        <div className="option-menu">
+                          {el.driverVerificationStatus === 'approved' ? ( //TO BE SWAPPED TO PENDING
+                            <>
+                              <Link href={`${routes.driverProfile(el.userId)}`}>
+                                <SvgIcon name="eye" />
+                                <p>View</p>
+                              </Link>
+                              <button>
+                                <SvgIcon name="check" />
+                                <p>Approve</p>
+                              </button>
+                              <button>
+                                <SvgIcon name="refresh" />
+                                <p>Return</p>
+                              </button>
+                              <button className="text-error-700">
+                                <SvgIcon name="flag" />
+                                <p>Reject</p>
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <Link href={`${routes.driverProfile(el.userId)}`}>
+                                <SvgIcon name="eye" />
+                                <p>View</p>
+                              </Link>
+                              <button>
+                                <SvgIcon name="message-text" />
+                                <p>Message</p>
+                              </button>
+                              <button>
+                                <SvgIcon
+                                  name="user-minus"
+                                  className="text-error-700"
+                                />
+                                <p className="text-error-700">Block</p>
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </Popover>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </ShowView>
+
+        <ShowView when={!driversData?.length}>
+          <NoDataCard heading="No Driver yet" description={''} />
+        </ShowView>
       </div>
     </>
   );
