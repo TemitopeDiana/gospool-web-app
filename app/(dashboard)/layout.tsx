@@ -1,11 +1,9 @@
-import { redirect } from 'next/navigation';
-
 import SidebarLayout from '@/components/sidebar-layout';
 
 import { currentUser } from '@/actions/current-user';
-import { getServerRequestInfo } from '@/lib/getServerRequestInfo';
 import { routes } from '@/lib/routes';
 import { IconName } from '@/types/icon.type';
+import { checkSession } from '@/actions/checkSession';
 
 const menu: {
   label: string;
@@ -55,13 +53,9 @@ const DashboardLayout = async ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const { access_token } = await getServerRequestInfo();
-
-  if (!access_token) {
-    redirect(routes.signIn());
-  }
-
   const user = await currentUser();
+
+  await checkSession();
 
   return (
     <SidebarLayout

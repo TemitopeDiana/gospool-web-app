@@ -54,16 +54,14 @@ function ChurchProfile({
 
   return (
     <div>
-      <div className="bg-background rounded-20 p-5 flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
+      <div className="dashboard-card  flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
         <div className="flex flex-col gap-2 xsm:flex-row xsm:gap-0 xsm:justify-between">
           <div className="flex items-center gap-3">
             <div className="relative w-12 h-12 aspect-square xl:w-16 xl:h-16">
               <Image src={churchLogo} alt="church logo" fill sizes="100%" />
             </div>
             <div>
-              <h1 className="font-semibold text-xl md:text-3xl">
-                {churchName}
-              </h1>
+              <h1 className="font-semibold md:text-xl">{churchName}</h1>
               <p>{totalBranches} branches</p>
             </div>
           </div>
@@ -81,7 +79,7 @@ function ChurchProfile({
             >
               {(close) => (
                 <div>
-                  <CreateChurchBranch close={close} />
+                  <CreateChurchBranch close={close} churchId={churchId} />
                 </div>
               )}
             </Drawer>
@@ -378,7 +376,7 @@ function ChurchProfile({
                                   <ul className="table-action-popover">
                                     <li>
                                       <Link
-                                        href={`${routes.branchPage(churchId, el.branchIdentifier)}`}
+                                        href={`${routes.branchPage(churchId, el.branchId)}`}
                                         className="flex items-center gap-2"
                                       >
                                         <SvgIcon
@@ -400,6 +398,7 @@ function ChurchProfile({
                                         Delete
                                       </Link>
                                     </li>
+                                    R
                                   </ul>
                                 </HoverCard>
                               </td>

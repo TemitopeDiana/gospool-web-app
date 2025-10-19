@@ -77,7 +77,7 @@ const Drawer = forwardRef<unknown, IDrawerProps>(
         <Portal>
           <DialogOverlay
             className={cn(
-              `backdrop-blur-sm bg-[#344054B2] fixed inset-0 z-30 ${className}`
+              `backdrop-blur-sm bg-[#344054B2] fixed inset-0 z-30 `
             )}
           >
             <AnimatePresence>
@@ -86,7 +86,7 @@ const Drawer = forwardRef<unknown, IDrawerProps>(
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className={`relative ml-auto w-full max-w-[500px] border-l h-screen overflow-y-auto bg-background shadow-lg`}
+                className={`relative ml-auto w-full max-w-[600px] border-l h-screen overflow-y-auto bg-background shadow-lg ${className}`}
               >
                 <Content
                   ref={ref as ForwardedRef<HTMLDivElement>}

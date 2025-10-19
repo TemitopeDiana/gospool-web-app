@@ -1,6 +1,6 @@
 // app/api/auth/refresh/route.ts
+import { api } from '@/lib/api';
 import { cookies } from 'next/headers';
-import axios from 'axios';
 import { NextResponse } from 'next/server';
 
 export async function POST() {
@@ -12,15 +12,9 @@ export async function POST() {
   }
 
   try {
-    const res = await axios.post<{ token: string }>(
-      `/auth/refresh-token`,
-      {
-        refreshToken,
-      },
-      {
-        withCredentials: true,
-      }
-    );
+    const res = await api.post<{ token: string }>(`/auth/refresh-token`, {
+      refreshToken: refreshToken,
+    });
 
     const token = res.data.token;
 
@@ -28,6 +22,7 @@ export async function POST() {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       path: '/',
+      maxAge: 60 * 10,
     });
 
     console.log('REFRESH TOKEN KICKED IN');

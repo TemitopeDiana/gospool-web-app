@@ -4,7 +4,7 @@ import { Role, RoleLabels } from '@/types/user.type';
 import Image from 'next/image';
 import Popover from './popover';
 import SvgIcon from './svg-icon';
-import { signOut } from '@/actions/signOut';
+import { useSignOut } from '@/hooks/useSignOut';
 
 interface Props {
   name: string;
@@ -12,8 +12,9 @@ interface Props {
 }
 
 const UserProfileButton = ({ name, role }: Props) => {
-  const handleSignOut = async () => {
-    await signOut();
+  const signOut = useSignOut();
+  const handleSignOut = () => {
+    signOut();
   };
   return (
     <Popover

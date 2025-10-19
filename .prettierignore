@@ -2,3 +2,4 @@ node_modules
 .next
 .github
 .vscode
+pnpm-lock.yaml

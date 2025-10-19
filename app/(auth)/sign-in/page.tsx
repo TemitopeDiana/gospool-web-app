@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 
 import SignInForm from './form';
+// import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'Sign in',
@@ -20,7 +21,6 @@ const SignInPage = () => {
             className="mb-8"
             priority
           />
-
           <SignInForm />
         </div>
       </div>

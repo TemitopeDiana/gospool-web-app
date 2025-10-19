@@ -37,9 +37,8 @@ function BranchPage({
 
   return (
     <div>
-      <div className="rounded-20 p-5 flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
+      <div className="dashboard-card  flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
         <div className="flex flex-col gap-2 xsm:flex-row xsm:gap-0 xsm:justify-between">
-          {/* top-left  */}
           <div className="flex flex-wrap items-center gap-3">
             <div className="relative w-12 h-12 xl:w-16 xl:h-16">
               <Image
@@ -50,9 +49,7 @@ function BranchPage({
               />
             </div>
             <div>
-              <h1 className="font-semibold text-xl md:text-3xl mb-1">
-                {churchName}
-              </h1>
+              <h1 className="font-semibold md:text-xl">{churchName}</h1>
               <p className="max-w-55 text-xs xl:text-base md:max-w-none">
                 {churchAddress}
               </p>

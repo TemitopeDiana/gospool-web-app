@@ -11,6 +11,7 @@ const addBranch = () => '/add-branch';
 const drivers = () => '/drivers';
 const driverProfile = (driverId: string) => `${drivers()}/${driverId}`;
 const signIn = () => '/sign-in';
+const signUp = () => '/sign-up';
 const rides = () => '/rides';
 const bus = () => '/bus';
 const busProfile = (busId: string) => `${bus()}/${busId}`;
@@ -30,4 +31,5 @@ export const routes = {
   bus,
   busProfile,
   churches,
+  signUp,
 };

@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useTransition } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/button';
@@ -37,15 +37,57 @@ const HomePage = ({
   totalPassengers,
   churchData,
 }: HomePageProps) => {
-  const [isPending, startTransition] = useTransition();
+  const [isTogglingChurchStatus, setIsTogglingChurchStatus] = useState(false);
+  const [isDeletingChurch, setIsDeletingChurch] = useState(false);
 
-  const cards = [
-    { name: 'churches', iconName: 'church' as IconName, count: totalChurches },
-    { name: 'Rides', iconName: 'routing' as IconName, count: totalRides },
-    { name: 'Drivers', iconName: 'car' as IconName, count: totalDrivers },
+  const handleChurchStatusToggle = async (
+    churchId: string,
+    close: () => void
+  ) => {
+    setIsTogglingChurchStatus(true);
+
+    try {
+      const result = await toggleChurchStatus(churchId);
+
+      if (result.success) {
+        toast.success(result.message);
+        close();
+      } else {
+        toast.error(result.message);
+      }
+    } finally {
+      setIsTogglingChurchStatus(false);
+    }
+  };
+
+  const handleDeleteChurch = async (churchId: string, close: () => void) => {
+    setIsDeletingChurch(true);
+
+    try {
+      const result = await deleteChurchAction(churchId);
+
+      if (result.success) {
+        toast.success(result.message);
+        close();
+      } else {
+        toast.error(result.message);
+      }
+    } finally {
+      setIsDeletingChurch(false);
+    }
+  };
+
+  const cards: {
+    name: string;
+    iconName: IconName;
+    count: number;
+  }[] = [
+    { name: 'Churches', iconName: 'church', count: totalChurches },
+    { name: 'Rides', iconName: 'routing', count: totalRides },
+    { name: 'Drivers', iconName: 'car', count: totalDrivers },
     {
       name: 'Passengers',
-      iconName: 'profile' as IconName,
+      iconName: 'profile',
       count: totalPassengers,
     },
   ];
@@ -66,22 +108,22 @@ const HomePage = ({
 
           <Drawer
             trigger={
-              <Button className="block capitalize mb-2 mt-2 ml-auto xsm:m-0">
+              <Button
+                type="button"
+                className="block capitalize mb-2 mt-2 ml-auto xsm:m-0"
+              >
                 Add Church
               </Button>
             }
             title="Create Church Profile"
             description="Enter details to begin"
+            disableEscapeDown
+            disableOutsideClick
           >
-            {(close) => (
-              <div>
-                <CreateChurchForm close={close} />
-              </div>
-            )}
+            {(close) => <CreateChurchForm close={close} />}
           </Drawer>
         </div>
 
-        {/* cards  */}
         <div className="max-w-screen mt-4 md:mt-[35px] pb-3 flex items-center overflow-x-auto gap-4 snap-x snap-mandatory">
           {cards.map((card, idx) => (
             <div
@@ -158,7 +200,7 @@ const HomePage = ({
                         <ul className="table-action-popover">
                           <li>
                             <Link
-                              href={`${routes.churchProfile(el.uniqueIdentifier)}`}
+                              href={`${routes.churchProfile(el.churchId)}`}
                               className="flex items-center gap-2"
                             >
                               <SvgIcon
@@ -195,44 +237,25 @@ const HomePage = ({
                                   <Button
                                     variant="primaryII"
                                     className="block py-[13.5px] md:px-7"
-                                    loading={isPending}
-                                    onClick={() => {
-                                      startTransition(async () => {
-                                        const result = await toggleChurchStatus(
-                                          el.churchId
-                                        );
-
-                                        if (result.success) {
-                                          toast.success(result.message);
-                                          close();
-                                        } else {
-                                          toast.error(result.message);
-                                        }
-                                      });
-                                    }}
+                                    loading={isTogglingChurchStatus}
+                                    onClick={() =>
+                                      handleChurchStatusToggle(
+                                        el.churchId,
+                                        close
+                                      )
+                                    }
                                   >
-                                    Disable
+                                    {el.status === 'active'
+                                      ? 'Disable'
+                                      : 'Enable'}
                                   </Button>
                                   <Button
                                     variant="danger"
                                     className="block py-[13.5px] md:px-7"
-                                    loading={isPending}
-                                    onClick={() => {
-                                      startTransition(async () => {
-                                        const result = await deleteChurchAction(
-                                          el.churchId
-                                        );
-
-                                        if (result.success) {
-                                          toast.success(
-                                            'Church deleted successfully'
-                                          );
-                                          close();
-                                        } else {
-                                          toast.error(result.message);
-                                        }
-                                      });
-                                    }}
+                                    loading={isDeletingChurch}
+                                    onClick={() =>
+                                      handleDeleteChurch(el.churchId, close)
+                                    }
                                   >
                                     Remove
                                   </Button>

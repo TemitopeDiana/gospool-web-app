@@ -92,7 +92,11 @@
   }
 
   .dashboard-card {
-    @apply bg-white rounded-xl p-4 md:p-5;
+    @apply bg-white rounded-20 p-4 md:p-5;
+  }
+
+  .form-group {
+    @apply grid gap-3 xsm:grid-cols-[repeat(auto-fit,minmax(220px,1fr))];
   }
 }
 
