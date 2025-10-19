@@ -1,8 +1,13 @@
 import dayjs from 'dayjs';
 
 import SvgIcon from './svg-icon';
+import Trip from '@/types/trip.type';
 
-const RideHistory = () => {
+interface RideHistoryProps {
+  rideHistory: Trip;
+}
+
+const RideHistory = ({ rideHistory }: RideHistoryProps) => {
   return (
     <div className="flex gap-3 py-3">
       <div className="px-3 mt-2">
@@ -13,17 +18,22 @@ const RideHistory = () => {
         <div className="flex-1">
           <div className="location-info before:border-primary font-medium pb-2 isolate text-gray-800 before:mt-1 ">
             <span className="absolute w-1 left-[5px] h-full border-l-2 border-dotted top-3.5 border-primary -z-1"></span>
-            <span className="line-clamp-1">Berger Bus stop</span>
+            <span className="line-clamp-1">
+              {rideHistory?.startLocation.address || '--'}
+            </span>
           </div>
           <p className="location-info before:border-gray-900 before:mt-[2px]">
             <span className="line-clamp-1">
-              24 Calvary street, Isaac Johnson drive, Victoria island, Lagos,
-              Nigeria.
+              {rideHistory?.destination.address || '--'}
             </span>
           </p>
         </div>
 
-        <p>{dayjs().format('MMM DD')}</p>
+        <p>
+          {rideHistory.eventDate
+            ? dayjs(rideHistory.eventDate).format('MMM DD')
+            : '--'}
+        </p>
       </div>
     </div>
   );
