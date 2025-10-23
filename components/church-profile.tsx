@@ -5,18 +5,23 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { Button } from '@/components/button';
-import SvgIcon from '@/components/svg-icon';
-import Popover from '@/components/popover';
+import Input from '@/components/input';
 import Modal from '@/components/modal';
+import SvgIcon from '@/components/svg-icon';
+import Drawer from './drawer';
+import CreateChurchBranch from './forms/create-church-branch.form';
+import NoDataCard from './no-data-card';
+import ShowView from './show-view';
+import Tabs from './tabs';
 
+import { compactNumber } from '@/lib/format';
+import { routes } from '@/lib/routes';
+import checkMark from '@/public/assets/check.png';
 import churchLogo from '@/public/assets/default-church-logo.png';
 import profilePic from '@/public/assets/profile-pic.png';
-import checkMark from '@/public/assets/check.png';
-
-import { routes } from '@/lib/routes';
-import { compactNumber } from '@/lib/format';
+import { Branch } from '@/types/church.type';
 import { IconName } from '@/types/icon.type';
-import Input from '@/components/input';
+import HoverCard from './hover-card';
 
 type ProfileType = 'passenger' | 'driver' | 'all' | null;
 type FormatType = 'csv' | 'pdf' | null;
@@ -27,45 +32,58 @@ const cards: { name: string; iconName: IconName; team: number }[] = [
   { name: 'team', iconName: 'profile-users', team: 100 },
 ];
 
-const branchData = [
-  { date: '12/01/25', name: 'cci yaba', status: 'active' },
-  { date: '6/04/25', name: 'cci ikeja', status: 'active' },
-];
+interface ChurchProfileProps {
+  branches: Branch[];
+  churchLogo?: string;
+  adminName: string;
+  churchName: string;
+  totalBranches: number;
+  churchId: string;
+}
 
-// const branchData: any[] =[]
-
-const displayData = ['branches', 'passengers', 'drivers', 'team'];
-
-function ChurchProfile() {
+function ChurchProfile({
+  churchName,
+  totalBranches,
+  adminName,
+  branches,
+  churchId,
+}: ChurchProfileProps) {
   const methods = useForm();
-  const [display, setDisplay] = useState('branches');
   const [profile, setProfile] = useState<ProfileType>(null);
   const [format, setFormat] = useState<FormatType>(null);
 
   return (
     <div>
-      <div className="bg-background rounded-20 p-5 flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
-        {/* top  */}
+      <div className="dashboard-card  flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
         <div className="flex flex-col gap-2 xsm:flex-row xsm:gap-0 xsm:justify-between">
-          {/* top-left  */}
           <div className="flex items-center gap-3">
-            <div className="relative w-12 h-12 xl:w-16 xl:h-16">
+            <div className="relative w-12 h-12 aspect-square xl:w-16 xl:h-16">
               <Image src={churchLogo} alt="church logo" fill sizes="100%" />
             </div>
             <div>
-              <h1 className="font-semibold text-xl md:text-3xl">CCI</h1>
-              <p>6 branches</p>
+              <h1 className="font-semibold md:text-xl">{churchName}</h1>
+              <p>{totalBranches} branches</p>
             </div>
           </div>
 
-          {/* top-right  */}
-
           <div className="xxs:flex items-center gap-4">
-            <Link href={routes.addBranch()}>
-              <Button variant="outline">Add branch</Button>
-            </Link>
-
-            <Popover
+            <Drawer
+              trigger={<Button variant="outline">Add branch</Button>}
+              title="Add Church Branch"
+              description={
+                <>
+                  Only <strong>Lagos branches</strong> are supported at this
+                  time.
+                </>
+              }
+            >
+              {(close) => (
+                <div>
+                  <CreateChurchBranch close={close} churchId={churchId} />
+                </div>
+              )}
+            </Drawer>
+            <HoverCard
               trigger={
                 <Button
                   variant="default"
@@ -93,7 +111,6 @@ function ChurchProfile() {
                     }
                     title="Download data"
                     contentCardClassName="text-left"
-                    onClose={() => console.log('closed')}
                   >
                     {(close) => (
                       <div className="mt-6">
@@ -169,7 +186,6 @@ function ChurchProfile() {
                             description="We sent the data there!"
                             imageURL={checkMark}
                             imageClassName="w-20 h-20"
-                            onClose={() => console.log('closed')}
                           >
                             <Button className="mx-auto px-[51px] py-[13.5px] mt-10">
                               Okay
@@ -202,56 +218,57 @@ function ChurchProfile() {
                     }
                     title="Reassign branch leader"
                     contentCardClassName="text-left"
-                    onClose={() => console.log('closed')}
                   >
-                    <div className="mt-6">
-                      <div className="flex flex-1 items-center gap-3 mb-10">
-                        <div className="flex-none relative w-12 h-12">
-                          <Image
-                            src={profilePic}
-                            alt="profile-pic"
-                            fill
-                            sizes="100%"
-                          />
-                        </div>
+                    {(close) => (
+                      <div className="mt-6">
+                        <div className="flex flex-1 items-center gap-3 mb-10">
+                          <div className="flex-none relative w-12 h-12">
+                            <Image
+                              src={profilePic}
+                              alt="profile-pic"
+                              fill
+                              sizes="100%"
+                            />
+                          </div>
 
-                        <div>
-                          <p className="text-gray-800 font-semibold capitalize mb-1">
-                            john boscow
-                          </p>
-                          <p className="">Current branch leader</p>
+                          <div>
+                            <p className="text-gray-800 font-semibold capitalize mb-1">
+                              {adminName}
+                            </p>
+                            <p className="">Current branch leader</p>
+                          </div>
+                        </div>
+                        <FormProvider {...methods}>
+                          <form className="flex flex-col gap-5">
+                            <Input
+                              label="New branch leader full name"
+                              name="new-branch-leader-name"
+                            />
+
+                            <Input
+                              label="Email address"
+                              name="branch-leader-email-address"
+                            />
+                          </form>
+                        </FormProvider>
+                        <div className="w-full mt-10 flex flex-wrap gap-2 md:gap-3 justify-between">
+                          <Button
+                            onClick={close}
+                            variant="outline"
+                            className="py-[13.5px]"
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            onClick={close}
+                            variant="default"
+                            className="py-[13.5px] px-[30px]"
+                          >
+                            Send invite
+                          </Button>
                         </div>
                       </div>
-                      <FormProvider {...methods}>
-                        <form className="flex flex-col gap-5">
-                          <Input
-                            label="New branch leader full name"
-                            name="new-branch-leader-name"
-                          />
-
-                          <Input
-                            label="Email address"
-                            name="branch-leader-email-address"
-                          />
-                        </form>
-                      </FormProvider>
-                      <div className="w-full mt-10 flex flex-wrap gap-2 md:gap-3 justify-between">
-                        <Button
-                          onClick={close}
-                          variant="outline"
-                          className="py-[13.5px]"
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          onClick={close}
-                          variant="default"
-                          className="py-[13.5px] px-[30px]"
-                        >
-                          Send invite
-                        </Button>
-                      </div>
-                    </div>
+                    )}
                   </Modal>
                 </li>
                 <li className="text-error-700">
@@ -261,13 +278,11 @@ function ChurchProfile() {
                   </Link>
                 </li>
               </ul>
-            </Popover>
+            </HoverCard>
           </div>
         </div>
 
-        {/* bottom  */}
         <div className="w-full flex flex-col gap-2 xss:flex-row">
-          {/* bottom-left  */}
           <div className="flex flex-1 items-center gap-3 ">
             <div className="flex-none relative w-12 h-12">
               <Image src={profilePic} alt="profile-pic" fill sizes="100%" />
@@ -275,9 +290,9 @@ function ChurchProfile() {
 
             <div>
               <p className="text-gray-800 font-semibold capitalize mb-1">
-                john boscow
+                {adminName}
               </p>
-              <p className="">Super admin</p>
+              <p className="">Church admin</p>
             </div>
           </div>
 
@@ -298,7 +313,6 @@ function ChurchProfile() {
         </div>
       </div>
 
-      {/* table  */}
       <div className="dashboard-card mt-5">
         <div className="flex justify-between gap-4 mb-4">
           <div className="flex flex-1 gap-2 items-center px-3 bg-gray-50 rounded-xl w-35 max-w-a-300">
@@ -318,92 +332,106 @@ function ChurchProfile() {
           </div>
         </div>
 
-        <div className="flex items-center flex-wrap gap-2 mb-5">
-          {displayData.map((el, index) => (
-            <div key={index} className="w-max">
-              <Button
-                variant={display === el ? 'default' : 'outline'}
-                className="capitalize px-3 py-[5.5px]"
-                onClick={() => setDisplay(el)}
-              >
-                {el}
-              </Button>
-            </div>
-          ))}
-        </div>
+        <Tabs
+          tabs={[
+            {
+              label: 'Branches',
+              content: (
+                <>
+                  <ShowView when={!!branches.length}>
+                    <div className="table-wrapper">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Date Created</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
 
-        {branchData.length > 0 ? (
-          <div className="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Church owner</th>
-                  <th>Branches</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
+                        <tbody>
+                          {branches.map((el, index) => (
+                            <tr key={index}>
+                              <td>{el.formattedDate}</td>
+                              <td className="py-6 px-3 capitalize">
+                                {el.name}
+                              </td>
+                              <td>
+                                <button
+                                  className={`${el.status === 'active' ? 'bg-green-500 active' : 'bg-gray-100'} toggle-button`}
+                                ></button>
+                              </td>
+                              <td>
+                                <HoverCard
+                                  trigger={
+                                    <button className="block w-max">
+                                      <SvgIcon
+                                        name="dotted-menu"
+                                        className="w-7 h-5"
+                                      />
+                                    </button>
+                                  }
+                                >
+                                  <ul className="table-action-popover">
+                                    <li>
+                                      <Link
+                                        href={`${routes.branchPage(churchId, el.branchId)}`}
+                                        className="flex items-center gap-2"
+                                      >
+                                        <SvgIcon
+                                          name="eye"
+                                          className="h-4 w-4 text-gray-500"
+                                        />
+                                        View
+                                      </Link>
+                                    </li>
+                                    <li className="text-error-700">
+                                      <Link
+                                        href=""
+                                        className="flex items-center gap-2"
+                                      >
+                                        <SvgIcon
+                                          name="trash"
+                                          className="h-4 w-4"
+                                        />
+                                        Delete
+                                      </Link>
+                                    </li>
+                                    R
+                                  </ul>
+                                </HoverCard>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </ShowView>
 
-              <tbody>
-                {branchData.map((el, index) => (
-                  <tr key={index}>
-                    <td>{el.date}</td>
-                    <td className="py-6 px-3 capitalize">{el.name}</td>
-                    <td>{el.status}</td>
-                    <td>
-                      <button
-                        className={`${el.status === 'active' ? 'bg-green-500 active' : 'bg-gray-100'} toggle-button`}
-                      ></button>
-                    </td>
-                    <td>
-                      <Popover
-                        trigger={
-                          <button className="block w-max">
-                            <SvgIcon name="dotted-menu" className="w-7 h-5" />
-                          </button>
-                        }
-                      >
-                        <ul className="table-action-popover">
-                          <li>
-                            <Link
-                              href={`${routes.branchPage(index.toString(), index.toString())}`}
-                              className="flex items-center gap-2"
-                            >
-                              <SvgIcon
-                                name="eye"
-                                className="h-4 w-4 text-gray-500"
-                              />
-                              View
-                            </Link>
-                          </li>
-                          <li className="text-error-700">
-                            <Link href="" className="flex items-center gap-2">
-                              <SvgIcon name="trash" className="h-4 w-4" />
-                              Delete
-                            </Link>
-                          </li>
-                        </ul>
-                      </Popover>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="w-[146px] my-30 mx-auto text-center">
-            <Image
-              src="/assets/empty-inbox.png"
-              alt="empty-inbox-image"
-              width={64}
-              height={64}
-              className="mx-auto"
-            />
-            <p className="font-semibold mb-2">No branch yet</p>
-            <p className="text-gray-500">Church is not live yet</p>
-          </div>
-        )}
+                  <ShowView when={!branches.length}>
+                    <NoDataCard
+                      heading="No Branch yet"
+                      description="Church is not live yet"
+                    />
+                  </ShowView>
+                </>
+              ),
+            },
+            {
+              label: 'Passengers',
+              content: <>Passengers</>,
+            },
+            {
+              label: 'Drivers',
+              content: <>Drivers</>,
+            },
+            {
+              label: 'Team',
+              content: <>Drivers</>,
+            },
+          ]}
+        ></Tabs>
       </div>
     </div>
   );

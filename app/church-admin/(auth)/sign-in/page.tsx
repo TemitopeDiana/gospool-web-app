@@ -1,10 +1,10 @@
-'use client';
+// 'use client';
 
-import GetStarted from '@/components/getStarted';
-import SignIn from '@/components/sign-in';
-import { useState } from 'react';
-import UpdatePassword from '@/components/updatePassword';
-import ShowView from '@/components/show-view';
+// import GetStarted from '@/components/getStarted';
+// import SignIn from '@/components/sign-in';
+// import { useState } from 'react';
+// import UpdatePassword from '@/components/updatePassword';
+// import ShowView from '@/components/show-view';
 
 // import { Metadata } from 'next';
 
@@ -13,13 +13,13 @@ import ShowView from '@/components/show-view';
 // };
 
 const SignInPage = () => {
-  const [updatePassword, setUpdatePassword] = useState(false);
-  const [login, setLogin] = useState(false);
+  // const [updatePassword, setUpdatePassword] = useState(false);
+  // const [login, setLogin] = useState(false);
 
-  console.log(updatePassword, login);
+  // console.log(updatePassword, login);
   return (
     <div>
-      <ShowView when={!updatePassword && !login}>
+      {/* <ShowView when={!updatePassword && !login}>
         <GetStarted setUpdatePassword={setUpdatePassword} />
       </ShowView>
       <ShowView when={login}>
@@ -27,7 +27,7 @@ const SignInPage = () => {
       </ShowView>
       <ShowView when={updatePassword}>
         <UpdatePassword setLogin={setLogin} />
-      </ShowView>
+      </ShowView> */}
     </div>
   );
 };

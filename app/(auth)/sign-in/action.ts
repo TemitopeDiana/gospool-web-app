@@ -1,19 +1,40 @@
 'use server';
 
-// import { apiV1 } from '@/lib/api';
-import { SignIn, SignResponse } from '@/types/auth.type';
-import axios, { AxiosError } from 'axios';
+import { api } from '@/lib/api';
+import { ApiResponse } from '@/types/api.type';
+import type { SignResponse } from '@/types/auth.type';
+import { AxiosError } from 'axios';
 import { cookies } from 'next/headers';
+import { z } from 'zod';
 
-export const apiV1 = axios.create({
-  baseURL: `${process.env.API_URL}/api/v1`,
-  withCredentials: true,
+const SignInSchema = z.object({
+  email: z.string().email({ message: 'Please enter a valid email address' }),
+  password: z
+    .string()
+    .min(4, { message: 'Password must be at least 4 characters' }),
 });
 
-export const signIn = async (formData: SignIn) => {
-  try {
-    const response = await apiV1.post<SignResponse>('/auth/login', formData);
+export interface InitialSignInState extends ApiResponse<SignResponse> {
+  errors?: Record<string, string[]>;
+  redirectTo?: string;
+}
 
+export async function signIn(
+  prevState: InitialSignInState,
+  formData: FormData
+): Promise<InitialSignInState> {
+  const fields = Object.fromEntries(formData.entries());
+  const validated = SignInSchema.safeParse(fields);
+
+  if (!validated.success) {
+    return { success: false, errors: validated.error.flatten().fieldErrors };
+  }
+
+  try {
+    const response = await api.post<SignResponse>(
+      '/auth/login',
+      validated.data
+    );
     const data = response.data;
 
     if (data) {
@@ -24,7 +45,7 @@ export const signIn = async (formData: SignIn) => {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         path: '/',
-        maxAge: 60 * 1,
+        maxAge: 10 * 60,
       });
 
       cookieStore.set('refresh_token', data.refreshToken, {
@@ -34,9 +55,15 @@ export const signIn = async (formData: SignIn) => {
         path: '/',
         maxAge: 60 * 60 * 24 * 7,
       });
+
+      return {
+        success: true,
+        data,
+        message: 'Sign in successful, redirecting...',
+      };
     }
 
-    return { success: true, data };
+    return { success: false, message: 'Invalid credentials' };
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       return {
@@ -44,7 +71,6 @@ export const signIn = async (formData: SignIn) => {
         message: error.response?.data?.message || 'Login failed',
       };
     }
-
     return { success: false, message: 'Unexpected error occurred' };
   }
-};
+}

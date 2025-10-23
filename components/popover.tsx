@@ -19,7 +19,7 @@ const Popover = ({ children, trigger, ...props }: IPopover) => {
     <Root>
       <Trigger asChild>{trigger}</Trigger>
       <Portal>
-        <Content {...props}>
+        <Content {...props} className="z-50">
           {children}
           <Arrow fill="white" stroke="#d0d5dd" strokeWidth={2} />
         </Content>

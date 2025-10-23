@@ -2,28 +2,43 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import { routes } from '@/lib/routes';
+import ExpandableMenu from './expandable-menu';
 import SvgIcon from './svg-icon';
+
+import { useSignOut } from '@/hooks/useSignOut';
+import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
-import { usePathname } from 'next/navigation';
-import { IconName } from '@/types/icon.type';
+import { type IconName } from '@/types/icon.type';
+import { type Role, RoleLabels } from '@/types/user.type';
 import { SidebarItems } from './sidebar-layout';
 
 interface MobileSidebarProps {
   menu: SidebarItems[];
+  name: string;
+  role: Role;
 }
 
-const MobileSideBar = ({ menu }: MobileSidebarProps) => {
+const MobileSideBar = ({ menu, name, role }: MobileSidebarProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const pathname = usePathname();
+  const signOut = useSignOut();
 
   const isActive = (route: string) => {
-    return route === routes.home()
-      ? pathname === route
-      : pathname.startsWith(route);
+    if (route === routes.home()) {
+      return (
+        pathname === routes.home() || pathname.startsWith(routes.churches())
+      );
+    }
+
+    return pathname.startsWith(route);
+  };
+
+  const handleSignOut = () => {
+    signOut();
   };
 
   useEffect(() => {
@@ -101,22 +116,31 @@ const MobileSideBar = ({ menu }: MobileSidebarProps) => {
           </ul>
         </div>
 
-        <div className="flex gap-3 items-center mt-auto px-5 pt-5">
-          <div className="relative rounded-full bg-white w-9 aspect-square overflow-hidden">
-            <Image
-              src="/assets/user-icon.png"
-              alt="profile picture"
-              fill
-              sizes="100%"
-              className="object-contain"
-            />
-          </div>
+        <ExpandableMenu
+          trigger={
+            <div className="flex gap-3 items-center text-left mt-auto pt-5">
+              <div className="relative rounded-full bg-white w-9 aspect-square overflow-hidden">
+                <Image
+                  src="/assets/user-icon.png"
+                  alt="profile picture"
+                  fill
+                  sizes="100%"
+                  className="object-contain"
+                />
+              </div>
 
-          <div>
-            <p className="font-medium text-a-14">Paul Oluwatoni</p>
-            <p className="text-a-12">Super Admin</p>
-          </div>
-        </div>
+              <div>
+                <p className="font-medium text-a-14">{name}</p>
+                <p className="text-a-12">{RoleLabels[role]}</p>
+              </div>
+            </div>
+          }
+        >
+          <button onClick={handleSignOut} className="flex gap-3 items-center">
+            <SvgIcon name="sign-out" />
+            <span>Sign out</span>
+          </button>
+        </ExpandableMenu>
       </aside>
     </div>
   );
