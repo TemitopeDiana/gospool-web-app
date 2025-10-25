@@ -5,22 +5,23 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { Button } from '@/components/button';
-import SvgIcon from '@/components/svg-icon';
-import Popover from '@/components/popover';
-import Modal from '@/components/modal';
 import Input from '@/components/input';
+import Modal from '@/components/modal';
+import SvgIcon from '@/components/svg-icon';
+import Drawer from './drawer';
+import CreateChurchBranch from './forms/create-church-branch.form';
+import NoDataCard from './no-data-card';
+import ShowView from './show-view';
+import Tabs from './tabs';
 
+import { compactNumber } from '@/lib/format';
+import { routes } from '@/lib/routes';
+import checkMark from '@/public/assets/check.png';
 import churchLogo from '@/public/assets/default-church-logo.png';
 import profilePic from '@/public/assets/profile-pic.png';
-import checkMark from '@/public/assets/check.png';
-
-import { routes } from '@/lib/routes';
-import { compactNumber } from '@/lib/format';
-import { IconName } from '@/types/icon.type';
 import { Branch } from '@/types/church.type';
-import Tabs from './tabs';
-import ShowView from './show-view';
-import NoDataCard from './no-data-card';
+import { IconName } from '@/types/icon.type';
+import HoverCard from './hover-card';
 
 type ProfileType = 'passenger' | 'driver' | 'all' | null;
 type FormatType = 'csv' | 'pdf' | null;
@@ -37,6 +38,7 @@ interface ChurchProfileProps {
   adminName: string;
   churchName: string;
   totalBranches: number;
+  churchId: string;
 }
 
 function ChurchProfile({
@@ -44,6 +46,7 @@ function ChurchProfile({
   totalBranches,
   adminName,
   branches,
+  churchId,
 }: ChurchProfileProps) {
   const methods = useForm();
   const [profile, setProfile] = useState<ProfileType>(null);
@@ -51,26 +54,36 @@ function ChurchProfile({
 
   return (
     <div>
-      <div className="bg-background rounded-20 p-5 flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
+      <div className="dashboard-card  flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
         <div className="flex flex-col gap-2 xsm:flex-row xsm:gap-0 xsm:justify-between">
           <div className="flex items-center gap-3">
             <div className="relative w-12 h-12 aspect-square xl:w-16 xl:h-16">
               <Image src={churchLogo} alt="church logo" fill sizes="100%" />
             </div>
             <div>
-              <h1 className="font-semibold text-xl md:text-3xl">
-                {churchName}
-              </h1>
+              <h1 className="font-semibold md:text-xl">{churchName}</h1>
               <p>{totalBranches} branches</p>
             </div>
           </div>
 
           <div className="xxs:flex items-center gap-4">
-            <Link href={routes.addBranch()}>
-              <Button variant="outline">Add branch</Button>
-            </Link>
-
-            <Popover
+            <Drawer
+              trigger={<Button variant="outline">Add branch</Button>}
+              title="Add Church Branch"
+              description={
+                <>
+                  Only <strong>Lagos branches</strong> are supported at this
+                  time.
+                </>
+              }
+            >
+              {(close) => (
+                <div>
+                  <CreateChurchBranch close={close} churchId={churchId} />
+                </div>
+              )}
+            </Drawer>
+            <HoverCard
               trigger={
                 <Button
                   variant="default"
@@ -98,7 +111,6 @@ function ChurchProfile({
                     }
                     title="Download data"
                     contentCardClassName="text-left"
-                    onClose={() => console.log('closed')}
                   >
                     {(close) => (
                       <div className="mt-6">
@@ -174,7 +186,6 @@ function ChurchProfile({
                             description="We sent the data there!"
                             imageURL={checkMark}
                             imageClassName="w-20 h-20"
-                            onClose={() => console.log('closed')}
                           >
                             <Button className="mx-auto px-[51px] py-[13.5px] mt-10">
                               Okay
@@ -207,7 +218,6 @@ function ChurchProfile({
                     }
                     title="Reassign branch leader"
                     contentCardClassName="text-left"
-                    onClose={() => console.log('closed')}
                   >
                     {(close) => (
                       <div className="mt-6">
@@ -268,7 +278,7 @@ function ChurchProfile({
                   </Link>
                 </li>
               </ul>
-            </Popover>
+            </HoverCard>
           </div>
         </div>
 
@@ -353,7 +363,7 @@ function ChurchProfile({
                                 ></button>
                               </td>
                               <td>
-                                <Popover
+                                <HoverCard
                                   trigger={
                                     <button className="block w-max">
                                       <SvgIcon
@@ -366,7 +376,7 @@ function ChurchProfile({
                                   <ul className="table-action-popover">
                                     <li>
                                       <Link
-                                        href={`${routes.branchPage(index.toString(), index.toString())}`}
+                                        href={`${routes.branchPage(churchId, el.branchId)}`}
                                         className="flex items-center gap-2"
                                       >
                                         <SvgIcon
@@ -388,8 +398,9 @@ function ChurchProfile({
                                         Delete
                                       </Link>
                                     </li>
+                                    R
                                   </ul>
-                                </Popover>
+                                </HoverCard>
                               </td>
                             </tr>
                           ))}

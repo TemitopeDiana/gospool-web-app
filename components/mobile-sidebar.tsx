@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import ExpandableMenu from './expandable-menu';
 import SvgIcon from './svg-icon';
 
-import { signOut } from '@/actions/signOut';
+import { useSignOut } from '@/hooks/useSignOut';
 import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 import { type IconName } from '@/types/icon.type';
@@ -25,6 +25,7 @@ const MobileSideBar = ({ menu, name, role }: MobileSidebarProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const pathname = usePathname();
+  const signOut = useSignOut();
 
   const isActive = (route: string) => {
     if (route === routes.home()) {
@@ -36,8 +37,8 @@ const MobileSideBar = ({ menu, name, role }: MobileSidebarProps) => {
     return pathname.startsWith(route);
   };
 
-  const handleSignOut = async () => {
-    await signOut();
+  const handleSignOut = () => {
+    signOut();
   };
 
   useEffect(() => {

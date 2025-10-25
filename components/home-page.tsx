@@ -1,11 +1,17 @@
 'use client';
 import Link from 'next/link';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/button';
 import Modal from '@/components/modal';
-import Popover from '@/components/popover';
 import SvgIcon from '@/components/svg-icon';
+import Drawer from './drawer';
+import CreateChurchForm from './forms/create-church.form';
+import HoverCard from './hover-card';
 
+import { deleteChurchAction } from '@/actions/deleteChurch';
+import { toggleChurchStatus } from '@/actions/toggleChurchStatus';
 import { routes } from '@/lib/routes';
 import { Church } from '@/types/church.type';
 import { IconName } from '@/types/icon.type';
@@ -31,13 +37,57 @@ const HomePage = ({
   totalPassengers,
   churchData,
 }: HomePageProps) => {
-  const cards = [
-    { name: 'churches', iconName: 'church' as IconName, count: totalChurches },
-    { name: 'Rides', iconName: 'routing' as IconName, count: totalRides },
-    { name: 'Drivers', iconName: 'car' as IconName, count: totalDrivers },
+  const [isTogglingChurchStatus, setIsTogglingChurchStatus] = useState(false);
+  const [isDeletingChurch, setIsDeletingChurch] = useState(false);
+
+  const handleChurchStatusToggle = async (
+    churchId: string,
+    close: () => void
+  ) => {
+    setIsTogglingChurchStatus(true);
+
+    try {
+      const result = await toggleChurchStatus(churchId);
+
+      if (result.success) {
+        toast.success(result.message);
+        close();
+      } else {
+        toast.error(result.message);
+      }
+    } finally {
+      setIsTogglingChurchStatus(false);
+    }
+  };
+
+  const handleDeleteChurch = async (churchId: string, close: () => void) => {
+    setIsDeletingChurch(true);
+
+    try {
+      const result = await deleteChurchAction(churchId);
+
+      if (result.success) {
+        toast.success(result.message);
+        close();
+      } else {
+        toast.error(result.message);
+      }
+    } finally {
+      setIsDeletingChurch(false);
+    }
+  };
+
+  const cards: {
+    name: string;
+    iconName: IconName;
+    count: number;
+  }[] = [
+    { name: 'Churches', iconName: 'church', count: totalChurches },
+    { name: 'Rides', iconName: 'routing', count: totalRides },
+    { name: 'Drivers', iconName: 'car', count: totalDrivers },
     {
       name: 'Passengers',
-      iconName: 'profile' as IconName,
+      iconName: 'profile',
       count: totalPassengers,
     },
   ];
@@ -56,17 +106,24 @@ const HomePage = ({
             </p>
           </div>
 
-          <Link href={routes.createChurchProfile()}>
-            <Button
-              variant="default"
-              className="block capitalize mb-2 mt-2 ml-auto xsm:m-0"
-            >
-              new church
-            </Button>
-          </Link>
+          <Drawer
+            trigger={
+              <Button
+                type="button"
+                className="block capitalize mb-2 mt-2 ml-auto xsm:m-0"
+              >
+                Add Church
+              </Button>
+            }
+            title="Create Church Profile"
+            description="Enter details to begin"
+            disableEscapeDown
+            disableOutsideClick
+          >
+            {(close) => <CreateChurchForm close={close} />}
+          </Drawer>
         </div>
 
-        {/* cards  */}
         <div className="max-w-screen mt-4 md:mt-[35px] pb-3 flex items-center overflow-x-auto gap-4 snap-x snap-mandatory">
           {cards.map((card, idx) => (
             <div
@@ -132,17 +189,18 @@ const HomePage = ({
                       ></button>
                     </td>
                     <td>
-                      <Popover
+                      <HoverCard
                         trigger={
-                          <button className="block w-max">
+                          <button className="block w-max ml-auto">
                             <SvgIcon name="dotted-menu" className="w-7 h-5" />
                           </button>
                         }
+                        align="end"
                       >
                         <ul className="table-action-popover">
                           <li>
                             <Link
-                              href={`${routes.churchProfile(el.uniqueIdentifier)}`}
+                              href={`${routes.churchProfile(el.churchId)}`}
                               className="flex items-center gap-2"
                             >
                               <SvgIcon
@@ -155,24 +213,20 @@ const HomePage = ({
                           <li className="text-error-700">
                             <Modal
                               trigger={
-                                <Link
-                                  href=""
-                                  className="flex items-center gap-2"
-                                >
+                                <button className="flex items-center gap-2">
                                   <SvgIcon name="trash" className="h-4 w-4" />
                                   Delete
-                                </Link>
+                                </button>
                               }
-                              title="Remove CCI"
+                              title={el.name}
                               description="Current members will need to update their church. Prefer to disable it instead?"
                               iconName="trash"
                               iconSizeClassName="w-8 h-8 text-error-700"
                               maxWidthClassName="max-w-[442px]"
                               iconContainerClassName="w-18 h-18 rounded-40 bg-error-50 flex items-center justify-center"
-                              onClose={() => console.log('closed')}
                             >
                               {(close) => (
-                                <div className="w-full mt-10 flex flex-wrap gap-2 md:gap-3 xss:justify-center xss:flex-nowrap">
+                                <div className="w-full mt-10 flex flex-wrap [&_button]:flex-1 gap-2 md:gap-3 xss:justify-center xss:flex-nowrap">
                                   <Button
                                     onClick={close}
                                     variant="outline"
@@ -183,12 +237,25 @@ const HomePage = ({
                                   <Button
                                     variant="primaryII"
                                     className="block py-[13.5px] md:px-7"
+                                    loading={isTogglingChurchStatus}
+                                    onClick={() =>
+                                      handleChurchStatusToggle(
+                                        el.churchId,
+                                        close
+                                      )
+                                    }
                                   >
-                                    Disable
+                                    {el.status === 'active'
+                                      ? 'Disable'
+                                      : 'Enable'}
                                   </Button>
                                   <Button
                                     variant="danger"
                                     className="block py-[13.5px] md:px-7"
+                                    loading={isDeletingChurch}
+                                    onClick={() =>
+                                      handleDeleteChurch(el.churchId, close)
+                                    }
                                   >
                                     Remove
                                   </Button>
@@ -197,7 +264,7 @@ const HomePage = ({
                             </Modal>
                           </li>
                         </ul>
-                      </Popover>
+                      </HoverCard>
                     </td>
                   </tr>
                 ))}

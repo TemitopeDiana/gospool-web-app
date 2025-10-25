@@ -39,9 +39,13 @@ export type IconName =
   | 'sign-out'
   | 'message-text'
   | 'user-minus'
-  | 'emergency';
+  | 'emergency'
+  | 'image'
+  | 'upload';
 
 export const iconNames: IconName[] = [
+  'image',
+  'upload',
   'menu',
   'refresh',
   'check',

@@ -76,3 +76,19 @@ export interface Pagination {
 }
 
 export type ChurchStatus = 'active' | 'inactive' | 'suspended' | string;
+
+export interface ChurchBranchArgs {
+  churchId: string;
+  name: string;
+  address: string;
+  location: {
+    coordinates: {
+      latitude: number;
+      longitude: number;
+    };
+  };
+  leaderName: string;
+  leaderEmail: string;
+  leaderPhoneNumber: string;
+  branchIdentifier: string;
+}
