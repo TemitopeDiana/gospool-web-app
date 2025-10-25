@@ -11,8 +11,8 @@ export interface VehicleDocuments {
   driverLicense?: DriverDocumentFile;
   roadWorthiness?: DriverDocumentFile;
   carInsurance?: DriverDocumentFile;
+  carInfo?: DriverDocumentFile;
   certificateOfOwnership?: DriverDocumentFile;
-  [key: string]: DriverDocumentFile | undefined;
 }
 
 export interface Vehicle {
@@ -100,22 +100,37 @@ export interface Driver {
   driverChecklist?: DriverChecklist;
   driverVerificationReason?: string;
   driverVerifiedAt?: string;
-  church?: ChurchRef;
-  branch?: BranchRef;
-  department?: DepartmentRef;
-  verifier?: VerifierRef;
+  driverRequestedAt?: string;
+  churchName?: string;
+  branchName?: string;
+  departmentName?: string;
+  church: {
+    id: string;
+    name: string;
+    address: string;
+  };
+  branch: {
+    id: string;
+    name: string;
+    address: string;
+  };
+  department: {
+    id: string;
+    name: string;
+  };
+  verifier: {
+    userId: string;
+    name: string;
+    email: string;
+  };
   vehicles?: Vehicle[];
   statusDisplay?: string;
   createdAt?: string;
   updatedAt?: string;
-  churchName?: string;
-  branchName?: string;
-  departmentName?: string;
   experienceDisplay?: string;
   carDisplay?: string;
   plateDisplay?: string;
   formattedUpdatedAt?: string;
-  [key: string]: unknown;
 }
 export interface DriverAPIResponse<T> {
   success: boolean;

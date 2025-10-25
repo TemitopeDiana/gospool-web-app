@@ -327,7 +327,7 @@ const ReviewDriverApplication = ({ driver }: IReviewDriverApplication) => {
                     </li>
 
                     <li className="dashboard-list-item">
-                      <p>Car issuance:</p>
+                      <p>Car insurance:</p>
                       <div className="flex flex-col items-end">
                         <ShowView
                           when={
@@ -339,7 +339,7 @@ const ReviewDriverApplication = ({ driver }: IReviewDriverApplication) => {
                             url={
                               selectedVehicle?.documents?.carInsurance?.fileUrl
                             }
-                            label="Car issuance"
+                            label="Car insurance"
                           />
                         </ShowView>
 

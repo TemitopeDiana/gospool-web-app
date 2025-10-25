@@ -32,9 +32,7 @@ interface DriversPageProps {
 type downloadFormat = 'csv' | 'pdf';
 
 const DriversPageComponent = ({
-  user,
   driversData,
-  totalDrivers,
   initialStatus,
 }: DriversPageProps) => {
   const router = useRouter();
@@ -63,8 +61,6 @@ const DriversPageComponent = ({
     toast.success(`${type.toUpperCase()} download started`);
     close();
   };
-
-  console.log(user, totalDrivers);
 
   return (
     <>
@@ -186,7 +182,7 @@ const DriversPageComponent = ({
                   >
                     <td className="px-4 py-3">
                       {driverStatus === 'pending'
-                        ? '--'
+                        ? dayjs(el.driverRequestedAt).format(DATE_FORMAT_DMY)
                         : dayjs(el.driverVerifiedAt).format(DATE_FORMAT_DMY)}
                     </td>
                     <td className="px-4 py-3">
@@ -199,8 +195,8 @@ const DriversPageComponent = ({
                           <Image
                             src={profilePic} //dynamic -- to be updated later
                             alt={
-                              el.churchName
-                                ? `${el.churchName} avatar`
+                              el?.churchName
+                                ? `${el?.churchName} avatar`
                                 : 'avatar'
                             }
                             fill
@@ -211,15 +207,15 @@ const DriversPageComponent = ({
 
                         <div className="min-w-0">
                           <p className="truncate capitalize">
-                            {el.churchName || '--'}
+                            {el?.churchName || '--'}
                           </p>
                           <p className="text-sm text-gray-500 truncate">
-                            {el.branchName || '—-'}
+                            {el?.branchName || '—-'}
                           </p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3">{el.departmentName}</td>
+                    <td className="px-4 py-3">{el?.churchName}</td>
 
                     <td className="px-4 py-3">
                       {el.driverVerificationStatus === 'pending' ? (
@@ -237,7 +233,7 @@ const DriversPageComponent = ({
                         }
                       >
                         <div className="option-menu">
-                          {el.driverVerificationStatus === 'approved' ? ( //TO BE SWAPPED TO PENDING
+                          {el.driverVerificationStatus === 'pending' ? (
                             <>
                               <Link href={`${routes.driverProfile(el.userId)}`}>
                                 <SvgIcon name="eye" />

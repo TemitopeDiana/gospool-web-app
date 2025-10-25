@@ -44,7 +44,7 @@ const DriverProfile = ({
 
   return (
     <div className="flex max-lmd:flex-col [&>div]:flex-1 gap-5">
-      <div className="dashboard-card mt-8 lmd:max-w-[350px] lmd:mt-0">
+      <div className="dashboard-card mt-8 lmd:max-w-[380px] lmd:mt-0">
         <div className="flex justify-between items-center">
           <div className="flex gap-3 items-center  mb-5">
             <div className="relative rounded-full w-12 aspect-square overflow-hidden">
@@ -60,7 +60,7 @@ const DriverProfile = ({
             <div>
               <p className="dashboard-heading-text">{`${driver.firstName} ${driver.lastName}`}</p>
               <p className="text-a-12 text-gray-500">
-                {driver?.department?.name || '--'}
+                {driver?.departmentName || '--'}
                 <span>.</span>
                 {driver?.experienceDisplay || '--'}
               </p>
@@ -91,7 +91,7 @@ const DriverProfile = ({
 
                     <li className="dashboard-list-item">
                       <p>Gender:</p>
-                      <p>{driver.gender || '--'}</p>
+                      <p className="capitalize">{driver.gender || '--'}</p>
                     </li>
                     <li className="dashboard-list-item">
                       <p>Age:</p>
@@ -101,7 +101,7 @@ const DriverProfile = ({
                           : '--'}
                       </p>
                     </li>
-                    <li className="dashboard-list-item">
+                    <li className="dashboard-list-item capitalize">
                       <p>Home address:</p>
                       <p>{driver.homeAddress || '--'}</p>
                     </li>
@@ -122,23 +122,40 @@ const DriverProfile = ({
                     </div>
 
                     <ShowView when={showEmergencyContacts}>
-                      <div className="flex items-center justify-between rounded-12 bg-gray-25 p-3 border border-gray-100">
-                        <ul className="flex flex-col gap-y-5 text-gray-500">
-                          <li>Full name</li>
-                          <li>Relationship</li>
-                          <li>Phone number</li>
-                          <li>Email</li>
-                          <li>House</li>
-                        </ul>
+                      <div className="flex gap-4 flex-wrap rounded-12 bg-gray-25 p-3 border border-gray-100">
+                        {emergencyContact.map((el, idx) => (
+                          <article
+                            key={el?.contactId ?? idx}
+                            className="w-full"
+                            aria-labelledby={`ec-${idx}-title`}
+                          >
+                            <dl className="grid grid-cols-[110px_1fr] gap-4 items-start">
+                              <dt className="text-gray-500">Full name</dt>
+                              <dd className="break-words">
+                                {el?.fullName ?? '—'}
+                              </dd>
 
-                        {emergencyContact.map((el, i) => (
-                          <ul key={i} className="flex flex-col gap-y-5">
-                            <li>{el.fullName}</li>
-                            <li>{el.relationship}</li>
-                            <li>{el.phoneNumber}</li>
-                            <li>{el.email}</li>
-                            <li>{el.address}</li>
-                          </ul>
+                              <dt className="text-gray-500">Relationship</dt>
+                              <dd className="break-words capitalize">
+                                {el?.relationship ?? '—'}
+                              </dd>
+
+                              <dt className="text-gray-500">Phone number</dt>
+                              <dd className="break-words">
+                                {el?.phoneNumber ?? '—'}
+                              </dd>
+
+                              <dt className="text-gray-500">Email</dt>
+                              <dd className="break-words">
+                                {el?.email ?? '—'}
+                              </dd>
+
+                              <dt className="text-gray-500">House</dt>
+                              <dd className="break-words">
+                                {el?.address ?? '—'}
+                              </dd>
+                            </dl>
+                          </article>
                         ))}
                       </div>
                     </ShowView>
@@ -311,7 +328,7 @@ const DriverProfile = ({
                     </li>
 
                     <li className="dashboard-list-item">
-                      <p>Car issuance:</p>
+                      <p>Car insurance:</p>
                       <div className="flex flex-col items-end">
                         <ShowView
                           when={
@@ -323,7 +340,7 @@ const DriverProfile = ({
                             url={
                               selectedVehicle?.documents?.carInsurance?.fileUrl
                             }
-                            label="Car issuance"
+                            label="Car insurance"
                           />
                         </ShowView>
 
@@ -437,15 +454,21 @@ const DriverProfile = ({
                   <ShowView when={trips.length === 0}>
                     <NoDataCard heading="No trips yet" description={''} />
                   </ShowView>
-                  <ShowView when={trips.length > 0}>
-                    <ul>
-                      {trips.map((trip, i) => (
+                  {/* <ShowView when={trips.length > 0}> */}
+                  <ul>
+                    {/* {trips.map((trip, i) => (
                         <li key={i}>
                           <RideHistory rideHistory={trip} />
                         </li>
-                      ))}
-                    </ul>
-                  </ShowView>
+                      ))} */}
+
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <li key={i} className="hover:bg-gray-50">
+                        <RideHistory rideHistory={trips[0]} />
+                      </li>
+                    ))}
+                  </ul>
+                  {/* </ShowView> */}
                 </>
               ),
             },
