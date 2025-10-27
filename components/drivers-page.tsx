@@ -21,6 +21,7 @@ import { routes } from '@/lib/routes';
 import { Driver } from '@/types/driver.type';
 import { UserProfile } from '@/types/user.type';
 import profilePic from '@/public/assets/profile-pic.png';
+import Select from './select';
 
 interface DriversPageProps {
   user?: UserProfile | null;
@@ -31,6 +32,12 @@ interface DriversPageProps {
 
 type downloadFormat = 'csv' | 'pdf';
 
+const options = [
+  { value: 'license', label: "Driver's license" },
+  { value: 'id', label: 'First name' },
+  { value: 'other', label: 'Last name' },
+];
+
 const DriversPageComponent = ({
   driversData,
   initialStatus,
@@ -39,6 +46,7 @@ const DriversPageComponent = ({
   const searchParams = useSearchParams();
   const driverStatus = searchParams.get('status') ?? 'pending';
   const [downloadFormat, setDownloadFormat] = useState<downloadFormat>('csv');
+  const [selectedType, setSelectedType] = useState('');
 
   const handleFilterChange = (status: string) => {
     const page = searchParams.get('page') ?? '1';
@@ -188,8 +196,7 @@ const DriversPageComponent = ({
                     <td className="px-4 py-3">
                       {el.firstName + ' ' + el.lastName}
                     </td>
-                    <td>
-                      {' '}
+                    <td className="px-4 py-3">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="relative flex-none w-10 h-10 rounded-full overflow-hidden">
                           <Image
@@ -243,14 +250,126 @@ const DriversPageComponent = ({
                                 <SvgIcon name="check" />
                                 <p>Approve</p>
                               </button>
-                              <button>
-                                <SvgIcon name="refresh" />
-                                <p>Return</p>
-                              </button>
-                              <button className="text-error-700">
-                                <SvgIcon name="flag" />
-                                <p>Reject</p>
-                              </button>
+
+                              <Modal
+                                trigger={
+                                  <button>
+                                    <SvgIcon name="refresh" />
+                                    <p>Return</p>
+                                  </button>
+                                }
+                                hideCloseButton
+                              >
+                                {(close) => (
+                                  <div className="bg-background rounded-20 p-10 max-w-[442px] mx-auto">
+                                    <Title className="text-3xl font-semibold mb-2">
+                                      Return Requests
+                                    </Title>
+                                    <Description className="text-gray-400">
+                                      Share the ...
+                                    </Description>
+
+                                    <p className="mt-6 mb-2">Type</p>
+
+                                    <Select
+                                      options={options}
+                                      value={selectedType}
+                                      onChange={(v) =>
+                                        setSelectedType(v as string)
+                                      }
+                                      placeholder="Select"
+                                      multiple
+                                    />
+
+                                    <textarea
+                                      className="mt-6 p-4 bg-gray-50 w-full rounded-8 h-40"
+                                      placeholder="Describe the request"
+                                    />
+
+                                    <div className="flex w-max gap-5 items-center ml-auto mt-10">
+                                      <Button
+                                        variant="gray"
+                                        className="px-8 py-3"
+                                        onClick={close}
+                                      >
+                                        Cancel
+                                      </Button>
+
+                                      <Button
+                                        variant="default"
+                                        className="px-8 py-3"
+                                        onClick={() => {
+                                          close();
+                                        }}
+                                      >
+                                        Send message
+                                      </Button>
+                                    </div>
+                                  </div>
+                                )}
+                              </Modal>
+
+                              <Modal
+                                trigger={
+                                  <button className="text-error-700">
+                                    <SvgIcon name="flag" />
+                                    <p>Reject</p>
+                                  </button>
+                                }
+                                hideCloseButton
+                              >
+                                {(close) => (
+                                  <div className="bg-background rounded-20 p-10 text-center max-w-[500px] mx-auto">
+                                    <button
+                                      onClick={close}
+                                      aria-label="Close dialog"
+                                      className="mb-4 mx-auto block bg-transparent border-0"
+                                      type="button"
+                                    >
+                                      <Image
+                                        src="/assets/close-circle.png"
+                                        alt="close-circle"
+                                        width={60}
+                                        height={60}
+                                        priority
+                                      />
+                                    </button>
+
+                                    <Title className="text-3xl font-semibold mb-2">
+                                      Reject {}
+                                    </Title>
+                                    <Description className="text-gray-400">
+                                      {} will receive a message as to why they
+                                      weren't approved
+                                    </Description>
+
+                                    <textarea
+                                      className="mt-6 p-4 bg-gray-50 w-full rounded-8 h-40"
+                                      placeholder="Give a reason..."
+                                    />
+
+                                    <div className="flex w-max gap-5 items-center ml-auto mt-10">
+                                      <Button
+                                        variant="gray"
+                                        className="px-8 py-3"
+                                        onClick={close}
+                                      >
+                                        Cancel
+                                      </Button>
+
+                                      <Button
+                                        variant="danger"
+                                        className="px-8 py-3"
+                                        onClick={() => {
+                                          close();
+                                        }}
+                                      >
+                                        Yes, reject
+                                      </Button>
+                                    </div>
+                                  </div>
+                                )}
+                              </Modal>
                             </>
                           ) : (
                             <>

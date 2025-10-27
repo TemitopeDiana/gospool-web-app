@@ -71,7 +71,7 @@ const Modal = forwardRef<unknown, IModalProps>(
         <Portal>
           <DialogOverlay
             className={cn(
-              `bg-black/40 data-[state=open]:animate-overlayShow backdrop-blur-sm fixed p-10 inset-0 ${!alignTop && 'grid place-items-center'} z-30`,
+              `bg-black/40 data-[state=open]:animate-overlayShow backdrop-blur-sm fixed p-10 inset-0 ${!alignTop && 'grid place-items-center'} z-100`,
               customClassName
             )}
           >
