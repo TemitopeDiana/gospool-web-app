@@ -3,7 +3,6 @@ import Image from 'next/image';
 
 import SvgIcon from './svg-icon';
 import Drawer from './drawer';
-import Modal from './modal';
 import ToolTip from './tooltip';
 import StarRating from './start-rating';
 
@@ -113,16 +112,18 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
           </div>
 
           <div className="text-xs">
-            {rideHistory?.eventDate
-              ? dayjs(rideHistory?.eventDate).format(DATE_FORMAT_MON_DAY)
-              : '--'}
-            {dayjs('2024-12-25T10:00:00Z').format(DATE_FORMAT_MON_DAY)}
-            {','}
+            <span>
+              {rideHistory?.eventDate
+                ? dayjs(rideHistory?.eventDate).format(DATE_FORMAT_MON_DAY)
+                : '--'}
+            </span>
+            <span>, </span>
             <span>
               {rideHistory?.departureTime
-                ? dayjs(rideHistory?.departureTime).format(TIME_FORMAT_HM)
+                ? dayjs(rideHistory?.routeInfo?.departureTime).format(
+                    TIME_FORMAT_HM
+                  )
                 : '--'}
-              {dayjs(rideHistory?.departureTime).format(TIME_FORMAT_HM)}
             </span>
           </div>
         </div>
@@ -147,42 +148,27 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
           </div>
 
           <div className="text-xs">
-            --, <span>--</span>
+            <span>
+              {rideHistory?.eventDate
+                ? dayjs(rideHistory?.eventDate).format(DATE_FORMAT_MON_DAY)
+                : '--'}
+            </span>
+            <span>, </span>
+            <span>
+              {rideHistory?.departureTime
+                ? dayjs(rideHistory?.routeInfo?.arrivalTime).format(
+                    TIME_FORMAT_HM
+                  )
+                : '--'}
+            </span>
           </div>
         </div>
         <div className="mt-6 font-medium">
           <p className="mb-5">Passengers</p>
-
-          <Modal
-            trigger={
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="relative w-12 h-12 flex-shrink-0">
-                    <Image
-                      src="/assets/profile-pic.png"
-                      alt="passenger-pic"
-                      fill
-                      sizes="100%"
-                    />
-                  </div>
-                  <div>
-                    <p className="capitalize font-medium mb-2">cynthia</p>
-                    <p className="text-gray-500">
-                      Pick up:{' '}
-                      <span className="text-gray-800">Omole phase II</span>
-                      <span className="ml-1">12:30</span>
-                    </p>
-                  </div>
-                </div>
-                <StarRating rating={4.1} />
-              </div>
-            }
-            title="Email Cynthia"
-            description=""
-          >
-            <div className="mt-5">
-              <div className="flex items-start">
-                <div className="relative w-11 h-11 mr-2 flex-shrink-0 ">
+          <div className="flex items-start justify-between">
+            {rideHistory.passengers.map((el, idx) => (
+              <div className="flex items-center gap-2" key={idx}>
+                <div className="relative w-12 h-12 flex-shrink-0">
                   <Image
                     src="/assets/profile-pic.png"
                     alt="passenger-pic"
@@ -190,37 +176,24 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
                     sizes="100%"
                   />
                 </div>
-
                 <div>
-                  <p className="capitalize font-medium">Cynthia daniels</p>
-                  <p className="capitalize text-gray-500 text-left">Driver</p>
+                  <p className="capitalize font-medium mb-2">
+                    {el.passenger.firstName}
+                  </p>
+                  <p className="text-gray-500">
+                    Pick up:{' '}
+                    <span className="text-gray-800">
+                      {el.pickupLocation.address}
+                    </span>
+                    <span className="ml-1">
+                      {dayjs(rideHistory.eventDate).format(TIME_FORMAT_HM)}
+                    </span>
+                  </p>
                 </div>
               </div>
-
-              <div className="text-left mt-5">
-                <p>Title</p>
-                <div className="flex flex-1 gap-2 items-center px-3 bg-gray-50 rounded-8 mt-4">
-                  <input
-                    type="search"
-                    name=""
-                    id=""
-                    className="flex-1 min-w-0 py-2"
-                    placeholder="Type"
-                  />
-                  <SvgIcon
-                    name="arrow-down"
-                    className="w-4 h-4 text-gray-500"
-                  />
-                </div>
-                <textarea
-                  name=""
-                  id=""
-                  placeholder="Leave Abraham a message"
-                  className="w-full mt-4 bg-gray-50 p-4 h-40 rounded-8"
-                ></textarea>
-              </div>
-            </div>
-          </Modal>
+            ))}
+            <StarRating rating={4.1} /> {/* still manual for now */}
+          </div>
         </div>
       </div>
     </Drawer>
