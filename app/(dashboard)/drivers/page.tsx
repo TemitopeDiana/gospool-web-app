@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import DriversPageComponent from '@/components/drivers-page';
 import { currentUser } from '@/actions/current-user';
 import { getDrivers } from '@/actions/getDrivers';
+import { getDriverReturnTypes } from '@/actions/getDriverReturnTypes';
 
 export const metadata: Metadata = {
   title: 'Drivers',
@@ -24,6 +25,11 @@ export default async function DriversPage({
     getDrivers({ status, page, limit }),
   ]);
 
+  const driverReturnTypesRes = await getDriverReturnTypes();
+  const driverReturnTypes = driverReturnTypesRes.success
+    ? driverReturnTypesRes.data
+    : [];
+
   if (!drivers.success) {
     return [];
   }
@@ -31,9 +37,10 @@ export default async function DriversPage({
   return (
     <DriversPageComponent
       user={user.user}
-      driversData={drivers.data}
+      driversData={drivers?.data}
       totalDrivers={drivers?.pagination?.total}
       initialStatus={status}
+      driverReturnTypes={driverReturnTypes ?? []}
     />
   );
 }

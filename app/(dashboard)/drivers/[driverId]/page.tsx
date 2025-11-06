@@ -6,6 +6,7 @@ import { Driver } from '@/types/driver.type';
 import DriverProfile from '@/components/driver-profile';
 import { getRideHistory } from '@/actions/getRideHistory';
 import { getEmergencyContact } from '@/actions/getEmergencyContact';
+import { getDriverReturnTypes } from '@/actions/getDriverReturnTypes';
 
 export const metadata: Metadata = {
   title: 'Driver profile', //change
@@ -23,8 +24,16 @@ const DriverPage = async ({ params }: Props) => {
   const rideHistory = await getRideHistory({ driverId: driver.userId });
   const emergencyContact = await getEmergencyContact(driver.userId);
 
-  return driver.statusDisplay === 'pending' ? (
-    <ReviewDriverApplication driver={driver} />
+  const driverReturnTypesRes = await getDriverReturnTypes();
+  const driverReturnTypes = driverReturnTypesRes.success
+    ? driverReturnTypesRes.data
+    : [];
+
+  return driver.statusDisplay === 'Pending' ? (
+    <ReviewDriverApplication
+      driver={driver}
+      driverReturnTypes={driverReturnTypes ?? []}
+    />
   ) : (
     <DriverProfile
       driver={driver}
