@@ -3,6 +3,10 @@
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useState } from 'react';
+import { Description, Title } from '@radix-ui/react-dialog';
+import { Close } from '@radix-ui/react-popover';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 import RideDetails from '@/components/ride-details';
 import RideHistory from '@/components/ride-history-card';
@@ -18,6 +22,11 @@ import { RideHistoryResponse } from '@/types/trip.type';
 import SvgIcon from './svg-icon';
 import NoDataCard from './no-data-card';
 import { EmergencyContact } from '@/actions/getEmergencyContact';
+import Popover from './popover';
+import { Button } from './button';
+import StatusTag from './status-tag';
+import Modal from './modal-component';
+import { toggleUserStatus } from '@/actions/toggleUserStatus';
 
 interface DriverProfile {
   driver: Driver;
@@ -35,6 +44,8 @@ const DriverProfile = ({
   const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(
     vehicles.length > 0 ? vehicles[0].vehicleId : null
   );
+  const [blockingUserId, setBlockingUserId] = useState<string | null>(null);
+  const router = useRouter();
 
   const selectedVehicle =
     (driver?.vehicles &&
@@ -42,12 +53,32 @@ const DriverProfile = ({
     null;
   const trips = rideHistory.trips;
 
+  const handleBlock = async (userId: string, close: () => void) => {
+    try {
+      setBlockingUserId(userId);
+      const res = await toggleUserStatus(userId);
+
+      if (res?.success) {
+        toast.success(res.message || 'Driver blocked');
+        close();
+        router.refresh();
+      } else {
+        toast.error(res.message || 'Failed to block driver');
+      }
+    } catch (err: unknown) {
+      console.error('Block request failed', err);
+      toast.error('Unexpected error. Try again.');
+    } finally {
+      setBlockingUserId(null);
+    }
+  };
+
   return (
     <div className="flex max-lmd:flex-col [&>div]:flex-1 gap-5">
       <div className="dashboard-card mt-8 lmd:max-w-[380px] lmd:mt-0">
-        <div className="flex justify-between items-center">
-          <div className="flex gap-3 items-center  mb-5">
-            <div className="relative rounded-full w-12 aspect-square overflow-hidden">
+        <div className="relative flex justify-between items-center mb-8">
+          <div className="relative w-[73px] h-12">
+            <div className="absolute w-12 h-12 z-3 rounded-full">
               <Image
                 src="/assets/profile-pic.png"
                 alt="profile picture"
@@ -57,14 +88,119 @@ const DriverProfile = ({
               />
             </div>
 
-            <div>
-              <p className="dashboard-heading-text">{`${driver.firstName} ${driver.lastName}`}</p>
-              <p className="text-a-12 text-gray-500">
-                {driver?.departmentName || '--'}
-                <span>.</span>
-                {driver?.experienceDisplay || '--'}
-              </p>
+            <div className="absolute w-12 h-12 left-7 top-0 rounded-full">
+              <Image
+                src="/assets/default-church-logo.png"
+                alt="profile picture"
+                fill
+                sizes="100%"
+                className="object-contain"
+              />
             </div>
+          </div>
+
+          <Popover
+            trigger={
+              <Button variant="outline">
+                Actions
+                <SvgIcon name="arrow-down" className="w-5 h-5" />
+              </Button>
+            }
+          >
+            <div className="option-menu">
+              <Close asChild>
+                <button>
+                  <SvgIcon name="message-text" />
+                  <p>Message</p>
+                </button>
+              </Close>
+
+              <Modal
+                trigger={
+                  <Close asChild>
+                    <button>
+                      <SvgIcon name="user-minus" className="text-error-700" />
+                      <p className="text-error-700">
+                        {driver.isActive ? 'Block' : 'Unblock'}
+                      </p>
+                    </button>
+                  </Close>
+                }
+                hideCloseButton
+              >
+                {(close) => {
+                  const confirmLabel = driver.isActive ? 'Block' : 'Unblock';
+                  const inProgressLabel = driver.isActive
+                    ? 'Blocking...'
+                    : 'Unblocking...';
+                  return (
+                    <div className="bg-background rounded-20 p-6 xsm:p-10 text-center max-w-[500px] mx-auto">
+                      <button
+                        onClick={close}
+                        aria-label="Close dialog"
+                        className="mb-4 mx-auto block bg-transparent border-0"
+                        type="button"
+                      >
+                        <Image
+                          src="/assets/user-remove.png"
+                          alt="block-user-icon"
+                          width={60}
+                          height={60}
+                          priority
+                        />
+                      </button>
+
+                      <Title className="text-3xl font-semibold mb-2">
+                        {driver.isActive ? 'Block Driver' : 'Unblock Driver'}
+                      </Title>
+                      <Description className="text-gray-400">
+                        What action would you like to take?
+                      </Description>
+
+                      <div className="flex justify-between gap-2 xsm:gap-5 xxs:w-max items-center flex-wrap mx-auto mt-10">
+                        <Button
+                          variant="gray"
+                          className="xsm:px-8 xsm:py-3"
+                          onClick={close}
+                        >
+                          Cancel
+                        </Button>
+
+                        <Button
+                          variant={driver.isActive ? 'danger' : 'default'}
+                          className="xsm:px-8 xsm:py-3"
+                          onClick={() => handleBlock(driver.userId, close)}
+                          disabled={blockingUserId === driver.userId}
+                        >
+                          {blockingUserId === driver.userId
+                            ? inProgressLabel
+                            : confirmLabel}
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                }}
+              </Modal>
+            </div>
+          </Popover>
+        </div>
+
+        <div className="mb-8">
+          <p className="dashboard-heading-text">{`${driver.firstName} ${driver.lastName}`}</p>
+          <div className="text-a-12 text-gray-500 mt-2 flex items-center">
+            <p>{driver?.department?.name || '--'}</p>
+
+            <span className="mx-1 inline-flex items-center justify-center h-4 w-4 text-base">
+              &middot;
+            </span>
+
+            <p>{driver?.attendanceDuration || '--'}</p>
+          </div>
+          <div className="mt-2">
+            <StatusTag
+              danger={!driver.isActive}
+              text={driver.isActive ? 'Active' : 'Blocked'}
+            />
           </div>
         </div>
 
@@ -72,7 +208,7 @@ const DriverProfile = ({
           tabsStyle="flex-wrap"
           tabs={[
             {
-              label: 'Personal details',
+              label: 'Personal ',
               content: (
                 <>
                   <ul className="">
@@ -131,27 +267,27 @@ const DriverProfile = ({
                           >
                             <dl className="grid grid-cols-[110px_1fr] gap-4 items-start">
                               <dt className="text-gray-500">Full name</dt>
-                              <dd className="break-words">
+                              <dd className="min-w-0 break-words whitespace-normal">
                                 {el?.fullName ?? '—'}
                               </dd>
 
                               <dt className="text-gray-500">Relationship</dt>
-                              <dd className="break-words capitalize">
+                              <dd className="min-w-0 break-words whitespace-normal capitalize">
                                 {el?.relationship ?? '—'}
                               </dd>
 
                               <dt className="text-gray-500">Phone number</dt>
-                              <dd className="break-words">
+                              <dd className="min-w-0 break-words whitespace-normal">
                                 {el?.phoneNumber ?? '—'}
                               </dd>
 
                               <dt className="text-gray-500">Email</dt>
-                              <dd className="break-words">
+                              <dd className="min-w-0 break-words whitespace-normal">
                                 {el?.email ?? '—'}
                               </dd>
 
                               <dt className="text-gray-500">House</dt>
-                              <dd className="break-words">
+                              <dd className="min-w-0 break-words whitespace-normal">
                                 {el?.address ?? '—'}
                               </dd>
                             </dl>
@@ -164,10 +300,10 @@ const DriverProfile = ({
               ),
             },
             {
-              label: 'Car details',
+              label: 'Car info',
               content: (
                 <>
-                  <div className="flex justify-between gap-3">
+                  <div className="flex justify-between overflow-x-auto gap-2">
                     {/* Left: selected vehicle summary */}
                     <div className="flex items-start gap-3">
                       <div className="text-a-14">
@@ -181,8 +317,8 @@ const DriverProfile = ({
                     </div>
 
                     {/* Right: thumbnails for each vehicle */}
-                    <div className="flex gap-3 items-center">
-                      {driver.vehicles?.length ? (
+                    <div className="flex gap-3 items-center mr-2">
+                      {driver?.vehicles?.length ? (
                         driver.vehicles.map((el) => {
                           const isSelected = el.vehicleId === selectedVehicleId;
                           return (
@@ -190,7 +326,7 @@ const DriverProfile = ({
                               key={el.vehicleId}
                               type="button"
                               onClick={() => setSelectedVehicleId(el.vehicleId)}
-                              className={`relative rounded overflow-hidden w-32 aspect-video ${isSelected ? 'ring-2 ring-primary-500' : ''}`}
+                              className={`relative rounded overflow-hidden w-24 aspect-video ${isSelected ? 'ring-2 ring-primary-500' : ''}`}
                               aria-pressed={isSelected}
                             >
                               <Image
@@ -236,7 +372,7 @@ const DriverProfile = ({
               label: 'Safety Check',
               content: (
                 <>
-                  <div className="flex justify-between gap-3">
+                  <div className="flex justify-between overflow-x-auto gap-2">
                     <div className="flex items-start gap-3">
                       <div className="text-a-14">
                         <p className="bg-gray-100 my-1 py-1 px-2 rounded w-max text-a-14 font-medium border border-dashed border-gray-300">
@@ -246,7 +382,7 @@ const DriverProfile = ({
                       </div>
                     </div>
 
-                    <div className="flex gap-3 items-center">
+                    <div className="flex gap-3 items-center mr-2">
                       {driver.vehicles?.length ? (
                         driver.vehicles.map((el) => {
                           const isSelected = el.vehicleId === selectedVehicleId;
@@ -255,7 +391,7 @@ const DriverProfile = ({
                               key={el.vehicleId}
                               type="button"
                               onClick={() => setSelectedVehicleId(el.vehicleId)}
-                              className={`relative rounded overflow-hidden w-32 aspect-video ${isSelected ? 'ring-2 ring-primary-500' : ''}`}
+                              className={`relative rounded overflow-hidden w-24 aspect-video ${isSelected ? 'ring-2 ring-primary-500' : ''}`}
                               aria-pressed={isSelected}
                             >
                               <Image
@@ -277,7 +413,7 @@ const DriverProfile = ({
                   <ul className="">
                     <li className="dashboard-list-item">
                       <p>Owner of the car?:</p>
-                      <p>
+                      <p className="ml-auto">
                         {driver.driverDocuments?.carInfo?.isOwner
                           ? 'Yes'
                           : '--'}
@@ -285,7 +421,7 @@ const DriverProfile = ({
                     </li>
                     <li className="dashboard-list-item">
                       <p>Clearance to drive this car?:</p>
-                      <p>
+                      <p className="ml-auto">
                         {' '}
                         {driver.driverDocuments?.carInfo?.clearanceToDrive
                           ? 'Yes'
@@ -294,7 +430,7 @@ const DriverProfile = ({
                     </li>
                     <li className="dashboard-list-item">
                       <p>Driver’s license:</p>
-                      <div className="flex flex-col items-end">
+                      <div className="flex flex-col items-end ml-auto">
                         <ShowView
                           when={
                             !!selectedVehicle?.documents?.driverLicense?.fileUrl
@@ -329,7 +465,7 @@ const DriverProfile = ({
 
                     <li className="dashboard-list-item">
                       <p>Car insurance:</p>
-                      <div className="flex flex-col items-end">
+                      <div className="flex flex-col items-end ml-auto">
                         <ShowView
                           when={
                             !!selectedVehicle?.documents?.carInsurance?.fileUrl
@@ -363,7 +499,7 @@ const DriverProfile = ({
                     </li>
                     <li className="dashboard-list-item">
                       <p>Certificate of ownership:</p>
-                      <div className="flex flex-col items-end">
+                      <div className="flex flex-col items-end ml-auto">
                         <ShowView
                           when={
                             !!selectedVehicle?.documents?.certificateOfOwnership
@@ -399,7 +535,7 @@ const DriverProfile = ({
                     </li>
                     <li className="dashboard-list-item">
                       <p>Road worthiness:</p>
-                      <div className="flex flex-col items-end">
+                      <div className="flex flex-col items-end ml-auto">
                         <ShowView
                           when={
                             !!selectedVehicle?.documents?.roadWorthiness
@@ -454,21 +590,15 @@ const DriverProfile = ({
                   <ShowView when={trips.length === 0}>
                     <NoDataCard heading="No trips yet" description={''} />
                   </ShowView>
-                  {/* <ShowView when={trips.length > 0}> */}
-                  <ul>
-                    {/* {trips.map((trip, i) => (
+                  <ShowView when={trips.length > 0}>
+                    <ul>
+                      {trips.map((trip, i) => (
                         <li key={i}>
                           <RideHistory rideHistory={trip} />
                         </li>
-                      ))} */}
-
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <li key={i} className="hover:bg-gray-50">
-                        <RideHistory rideHistory={trips[0]} />
-                      </li>
-                    ))}
-                  </ul>
-                  {/* </ShowView> */}
+                      ))}
+                    </ul>
+                  </ShowView>
                 </>
               ),
             },

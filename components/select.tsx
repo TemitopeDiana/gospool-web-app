@@ -24,13 +24,11 @@ export default function TypeSelect({
   const [activeIdx, setActiveIdx] = useState<number>(-1);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
-  // normalize selected values into an array for easy handling
   const selectedArray = useMemo(() => {
     if (!value) return [];
     return Array.isArray(value) ? value : [value];
   }, [value]);
 
-  // close on outside click
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
       if (!rootRef.current) return;
@@ -107,8 +105,7 @@ export default function TypeSelect({
         aria-expanded={open}
         onClick={() => setOpen((s) => !s)}
         className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border
-                    border-gray-200 bg-background text-left focus:outline-none focus:ring-2 focus:ring-primary-200
-                    focus:border-primary-500 transition-shadow`}
+                    border-gray-200 bg-background text-left   focus:outline-none focus:ring-0 focus:border-gray-200 focus:shadow-none transition-shadow`}
       >
         <div className="flex-1 truncate">
           {selectedArray.length === 0 ? (
