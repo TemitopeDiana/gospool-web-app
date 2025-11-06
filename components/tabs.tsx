@@ -26,7 +26,10 @@ const Tabs = ({ tabs, tabsStyle, ...props }: ITabsProp) => {
       <List className={`my-4 flex gap-4 ${tabsStyle}`}>
         {tabs.map((tab, index) => (
           <Trigger value={tab.label} key={index} asChild>
-            <Button variant={activeTab === tab.label ? 'default' : 'outline'}>
+            <Button
+              variant={activeTab === tab.label ? 'default' : 'outline'}
+              className="text-xs"
+            >
               {tab.label}
             </Button>
           </Trigger>
@@ -34,7 +37,7 @@ const Tabs = ({ tabs, tabsStyle, ...props }: ITabsProp) => {
       </List>
 
       {tabs.map((tab, index) => (
-        <Content key={index} value={tab.label} className="py-4">
+        <Content key={index} value={tab.label}>
           {tab.content}
         </Content>
       ))}
