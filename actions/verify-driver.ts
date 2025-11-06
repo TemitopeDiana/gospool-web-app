@@ -2,24 +2,53 @@
 
 import { AxiosError } from 'axios';
 import { apiV1 } from '@/lib/api';
-import { DriverAction, VerifyDriverAPIResponse } from '@/types/driver.type';
+import { ApiResponse } from '@/types/api.type';
+import { revalidatePath } from 'next/cache';
+import { routes } from '@/lib/routes';
+
+type VerifyDriverParams =
+  | {
+      userId: string;
+      action: 'approve';
+      reason?: never;
+      types?: string[];
+    }
+  | {
+      userId: string;
+      action: 'reject';
+      reason: string;
+      types?: string[];
+    }
+  | {
+      userId: string;
+      action: 'return';
+      reason: string;
+      types?: string[];
+    };
 
 export const verifyDriver = async (
-  userId: string,
-  action: DriverAction,
-  reason?: string
-): Promise<VerifyDriverAPIResponse | { success: false; error: unknown }> => {
+  params: VerifyDriverParams
+): Promise<ApiResponse | { success: false; error: string }> => {
+  const { userId, action, reason, types } = params;
   try {
-    const body = { action, reason };
-    const response = await apiV1.patch(`/drivers/${userId}/verify`, body);
-    return response.data;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      return {
-        success: false,
-        error: error.response?.data,
-      };
-    }
-    return { success: false, error: 'Network or unexpected error' };
+    const body = { action, reason, types };
+    const res = await apiV1.patch(`/drivers/${userId}/verify`, body);
+
+    revalidatePath(routes.drivers());
+    revalidatePath(routes.driverProfile(params.userId));
+
+    return {
+      success: res.data.success ?? true,
+      message: res.data?.message ?? 'Driver verification updated successfully',
+    };
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError<{ message?: string }>;
+
+    return {
+      success: false,
+      message:
+        axiosError.response?.data?.message ||
+        'Failed to verify driver status. Please try again.',
+    };
   }
 };
