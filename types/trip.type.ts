@@ -30,6 +30,33 @@ export default interface Trip {
     departureTime: Date;
     arrivalTime: Date;
   };
+  uniquePassengers: 0;
+  confirmedPassengers: 0;
+  totalPassengers: 0;
+  passengers: [
+    {
+      type: string;
+      passengerId: string;
+      status: string;
+      pickupLocation: {
+        address: string;
+        coordinates: {
+          latitude: number;
+          longitude: number;
+        };
+      };
+      createdAt: string;
+      passenger: {
+        firstName: string;
+        lastName: string;
+        avatar: string;
+        email: string;
+        phoneNumber: string;
+      };
+      passengersCount: 0;
+    },
+  ];
+
   status: 'scheduled' | 'in-progress' | 'completed' | 'cancelled' | 'active';
   createdAt: Date;
   updatedAt: Date;

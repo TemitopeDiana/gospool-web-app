@@ -94,7 +94,7 @@ export interface Driver {
   preferredServiceTime?: string;
   roles?: string[];
   isActive?: boolean;
-  driverVerificationStatus?: string;
+  driverVerificationStatus: string;
   isDriverVerified?: boolean;
   driverDocuments?: DriverDocuments;
   driverChecklist?: DriverChecklist;
@@ -124,7 +124,7 @@ export interface Driver {
     email: string;
   };
   vehicles?: Vehicle[];
-  statusDisplay?: string;
+  statusDisplay: string;
   createdAt?: string;
   updatedAt?: string;
   experienceDisplay?: string;
@@ -132,6 +132,7 @@ export interface Driver {
   plateDisplay?: string;
   formattedUpdatedAt?: string;
 }
+
 export interface DriverAPIResponse<T> {
   success: boolean;
   data?: T;
@@ -145,8 +146,6 @@ export interface DriversFilters {
   search?: string;
   status?: string;
 }
-
-export type DriverAction = 'approve' | 'reject' | 'return';
 
 export interface VerifyDriverAPIResponse {
   success: boolean;
