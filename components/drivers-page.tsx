@@ -6,6 +6,12 @@ import Image from 'next/image';
 import { toast } from 'sonner';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import {
+  FormProvider,
+  useForm,
+  Controller,
+  SubmitHandler,
+} from 'react-hook-form';
 
 import { Button } from './button';
 import Modal from './modal-component';
@@ -15,44 +21,162 @@ import SvgIcon from './svg-icon';
 import ShowView from './show-view';
 import NoDataCard from './no-data-card';
 import { exportDriversCsv, exportDriversPdf } from './export-drivers';
+import Select, { Option } from './select';
+import InputFooterText from './input-footer-text';
 
 import { DATE_FORMAT_DMY } from '@/lib/constants';
 import { routes } from '@/lib/routes';
 import { Driver } from '@/types/driver.type';
 import { UserProfile } from '@/types/user.type';
 import profilePic from '@/public/assets/profile-pic.png';
-import Select from './select';
+import { verifyDriver } from '@/actions/verify-driver';
+import { toggleUserStatus } from '@/actions/toggleUserStatus';
 
 interface DriversPageProps {
   user?: UserProfile | null;
   driversData?: Driver[];
   totalDrivers?: number;
   initialStatus: string;
+  driverReturnTypes: string[];
 }
 
 type downloadFormat = 'csv' | 'pdf';
 
-const options = [
-  { value: 'license', label: "Driver's license" },
-  { value: 'id', label: 'First name' },
-  { value: 'other', label: 'Last name' },
-];
+export type FormValues = {
+  types: string[];
+  reason: string;
+};
+
+export const humanize = (s: string) =>
+  s
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2') // driversLicense -> drivers License
+    .replace(/[_-]/g, ' ') // snake_case or dashed
+    .replace(/\b\w/g, (ch) => ch.toUpperCase()); // Capitalize each word
 
 const DriversPageComponent = ({
   driversData,
   initialStatus,
+  driverReturnTypes = [],
 }: DriversPageProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const driverStatus = searchParams.get('status') ?? 'pending';
+  const form = useForm<FormValues>({
+    defaultValues: { types: [], reason: '' },
+  });
   const [downloadFormat, setDownloadFormat] = useState<downloadFormat>('csv');
-  const [selectedType, setSelectedType] = useState('');
+  const [approvingUserId, setApprovingUserId] = useState<string | null>(null);
+  const [blockingUserId, setBlockingUserId] = useState<string | null>(null);
+  const driverStatus = searchParams.get('status') ?? 'pending';
+  const {
+    handleSubmit,
+    control,
+    register,
+    setValue,
+    reset,
+    formState: { isSubmitting, errors },
+  } = form;
+
+  const returnTypeOptions: Option[] = driverReturnTypes?.map((t) => ({
+    value: t,
+    label: humanize(t),
+  }));
 
   const handleFilterChange = (status: string) => {
     const page = searchParams.get('page') ?? '1';
     const limit = searchParams.get('limit') ?? '10';
 
     router.push(`/drivers?status=${status}&page=${page}&limit=${limit}`);
+  };
+
+  const handleReturn = (userId: string, close: () => void) => {
+    const onSubmit: SubmitHandler<FormValues> = async (data) => {
+      try {
+        const res = await verifyDriver({
+          userId,
+          action: 'return',
+          reason: data.reason.trim(),
+          types: data.types,
+        });
+
+        if (res?.success) {
+          toast.success(res.message || 'Return request sent');
+          reset();
+          close();
+          router.refresh();
+        } else {
+          toast.error('Failed to send return request');
+        }
+      } catch (err: unknown) {
+        console.error(err);
+        toast.error('Unexpected error. Try again.');
+      }
+    };
+
+    return onSubmit;
+  };
+
+  const handleApprove = async (userId: string) => {
+    try {
+      setApprovingUserId(userId);
+      const res = await verifyDriver({ userId, action: 'approve' });
+
+      if (res?.success) {
+        toast.success(res.message || 'Driver approved');
+      } else {
+        toast.error('Failed to approve driver');
+      }
+    } catch (err: unknown) {
+      toast.error('Unexpected error. Try again.');
+      console.error(err);
+    } finally {
+      setApprovingUserId(null);
+    }
+  };
+
+  const handleReject = (userId: string, close: () => void) => {
+    const onSubmit: SubmitHandler<FormValues> = async (data) => {
+      try {
+        const res = await verifyDriver({
+          userId,
+          action: 'reject',
+          reason: data.reason.trim(),
+        });
+
+        if (res?.success) {
+          toast.success(res.message || 'Driver rejected');
+          reset();
+          close();
+          router.refresh();
+        } else {
+          toast.error('Failed to reject driver');
+        }
+      } catch (err: unknown) {
+        toast.error('Unexpected error. Try again.');
+        console.error(err);
+      }
+    };
+
+    return onSubmit;
+  };
+
+  const handleBlock = async (userId: string, close: () => void) => {
+    try {
+      setBlockingUserId(userId);
+      const res = await toggleUserStatus(userId);
+
+      if (res?.success) {
+        toast.success(res.message || 'Driver blocked');
+        close();
+        router.refresh();
+      } else {
+        toast.error(res.message || 'Failed to block driver');
+      }
+    } catch (err: unknown) {
+      console.error('Block request failed', err);
+      toast.error('Unexpected error. Try again.');
+    } finally {
+      setBlockingUserId(null);
+    }
   };
 
   const handleDownload = (type: downloadFormat, close: () => void) => {
@@ -66,7 +190,7 @@ const DriversPageComponent = ({
       exportDriversPdf(driversData, driverStatus);
     }
 
-    toast.success(`${type.toUpperCase()} download started`);
+    toast.success(`${type.toUpperCase()} download successful`);
     close();
   };
 
@@ -225,11 +349,11 @@ const DriversPageComponent = ({
                     <td className="px-4 py-3">{el?.churchName}</td>
 
                     <td className="px-4 py-3">
-                      {el.driverVerificationStatus === 'pending' ? (
-                        <StatusTag warning text="Pending" />
-                      ) : (
-                        <StatusTag text="Active" />
-                      )}
+                      <StatusTag
+                        warning={el.driverVerificationStatus == 'pending'}
+                        danger={el.driverVerificationStatus == 'rejected'}
+                        text={el.statusDisplay}
+                      />
                     </td>
                     <td className="px-4 py-3 text-gray-500 ">
                       <Popover
@@ -246,11 +370,22 @@ const DriversPageComponent = ({
                                 <SvgIcon name="eye" />
                                 <p>View</p>
                               </Link>
-                              <button>
+                              <button
+                                onClick={() => handleApprove(el.userId)}
+                                disabled={approvingUserId === el.userId}
+                                className={
+                                  approvingUserId === el.userId
+                                    ? 'opacity-60 cursor-not-allowed'
+                                    : ''
+                                }
+                              >
                                 <SvgIcon name="check" />
-                                <p>Approve</p>
+                                <p>
+                                  {approvingUserId === el.userId
+                                    ? 'Approving...'
+                                    : 'Approve'}
+                                </p>
                               </button>
-
                               <Modal
                                 trigger={
                                   <button>
@@ -261,51 +396,101 @@ const DriversPageComponent = ({
                                 hideCloseButton
                               >
                                 {(close) => (
-                                  <div className="bg-background rounded-20 p-10 max-w-[442px] mx-auto">
-                                    <Title className="text-3xl font-semibold mb-2">
-                                      Return Requests
-                                    </Title>
-                                    <Description className="text-gray-400">
-                                      Share the ...
-                                    </Description>
+                                  <FormProvider {...form}>
+                                    <form
+                                      className="bg-background rounded-20 p-10 max-w-[442px] mx-auto"
+                                      onSubmit={handleSubmit(
+                                        handleReturn(el.userId, close)
+                                      )}
+                                    >
+                                      <Title className="text-3xl font-semibold mb-2">
+                                        Return Requests
+                                      </Title>
+                                      <Description className="text-gray-400">
+                                        Please share what the driver needs to
+                                        correct
+                                      </Description>
 
-                                    <p className="mt-6 mb-2">Type</p>
+                                      <p className="mt-6 mb-2">Type</p>
 
-                                    <Select
-                                      options={options}
-                                      value={selectedType}
-                                      onChange={(v) =>
-                                        setSelectedType(v as string)
-                                      }
-                                      placeholder="Select"
-                                      multiple
-                                    />
+                                      <div>
+                                        <Controller
+                                          control={control}
+                                          name="types"
+                                          render={({ field }) => (
+                                            <Select
+                                              options={returnTypeOptions}
+                                              value={field.value}
+                                              onChange={(v) => {
+                                                const types = Array.isArray(v)
+                                                  ? v
+                                                  : [];
+                                                field.onChange(types);
+                                              }}
+                                              placeholder="Select"
+                                              multiple
+                                            />
+                                          )}
+                                        />
 
-                                    <textarea
-                                      className="mt-6 p-4 bg-gray-50 w-full rounded-8 h-40"
-                                      placeholder="Describe the request"
-                                    />
+                                        {errors.types &&
+                                          errors.types.message && (
+                                            <div>
+                                              <InputFooterText
+                                                text={errors.types.message}
+                                                isError
+                                              />
+                                            </div>
+                                          )}
+                                      </div>
 
-                                    <div className="flex w-max gap-5 items-center ml-auto mt-10">
-                                      <Button
-                                        variant="gray"
-                                        className="px-8 py-3"
-                                        onClick={close}
-                                      >
-                                        Cancel
-                                      </Button>
+                                      <div>
+                                        <textarea
+                                          {...register('reason', {
+                                            required:
+                                              'Please provide a return request',
+                                          })}
+                                          onChange={(e) => {
+                                            setValue('reason', e.target.value);
+                                          }}
+                                          className="mt-2 p-4 bg-gray-50 w-full rounded-8 h-40"
+                                          placeholder="Describe the request"
+                                        />
+                                        {errors.reason &&
+                                          errors.reason.message && (
+                                            <div>
+                                              <InputFooterText
+                                                text={errors.reason.message}
+                                                isError
+                                              />
+                                            </div>
+                                          )}
+                                      </div>
 
-                                      <Button
-                                        variant="default"
-                                        className="px-8 py-3"
-                                        onClick={() => {
-                                          close();
-                                        }}
-                                      >
-                                        Send message
-                                      </Button>
-                                    </div>
-                                  </div>
+                                      <div className="flex xmd:w-max gap-5 items-center ml-auto mt-10 flex-wrap">
+                                        <Button
+                                          variant="gray"
+                                          className="xmd:px-8 xmd:py-3"
+                                          onClick={() => {
+                                            reset();
+                                            close();
+                                          }}
+                                        >
+                                          Cancel
+                                        </Button>
+
+                                        <Button
+                                          variant="default"
+                                          className="xmd:px-8 xmd:py-3"
+                                          disabled={isSubmitting}
+                                        >
+                                          {isSubmitting
+                                            ? 'Sending...'
+                                            : 'Send message'}
+                                        </Button>
+                                      </div>
+                                    </form>
+                                  </FormProvider>
                                 )}
                               </Modal>
 
@@ -319,55 +504,87 @@ const DriversPageComponent = ({
                                 hideCloseButton
                               >
                                 {(close) => (
-                                  <div className="bg-background rounded-20 p-10 text-center max-w-[500px] mx-auto">
-                                    <button
-                                      onClick={close}
-                                      aria-label="Close dialog"
-                                      className="mb-4 mx-auto block bg-transparent border-0"
-                                      type="button"
+                                  <FormProvider {...form}>
+                                    <form
+                                      className="bg-background rounded-20 p-10 text-center max-w-[500px] mx-auto"
+                                      onSubmit={handleSubmit(
+                                        handleReject(el.userId, close)
+                                      )}
                                     >
-                                      <Image
-                                        src="/assets/close-circle.png"
-                                        alt="close-circle"
-                                        width={60}
-                                        height={60}
-                                        priority
-                                      />
-                                    </button>
-
-                                    <Title className="text-3xl font-semibold mb-2">
-                                      Reject {}
-                                    </Title>
-                                    <Description className="text-gray-400">
-                                      {} will receive a message as to why they
-                                      weren't approved
-                                    </Description>
-
-                                    <textarea
-                                      className="mt-6 p-4 bg-gray-50 w-full rounded-8 h-40"
-                                      placeholder="Give a reason..."
-                                    />
-
-                                    <div className="flex w-max gap-5 items-center ml-auto mt-10">
-                                      <Button
-                                        variant="gray"
-                                        className="px-8 py-3"
+                                      <button
                                         onClick={close}
+                                        aria-label="Close dialog"
+                                        className="mb-4 mx-auto block bg-transparent border-0"
+                                        type="button"
                                       >
-                                        Cancel
-                                      </Button>
+                                        <Image
+                                          src="/assets/close-circle.png"
+                                          alt="close-circle"
+                                          width={60}
+                                          height={60}
+                                          priority
+                                        />
+                                      </button>
 
-                                      <Button
-                                        variant="danger"
-                                        className="px-8 py-3"
-                                        onClick={() => {
-                                          close();
-                                        }}
-                                      >
-                                        Yes, reject
-                                      </Button>
-                                    </div>
-                                  </div>
+                                      <Title className="text-3xl font-semibold mb-2">
+                                        Reject {el.firstName} {el.lastName}
+                                      </Title>
+                                      <Description className="text-gray-400">
+                                        {el.firstName} will receive the reason
+                                        for rejection
+                                      </Description>
+
+                                      <div>
+                                        <textarea
+                                          className="mt-6 p-4 bg-gray-50 w-full rounded-8 h-40"
+                                          {...register('reason', {
+                                            required: 'Please provide a reason',
+                                            minLength: {
+                                              value: 10,
+                                              message:
+                                                'Reason must be at least 10 characters',
+                                            },
+                                          })}
+                                          onChange={(e) =>
+                                            setValue('reason', e.target.value)
+                                          }
+                                          placeholder="Give a reason..."
+                                        />
+
+                                        {errors.reason &&
+                                          errors.reason.message && (
+                                            <div>
+                                              <InputFooterText
+                                                text={errors.reason.message}
+                                                isError
+                                              />
+                                            </div>
+                                          )}
+                                      </div>
+                                      <div className="flex xmd:w-max flex-wrap gap-5 items-center ml-auto mt-10">
+                                        <Button
+                                          variant="gray"
+                                          className="xmd:px-8 xmd:py-3"
+                                          onClick={() => {
+                                            reset();
+                                            close();
+                                          }}
+                                        >
+                                          Cancel
+                                        </Button>
+
+                                        <Button
+                                          variant="danger"
+                                          className="xmd:px-8 xmd:py-3"
+                                          disabled={isSubmitting}
+                                        >
+                                          {isSubmitting
+                                            ? 'Rejecting...'
+                                            : 'Yes reject'}
+                                        </Button>
+                                      </div>
+                                    </form>
+                                  </FormProvider>
                                 )}
                               </Modal>
                             </>
@@ -381,13 +598,84 @@ const DriversPageComponent = ({
                                 <SvgIcon name="message-text" />
                                 <p>Message</p>
                               </button>
-                              <button>
-                                <SvgIcon
-                                  name="user-minus"
-                                  className="text-error-700"
-                                />
-                                <p className="text-error-700">Block</p>
-                              </button>
+
+                              <Modal
+                                trigger={
+                                  <button>
+                                    <SvgIcon
+                                      name="user-minus"
+                                      className="text-error-700"
+                                    />
+                                    <p className="text-error-700">
+                                      {el.isActive ? 'Block' : 'Unblock'}
+                                    </p>
+                                  </button>
+                                }
+                                hideCloseButton
+                              >
+                                {(close) => {
+                                  const confirmLabel = el.isActive
+                                    ? 'Block'
+                                    : 'Unblock';
+                                  const inProgressLabel = el.isActive
+                                    ? 'Blocking...'
+                                    : 'Unblocking...';
+                                  return (
+                                    <div className="bg-background rounded-20 p-10 text-center max-w-[500px] mx-auto">
+                                      <button
+                                        onClick={close}
+                                        aria-label="Close dialog"
+                                        className="mb-4 mx-auto block bg-transparent border-0"
+                                        type="button"
+                                      >
+                                        <Image
+                                          src="/assets/user-remove.png"
+                                          alt="block-user-icon"
+                                          width={60}
+                                          height={60}
+                                          priority
+                                        />
+                                      </button>
+
+                                      <Title className="text-3xl font-semibold mb-2">
+                                        {el.isActive
+                                          ? 'Block Driver'
+                                          : 'Unblock Driver'}
+                                      </Title>
+                                      <Description className="text-gray-400">
+                                        What action would you like to take?
+                                      </Description>
+
+                                      <div className="flex justify-between gap-2 xsm:gap-5 xxs:w-max items-center flex-wrap mx-auto mt-10">
+                                        <Button
+                                          variant="gray"
+                                          className="xsm:px-8 xsm:py-3"
+                                          onClick={close}
+                                        >
+                                          Cancel
+                                        </Button>
+
+                                        <Button
+                                          variant={
+                                            el.isActive ? 'danger' : 'default'
+                                          }
+                                          className="xsm:px-8 xsm:py-3"
+                                          onClick={() =>
+                                            handleBlock(el.userId, close)
+                                          }
+                                          disabled={
+                                            blockingUserId === el.userId
+                                          }
+                                        >
+                                          {blockingUserId === el.userId
+                                            ? inProgressLabel
+                                            : confirmLabel}
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  );
+                                }}
+                              </Modal>
                             </>
                           )}
                         </div>
