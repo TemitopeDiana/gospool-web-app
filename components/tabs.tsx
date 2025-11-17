@@ -11,9 +11,10 @@ interface TabItem {
 
 interface ITabsProp extends TabsProps {
   tabs: TabItem[];
+  tabsStyle?: string;
 }
 
-const Tabs = ({ tabs, ...props }: ITabsProp) => {
+const Tabs = ({ tabs, tabsStyle, ...props }: ITabsProp) => {
   const [activeTab, setActiveTab] = useState(tabs[0].label);
 
   return (
@@ -22,10 +23,13 @@ const Tabs = ({ tabs, ...props }: ITabsProp) => {
       value={activeTab}
       onValueChange={(val) => setActiveTab(val)}
     >
-      <List className="my-4 flex gap-4">
+      <List className={`my-4 flex gap-4 ${tabsStyle}`}>
         {tabs.map((tab, index) => (
           <Trigger value={tab.label} key={index} asChild>
-            <Button variant={activeTab === tab.label ? 'default' : 'outline'}>
+            <Button
+              variant={activeTab === tab.label ? 'default' : 'outline'}
+              className="text-xs"
+            >
               {tab.label}
             </Button>
           </Trigger>
@@ -33,7 +37,7 @@ const Tabs = ({ tabs, ...props }: ITabsProp) => {
       </List>
 
       {tabs.map((tab, index) => (
-        <Content key={index} value={tab.label} className="py-4">
+        <Content key={index} value={tab.label}>
           {tab.content}
         </Content>
       ))}

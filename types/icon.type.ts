@@ -37,6 +37,9 @@ export type IconName =
   | 'seats'
   | 'empty-file'
   | 'sign-out'
+  | 'message-text'
+  | 'user-minus'
+  | 'emergency'
   | 'image'
   | 'upload';
 
@@ -77,4 +80,7 @@ export const iconNames: IconName[] = [
   'seats',
   'empty-file',
   'sign-out',
+  'message-text',
+  'user-minus',
+  'emergency',
 ];

@@ -72,6 +72,7 @@ export interface Pagination {
   page: number;
   limit: number;
   pages: number;
+  current?: 1;
 }
 
 export type ChurchStatus = 'active' | 'inactive' | 'suspended' | string;

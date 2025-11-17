@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Button } from '@/components/button';
 import Popover from '@/components/popover';
 import RideDetails from '@/components/ride-details';
-import RideHistory from '@/components/ride-history-card';
+// import RideHistory from '@/components/ride-history-card';
 import SvgIcon from '@/components/svg-icon';
 import Tabs from '@/components/tabs';
 import { DATE_FORMAT_DMY } from '@/lib/constants';
@@ -85,7 +85,7 @@ const PassengerProfile = () => {
                 <ul>
                   {Array.from({ length: 6 }).map((_, i) => (
                     <li key={i}>
-                      <RideHistory />
+                      {/* <RideHistory rideHistory={undefined} /> */}
                     </li>
                   ))}
                 </ul>
