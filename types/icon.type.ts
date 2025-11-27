@@ -38,10 +38,14 @@ export type IconName =
   | 'empty-file'
   | 'sign-out'
   | 'image'
-  | 'upload';
+  | 'upload'
+  | 'info'
+  | 'toggle';
 
 export const iconNames: IconName[] = [
+  'toggle',
   'image',
+  'info',
   'upload',
   'menu',
   'refresh',
