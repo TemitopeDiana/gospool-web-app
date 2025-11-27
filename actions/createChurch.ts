@@ -6,8 +6,9 @@ import { revalidatePath } from 'next/cache';
 import { routes } from '@/lib/routes';
 import { ApiResponse } from '@/types/api.type';
 
-interface CreateChurchArgs {
-  logo: string;
+export interface CreateChurchArgs {
+  name: string;
+  logo: string | undefined;
   adminFirstName: string;
   adminLastName: string;
   adminEmail: string;
@@ -25,7 +26,7 @@ export const createChurchAction = async (
   } catch (err) {
     const axiosErr = err as AxiosError<{ message?: string; error: string }>;
 
-    console.log({ err });
+    console.log('CHURCH NOT CREATED', err);
 
     return {
       success: false,
