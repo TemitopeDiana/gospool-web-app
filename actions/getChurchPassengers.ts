@@ -3,11 +3,11 @@
 import { AxiosError } from 'axios';
 import { apiV1 } from '@/lib/api';
 import { ApiResponse } from '@/types/api.type';
-import { Passenger } from '@/types/passenger.type';
+import { User } from '@/types/user.type';
 
 export const getChurchPassengers = async (
   churchId: string
-): Promise<ApiResponse<Passenger[]>> => {
+): Promise<ApiResponse<User[]>> => {
   try {
     const response = await apiV1.get(
       `/user/?role=passenger&church=${churchId}&page=1&limit=20`
