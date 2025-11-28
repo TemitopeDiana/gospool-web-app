@@ -2,10 +2,11 @@
 
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import React, { InputHTMLAttributes, useState } from 'react';
+import React, { InputHTMLAttributes, useEffect, useState } from 'react';
 import InputFooterText from '../input-footer-text';
 import ShowView from '../show-view';
 import SvgIcon from '../svg-icon';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
@@ -13,7 +14,6 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   requiredText?: string;
   footerText?: string;
   isSecondary?: boolean;
-  error?: string;
 }
 
 const ImageUploadInput = ({
@@ -22,37 +22,28 @@ const ImageUploadInput = ({
   requiredText,
   footerText,
   isSecondary = false,
-  error = '',
   ...props
 }: InputProps) => {
   const [preview, setPreview] = useState<string | null>(null);
-  const [fileError, setFileError] = useState<string | null>(error);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) {
+  const {
+    register,
+    control,
+    formState: { errors },
+  } = useFormContext();
+
+  const fileList: FileList = useWatch({ control, name });
+
+  const error = errors[name]?.message;
+
+  useEffect(() => {
+    if (fileList && fileList[0]) {
+      const file = fileList[0];
+      setPreview(URL.createObjectURL(file));
+    } else {
       setPreview(null);
-      setFileError(requiredText || null);
-      return;
     }
-
-    if (file.size > 2 * 1024 * 1024) {
-      setFileError('File size should not exceed 2 MB');
-      setPreview(null);
-      return;
-    }
-
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    if (!validTypes.includes(file.type)) {
-      setFileError('Only JPG and PNG images are allowed');
-      setPreview(null);
-      return;
-    }
-
-    // valid file
-    setFileError(null);
-    setPreview(URL.createObjectURL(file));
-  };
+  }, [fileList]);
 
   return (
     <div className="input">
@@ -65,7 +56,7 @@ const ImageUploadInput = ({
           htmlFor={name}
           className={cn(
             'grid place-items-center w-[100px] aspect-square rounded-10 border relative overflow-hidden border-dashed cursor-pointer',
-            fileError && 'border-red-400 text-red-500',
+            error && 'border-red-400 text-red-500',
             isSecondary && 'w-[150px] aspect-[4/5] bg-primary/[0.02]'
           )}
         >
@@ -98,20 +89,36 @@ const ImageUploadInput = ({
         </label>
       </div>
 
-      <ShowView when={!!fileError || !!footerText}>
+      <ShowView when={!!error || !!footerText}>
         <InputFooterText
-          text={(fileError ?? footerText) as string}
-          isError={!!fileError}
+          text={(error ?? footerText) as string}
+          isError={!!error}
         />
       </ShowView>
 
       <input
-        id={name}
-        name={name}
+        {...register(name, {
+          required: requiredText ? requiredText : false,
+          validate: (fileList: FileList) => {
+            const file = fileList?.[0];
+            if (!file) return true;
+
+            if (file.size > 2 * 1024 * 1024) {
+              return 'File size should not exceed 2 MB';
+            }
+
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!validTypes.includes(file.type)) {
+              return 'Only JPG and PNG images are allowed';
+            }
+
+            return true;
+          },
+        })}
         type="file"
         className="hidden"
-        accept="image/png, image/jpeg"
-        onChange={handleFileChange}
+        id={name}
+        accept="image/png, image/jpeg, image/jpg"
         {...props}
       />
     </div>
