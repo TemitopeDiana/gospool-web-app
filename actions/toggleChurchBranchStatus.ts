@@ -1,10 +1,8 @@
 'use server';
 
 import { apiV1 } from '@/lib/api';
-import { RevalidateTags } from '@/lib/constants';
 import { ApiResponse } from '@/types/api.type';
 import { AxiosError } from 'axios';
-import { revalidateTag } from 'next/cache';
 
 export async function toggleChurchBranchStatus(
   branchId: string,
@@ -14,8 +12,6 @@ export async function toggleChurchBranchStatus(
     const res = await apiV1.put(`/branches/${branchId}`, { isActive });
 
     console.log({ isActive });
-
-    revalidateTag(RevalidateTags.GET_CHURCH_BRANCHES);
 
     return {
       success: res.data?.success ?? true,
