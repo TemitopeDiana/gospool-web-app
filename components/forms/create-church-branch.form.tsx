@@ -1,18 +1,37 @@
+import phone from 'phone';
 import { useState } from 'react';
-import { Button } from '../button';
-import Input from '../input';
-import AddressSearchInput from './address-input';
 import {
   Controller,
   FormProvider,
   SubmitHandler,
   useForm,
 } from 'react-hook-form';
-import { ChurchBranchArgs } from '@/types/church.type';
-import { createChurchBranch } from '@/actions/createChurchBranch';
 import { toast } from 'sonner';
 
-const defaultValues: ChurchBranchArgs = {
+import { createChurchBranch } from '@/actions/createChurchBranch';
+import { Button } from '../button';
+import Input from '../input';
+import AddressSearchInput from './address-input';
+
+import isEmail from 'validator/lib/isEmail';
+
+interface ChurchBranchFormInput {
+  churchId: string;
+  name: string;
+  address: string;
+  location: {
+    coordinates: {
+      latitude: number;
+      longitude: number;
+    };
+  };
+  leaderName: string;
+  leaderEmail: string;
+  leaderPhoneNumber: string;
+  branchIdentifier?: string;
+}
+
+const defaultValues: ChurchBranchFormInput = {
   churchId: '',
   name: '',
   address: '',
@@ -35,17 +54,17 @@ interface Props {
 
 const CreateChurchBranch = ({ close, churchId }: Props) => {
   const [isPending, setIsPending] = useState(false);
-  const form = useForm<ChurchBranchArgs>({
+  const form = useForm<ChurchBranchFormInput>({
     defaultValues,
   });
 
   const { handleSubmit, setValue, control, watch } = form;
 
-  const onSubmit: SubmitHandler<ChurchBranchArgs> = async (data) => {
+  const onSubmit: SubmitHandler<ChurchBranchFormInput> = async (data) => {
     setIsPending(true);
 
     try {
-      const payload: ChurchBranchArgs = {
+      const payload: ChurchBranchFormInput = {
         ...data,
         churchId,
       };
@@ -90,7 +109,7 @@ const CreateChurchBranch = ({ close, churchId }: Props) => {
               }}
               onPlaceSelected={(place) => {
                 field.onChange(place.formatted_address);
-                // setValue('address', place.formatted_address);
+                setValue('address', place.formatted_address);
                 setValue(
                   'location.coordinates.latitude',
                   place.geometry?.location?.lat() ?? 0
@@ -115,9 +134,9 @@ const CreateChurchBranch = ({ close, churchId }: Props) => {
           name="leaderEmail"
           validation={{
             required: 'Leader email is required',
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: 'Please enter a valid email address',
+            validate: {
+              isValidEmail: (value) =>
+                isEmail(value) || 'Please enter a valid email address',
             },
           }}
         />
@@ -127,15 +146,17 @@ const CreateChurchBranch = ({ close, churchId }: Props) => {
           name="leaderPhoneNumber"
           validation={{
             required: 'Leader phone number is required',
+            validate: {
+              isValid: (val) =>
+                phone(val).isValid || 'Invalid international phone format',
+            },
           }}
         />
 
         <Input
           label="Branch identifier"
           name="branchIdentifier"
-          validation={{
-            required: 'Branch identifier is required',
-          }}
+          description="A short code used to uniquely identify a church branch (e.g., HICC_ANTHONY)."
         />
 
         <Button
