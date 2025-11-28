@@ -112,7 +112,7 @@
       <symbol fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" id="arrow-right">
          <path
             d="M4.45508 9.96004L7.71508 6.70004C8.10008 6.31504 8.10008 5.68504 7.71508 5.30004L4.45508 2.04004"
-            stroke="#1D2939" stroke-miterlimit="10" stroke-linecap="round"
+            stroke="currentColor" stroke-miterlimit="10" stroke-linecap="round"
             stroke-linejoin="round"></path>
       </symbol>
 
@@ -397,6 +397,8 @@
          <path
             d="M6.67336 9.14674C6.03336 9.5734 6.03336 10.2734 6.67336 10.7001C7.40003 11.1867 8.59336 11.1867 9.32003 10.7001C9.96003 10.2734 9.96003 9.5734 9.32003 9.14674C8.60003 8.66007 7.40669 8.66007 6.67336 9.14674Z"
             stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+      </symbol>
+
       <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="image">
          <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
             stroke-width="2">
@@ -406,7 +408,6 @@
                d="m2.99 17l2.75-3.2a2.2 2.2 0 0 1 2.77-.27a2.2 2.2 0 0 0 2.77-.27l2.33-2.33a4 4 0 0 1 5.16-.43l2.49 1.93M7.99 10.17a1.66 1.66 0 1 0 0-3.32a1.66 1.66 0 0 0 0 3.32"></path>
          </g>
       </symbol>
-<<<<<<< HEAD
 
       <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="info">
          <g fill="none" stroke="currentColor" stroke-width="1">
@@ -424,8 +425,6 @@
                d="M6 1.5h6.5c.828 0 2 .325 2 2s-1.172 2-2 2H6m5.5 8a3 3 0 1 1 0-6a3 3 0 0 1 0 6"></path>
             <path d="M9 8.5H2.5c-.828 0-2 .325-2 2s1.172 2 2 2H9"></path>
          </g>
-=======
->>>>>>> 79feef43a40f34c04df7ff4700d00a51482eb32c
       </symbol>
    </def>
 </svg>
