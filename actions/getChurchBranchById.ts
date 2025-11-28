@@ -14,6 +14,7 @@ type Branch = {
   _id: string;
   churchId: {
     name: string;
+    churchId?: string;
   };
   name: string;
   address: string;
@@ -28,8 +29,8 @@ type Branch = {
   identifierEdited: boolean;
   isActive: boolean;
   branchId: string;
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
