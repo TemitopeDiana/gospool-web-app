@@ -14,10 +14,12 @@ export type CreateChurchBranchResponse = {
 export async function createChurchBranch(
   data: ChurchBranchArgs
 ): Promise<CreateChurchBranchResponse> {
+  const payload: ChurchBranchArgs = {
+    ...data,
+    branchIdentifier: data.branchIdentifier || undefined,
+  };
   try {
-    const res = await apiV1.post(`/branches/with-leader`, data);
-
-    console.log('DATA', data);
+    const res = await apiV1.post(`/branches/with-leader`, payload);
 
     revalidatePath(routes.churchProfile(data.churchId));
 

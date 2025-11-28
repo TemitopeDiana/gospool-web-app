@@ -1,6 +1,10 @@
-import { getChurchBranchById } from '@/actions/getChurchBranchById';
-import BranchPage from '@/components/branch-page';
 import { notFound } from 'next/navigation';
+
+import BranchPage from '@/components/branch-page';
+import Breadcrumb from '@/components/bread-crumbs';
+
+import { getChurchBranchById } from '@/actions/getChurchBranchById';
+import { routes } from '@/lib/routes';
 
 type Props = {
   params: Promise<{ branchId: string }>;
@@ -17,6 +21,18 @@ const ChurchBranchPage = async ({ params }: Props) => {
 
   return (
     <div>
+      <Breadcrumb
+        items={[
+          {
+            label: 'Branches',
+            href: routes.branchPage(
+              branchInfo.data?.churchId.churchId ?? '#',
+              branchId
+            ),
+          },
+          { label: branchInfo.data?.name || 'Branch' },
+        ]}
+      />
       <BranchPage
         branches={[]}
         churchName={branchInfo.data?.name ?? 'Hello'}

@@ -7,10 +7,6 @@ import { routes } from '@/lib/routes';
 import { ApiResponse } from '@/types/api.type';
 
 export async function toggleUserStatus(userId: string): Promise<ApiResponse> {
-  if (!userId) {
-    return { success: false, message: 'Invalid user ID' };
-  }
-
   try {
     const res = await apiV1.patch(`/user/${userId}/status`);
 

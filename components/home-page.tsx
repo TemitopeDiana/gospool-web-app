@@ -1,14 +1,17 @@
 'use client';
+
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/button';
-import Modal from '@/components/modal';
 import SvgIcon from '@/components/svg-icon';
+import ConfirmActionCard from './confirm-action-card';
 import Drawer from './drawer';
 import CreateChurchForm from './forms/create-church.form';
 import HoverCard from './hover-card';
+import Modal from './modal-component';
 
 import { deleteChurchAction } from '@/actions/deleteChurch';
 import { toggleChurchStatus } from '@/actions/toggleChurchStatus';
@@ -178,96 +181,108 @@ const HomePage = ({
               </thead>
 
               <tbody>
-                {churchData?.map((el, index) => (
-                  <tr key={index}>
-                    <td className="capitalize">{el.name}</td>
-                    <td className="py-6 px-3 capitalize">{el.adminName}</td>
-                    <td>{el.totalBranches}</td>
-                    <td>
-                      <button
-                        className={`${el.status === 'active' ? 'bg-green-500 active' : 'bg-gray-100'} toggle-button`}
-                      ></button>
-                    </td>
-                    <td>
-                      <HoverCard
-                        trigger={
-                          <button className="block w-max ml-auto">
-                            <SvgIcon name="dotted-menu" className="w-7 h-5" />
-                          </button>
-                        }
-                        align="end"
-                      >
-                        <ul className="table-action-popover">
-                          <li>
-                            <Link
-                              href={`${routes.churchProfile(el.churchId)}`}
-                              className="flex items-center gap-2"
-                            >
-                              <SvgIcon
-                                name="eye"
-                                className="h-4 w-4 text-gray-500"
-                              />
-                              View
-                            </Link>
-                          </li>
-                          <li className="text-error-700">
-                            <Modal
-                              trigger={
-                                <button className="flex items-center gap-2">
-                                  <SvgIcon name="trash" className="h-4 w-4" />
-                                  Delete
-                                </button>
-                              }
-                              title={el.name}
-                              description="Current members will need to update their church. Prefer to disable it instead?"
-                              iconName="trash"
-                              iconSizeClassName="w-8 h-8 text-error-700"
-                              maxWidthClassName="max-w-[442px]"
-                              iconContainerClassName="w-18 h-18 rounded-40 bg-error-50 flex items-center justify-center"
-                            >
-                              {(close) => (
-                                <div className="w-full mt-10 flex flex-wrap [&_button]:flex-1 gap-2 md:gap-3 xss:justify-center xss:flex-nowrap">
-                                  <Button
-                                    onClick={close}
-                                    variant="outline"
-                                    className="block py-[13.5px] md:px-7"
-                                  >
-                                    Cancel
-                                  </Button>
-                                  <Button
-                                    variant="primaryII"
-                                    className="block py-[13.5px] md:px-7"
-                                    loading={isTogglingChurchStatus}
-                                    onClick={() =>
-                                      handleChurchStatusToggle(
-                                        el.churchId,
-                                        close
-                                      )
-                                    }
-                                  >
-                                    {el.status === 'active'
-                                      ? 'Disable'
-                                      : 'Enable'}
-                                  </Button>
-                                  <Button
-                                    variant="danger"
-                                    className="block py-[13.5px] md:px-7"
-                                    loading={isDeletingChurch}
-                                    onClick={() =>
-                                      handleDeleteChurch(el.churchId, close)
-                                    }
-                                  >
-                                    Remove
-                                  </Button>
-                                </div>
-                              )}
-                            </Modal>
-                          </li>
-                        </ul>
-                      </HoverCard>
-                    </td>
-                  </tr>
-                ))}
+                {churchData?.map((el, index) => {
+                  const isActive = el.status === 'active';
+                  const statusLabel = isActive ? 'Disable' : 'Enable';
+                  console.log('LOGO', el.logo);
+                  return (
+                    <tr key={index}>
+                      <td className="capitalize  items-center gap-2">
+                        <span className="relative w-6 h-6 rounded-full overflow-hidden ">
+                          <Image
+                            src={el.logo ?? '/assets/a.png'}
+                            alt={el.name}
+                            fill
+                            sizes="24px"
+                          />
+                        </span>
+                        <span className="inline-block">{el.name}</span>
+                      </td>
+                      <td className="py-6 px-3 capitalize">{el.adminName}</td>
+                      <td>{el.totalBranches}</td>
+                      <td>
+                        <Modal
+                          hideCloseButton
+                          disableOutsideClick
+                          trigger={
+                            <button
+                              className={`${isActive ? 'bg-green-500 active' : 'bg-gray-100'} toggle-button`}
+                            />
+                          }
+                        >
+                          {(close) => (
+                            <ConfirmActionCard
+                              close={close}
+                              title={`${statusLabel} ${el.name}`}
+                              icon="toggle"
+                              description={`Are you sure you want to ${statusLabel} this church?`}
+                              confirmAction={{
+                                buttonText: statusLabel,
+                                onClick: () =>
+                                  handleChurchStatusToggle(el.churchId, close),
+                                loading: isTogglingChurchStatus,
+                              }}
+                            />
+                          )}
+                        </Modal>
+                      </td>
+                      <td>
+                        <HoverCard
+                          trigger={
+                            <button className="block w-max ml-auto">
+                              <SvgIcon name="dotted-menu" className="w-7 h-5" />
+                            </button>
+                          }
+                          align="end"
+                        >
+                          <ul className="table-action-popover">
+                            <li>
+                              <Link
+                                href={`${routes.churchProfile(el.churchId)}`}
+                                className="flex items-center gap-2"
+                              >
+                                <SvgIcon
+                                  name="eye"
+                                  className="h-4 w-4 text-gray-500"
+                                />
+                                View
+                              </Link>
+                            </li>
+
+                            <li className="text-error-700">
+                              <Modal
+                                trigger={
+                                  <button className="flex items-center gap-2">
+                                    <SvgIcon name="trash" className="h-4 w-4" />
+                                    Delete
+                                  </button>
+                                }
+                                hideCloseButton
+                                disableOutsideClick
+                              >
+                                {(close) => (
+                                  <ConfirmActionCard
+                                    close={close}
+                                    title={`Delete ${el.name}`}
+                                    description="Current members will need to update their church. Prefer to disable it instead?"
+                                    dangerColor
+                                    icon="trash"
+                                    confirmAction={{
+                                      buttonText: 'Delete',
+                                      onClick: () =>
+                                        handleDeleteChurch(el.churchId, close),
+                                      loading: isDeletingChurch,
+                                    }}
+                                  />
+                                )}
+                              </Modal>
+                            </li>
+                          </ul>
+                        </HoverCard>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

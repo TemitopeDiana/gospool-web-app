@@ -1,23 +1,17 @@
 'use server';
 
-import { AxiosError } from 'axios';
-import { revalidatePath } from 'next/cache';
-
 import { apiV1 } from '@/lib/api';
-import { routes } from '@/lib/routes';
 import { ApiResponse } from '@/types/api.type';
+import { AxiosError } from 'axios';
 
-export async function toggleChurchStatus(
-  churchId: string
+export async function toggleChurchBranchStatus(
+  branchId: string,
+  isActive: boolean
 ): Promise<ApiResponse> {
-  if (!churchId) {
-    return { success: false, message: 'Invalid church ID' };
-  }
-
   try {
-    const res = await apiV1.patch(`/churches/${churchId}/toggle-status`);
+    const res = await apiV1.put(`/branches/${branchId}`, { isActive });
 
-    revalidatePath(routes.home());
+    console.log({ isActive });
 
     return {
       success: res.data?.success ?? true,

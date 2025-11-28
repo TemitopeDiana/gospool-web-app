@@ -111,7 +111,7 @@ const Modal = forwardRef<DrawerRefActions, IModalProps>(
                   <Image
                     src={imageURL}
                     className={`${imageClassName} mx-auto mb-6`}
-                    alt="icon-imgae"
+                    alt="icon-image"
                     priority
                   />
                 )}

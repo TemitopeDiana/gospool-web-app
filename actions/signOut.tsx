@@ -8,12 +8,7 @@ export const signOut = async () => {
   const cookieStore = await cookies();
 
   cookieStore.getAll().forEach((cookie) => {
-    cookieStore.set(cookie.name, '', {
-      path: '/',
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      expires: new Date(0),
-    });
+    cookieStore.delete(cookie.name);
   });
 
   redirect(routes.signIn());
