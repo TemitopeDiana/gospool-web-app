@@ -44,3 +44,24 @@ export const RoleLabels: Record<RoleEnum, string> = {
   [RoleEnum.HOD]: 'H.O.D',
   [RoleEnum.BRANCH_LEADER]: 'Branch Leader',
 };
+
+export interface HodsAdminUser {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber?: string;
+  avatar?: string;
+  roles?: string[];
+  church?: {
+    name?: string;
+    uniqueIdentifier?: string;
+  } | null;
+  branch?: {
+    name?: string;
+    branchIdentifier?: string;
+  } | null;
+  department?: {
+    name?: string;
+  } | null;
+}
