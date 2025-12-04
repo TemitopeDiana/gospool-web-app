@@ -7,7 +7,6 @@ import { AxiosError } from 'axios';
 import { api } from '@/lib/api';
 import { ApiResponse } from '@/types/api.type';
 import type { SignResponse } from '@/types/auth.type';
-import { encrypt } from '@/utils/encrypt';
 
 const SignInSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -42,8 +41,8 @@ export async function signIn(
     if (data) {
       const cookieStore = await cookies();
 
-      const encryptedToken = encrypt(data.token);
-      const encryptedRefreshToken = encrypt(data.refreshToken);
+      const encryptedToken = data.token;
+      const encryptedRefreshToken = data.refreshToken;
 
       cookieStore.set('access_token', encryptedToken, {
         httpOnly: true,
