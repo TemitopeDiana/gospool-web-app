@@ -1,6 +1,3 @@
-import { APIErrorPayload } from './api.type';
-import { Pagination } from './church.type';
-
 export interface DriverDocumentFile {
   fileUrl?: string;
   issuanceDate?: string;
@@ -133,14 +130,7 @@ export interface Driver {
   formattedUpdatedAt?: string;
 }
 
-export interface DriverAPIResponse<T> {
-  success: boolean;
-  data?: T;
-  pagination?: Pagination;
-  error?: APIErrorPayload;
-}
-
-export interface DriversFilters {
+export interface Filters {
   page?: number;
   limit?: number;
   search?: string;

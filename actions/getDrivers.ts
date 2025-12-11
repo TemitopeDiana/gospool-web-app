@@ -2,11 +2,12 @@
 import { AxiosError } from 'axios';
 
 import { apiV1 } from '@/lib/api';
-import { Driver, DriverAPIResponse, DriversFilters } from '@/types/driver.type';
+import { Driver, Filters } from '@/types/driver.type';
+import { ApiResponse } from '@/types/api.type';
 
 export const getDrivers = async (
-  filters: DriversFilters = {}
-): Promise<DriverAPIResponse<Driver[]>> => {
+  filters: Filters = {}
+): Promise<ApiResponse<Driver[]>> => {
   try {
     const { page = 1, limit = 10, search, status = 'pending' } = filters;
 
@@ -20,7 +21,7 @@ export const getDrivers = async (
       params.search = search.trim();
     }
 
-    const response = await apiV1.get<DriverAPIResponse<Driver[]>>('/drivers', {
+    const response = await apiV1.get<ApiResponse<Driver[]>>('/drivers', {
       params,
     });
 
