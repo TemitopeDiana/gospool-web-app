@@ -4,40 +4,52 @@ import Link from 'next/link';
 
 import { Button } from '@/components/button';
 import SvgIcon from '@/components/svg-icon';
+import DriversTable from './driver-table';
+import HoverCard from './hover-card';
+import PassengersTable from './passengers-table';
+import Tabs from './tabs';
+import TeamMembersTable from './team-members-table';
 
 import { compactNumber } from '@/lib/format';
-import { routes } from '@/lib/routes';
 import profilePic from '@/public/assets/profile-pic.png';
-import { Branch } from '@/types/church.type';
-import { IconName } from '@/types/icon.type';
-import HoverCard from './hover-card';
+import { type User } from '@/types/user.type';
+import { type IconName } from '@/types/icon.type';
 
 interface BranchPageProps {
-  branches: Branch[];
+  passengers: User[];
+  drivers: User[];
+  teamMembers: User[];
   churchName: string;
   churchAddress: string;
   churchLogo?: string;
   churchAdmin: string;
+  totalTeam: number;
+  totalDrivers: number;
+  totalPassengers: number;
+  churchId: string;
 }
 
-const cards = [
-  { name: 'drivers', iconName: 'car' as IconName, team: 100 },
-  { name: 'members', iconName: 'profile-users' as IconName, team: 1000 },
-  { name: 'team', iconName: 'profile-users' as IconName, team: 100 },
-];
-
 function BranchPage({
-  branches,
+  passengers,
+  teamMembers,
+  drivers,
   churchName,
   churchAddress,
   churchAdmin,
   churchLogo = '/assets/default-church-logo.png',
+  totalDrivers,
+  totalPassengers,
+  totalTeam,
 }: BranchPageProps) {
-  const display = 'team';
+  const cards: { name: string; iconName: IconName; team: number }[] = [
+    { name: 'drivers', iconName: 'car', team: totalDrivers },
+    { name: 'members', iconName: 'profile-users', team: totalPassengers },
+    { name: 'team', iconName: 'profile-users', team: totalTeam },
+  ];
 
   return (
     <div>
-      <div className="dashboard-card  flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
+      <div className="dashboard-card  flex flex-col gap-3 xsm:gap-5 md:gap-8.75">
         <div className="flex flex-col gap-2 xsm:flex-row xsm:gap-0 xsm:justify-between">
           <div className="flex flex-wrap items-center gap-3">
             <div className="relative w-12 h-12 xl:w-16 xl:h-16">
@@ -56,13 +68,10 @@ function BranchPage({
             </div>
           </div>
 
-          <div className="ml-auto max-w-[140px]">
+          <div className="ml-auto max-w-35">
             <HoverCard
               trigger={
-                <Button
-                  variant="default"
-                  className="flex items-center gap-2 mt-2 xxs:mt-0"
-                >
+                <Button className="flex items-center gap-2 mt-2 xxs:mt-0">
                   Actions
                   <SvgIcon
                     name="arrow-down"
@@ -96,12 +105,35 @@ function BranchPage({
                     Reassign
                   </Link>
                 </li>
-                <li className="text-error-700">
-                  <Link href="" className="flex items-center gap-2">
-                    <SvgIcon name="trash" className="h-4 w-4" />
-                    Delete
-                  </Link>
-                </li>
+                {/* <li className="text-error-700">
+                  <Modal
+                    trigger={
+                      <button className="flex items-center gap-2">
+                        <SvgIcon name="trash" className="h-4 w-4" />
+                        Delete
+                      </button>
+                    }
+                    hideCloseButton
+                    disableOutsideClick
+                  >
+                    {(close) => (
+                      <ConfirmActionCard
+                        close={close}
+                        title={`Delete $`}
+                        description="Current members will need to update their church. Prefer to disable it instead?"
+                        dangerColor
+                        icon="trash"
+                        confirmAction={{
+                          buttonText: 'Delete',
+                          onClick: () =>
+                            // handleDeleteChurch(churchId, close),
+                            console.log('first'),
+                          loading: false,
+                        }}
+                      />
+                    )}
+                  </Modal>
+                </li> */}
               </ul>
             </HoverCard>
           </div>
@@ -121,7 +153,7 @@ function BranchPage({
             </div>
           </div>
 
-          <div className="md:flex flex-1 md:gap-5 max-w-[150px] md:max-w-none">
+          <div className="md:flex flex-1 md:gap-5 max-w-a-150 md:max-w-none">
             {cards.map((el, index) => (
               <div key={index} className="flex items-center gap-2 mb-2 md:mb-0">
                 <div className="w-10 h-10 bg-gray-50 rounded-[48px] flex items-center justify-center">
@@ -137,9 +169,9 @@ function BranchPage({
         </div>
       </div>
 
-      <div className="dashboard-card mt-5">
+      {/* <div className="dashboard-card mt-5">
         <div className="md:flex items-center justify-between">
-          <div className="flex justify-between gap-4 mb-4 md:order-2">
+          <div className="flex justify-between gap-4 mb-4 md:order-2 w-full">
             <div className="flex flex-1 gap-2 items-center px-3 bg-gray-50 rounded-xl w-35 max-w-a-300">
               <SvgIcon name="search" className="w-5 h-5 text-gray-500" />
               <input
@@ -158,83 +190,25 @@ function BranchPage({
           </div>
         </div>
 
-        <div className="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>{display === 'team' ? 'date added' : 'date joined'}</th>
-                <th>name</th>
-                <th>{display === 'team' ? 'role' : 'department'}</th>
-                <th>actions</th>
-              </tr>
-            </thead>
+      </div> */}
 
-            <tbody>
-              {branches?.map((el, index) => (
-                <tr key={index}>
-                  <td>{el.formattedDate}</td>
-                  <td className="py-6 px-3 capitalize">{el.name}</td>
-                  <td>
-                    {display === 'team' ? (
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="relative flex-none w-10 h-10 rounded-full overflow-hidden">
-                          <Image
-                            src={profilePic}
-                            alt={el.name ? `${el.name} avatar` : 'avatar'}
-                            fill
-                            sizes="40px"
-                            className="object-cover"
-                          />
-                        </div>
-
-                        <div className="min-w-0">
-                          <p className="truncate capitalize">{el.name}</p>
-                          <p className="text-sm text-gray-500 truncate">
-                            {el.leaderEmail ?? '—'}
-                          </p>
-                        </div>
-                      </div>
-                    ) : (
-                      <span className="capitalize truncate block">
-                        {el.name}
-                      </span>
-                    )}
-                  </td>
-                  <td>
-                    <HoverCard
-                      trigger={
-                        <button className="block w-max">
-                          <SvgIcon name="dotted-menu" className="w-7 h-5" />
-                        </button>
-                      }
-                    >
-                      <ul className="table-action-popover">
-                        <li>
-                          <Link
-                            href={`${routes.branchPage(index.toString(), index.toString())}`}
-                            className="flex items-center gap-2"
-                          >
-                            <SvgIcon
-                              name="eye"
-                              className="h-4 w-4 text-gray-500"
-                            />
-                            View
-                          </Link>
-                        </li>
-                        <li className="text-error-700">
-                          <Link href="" className="flex items-center gap-2">
-                            <SvgIcon name="trash" className="h-4 w-4" />
-                            Delete
-                          </Link>
-                        </li>
-                      </ul>
-                    </HoverCard>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      <div className="dashboard-card mt-5">
+        <Tabs
+          tabs={[
+            {
+              label: 'Passengers',
+              content: <PassengersTable passengers={passengers} />,
+            },
+            {
+              label: 'Drivers',
+              content: <DriversTable drivers={drivers} />,
+            },
+            {
+              label: 'Team',
+              content: <TeamMembersTable teamMembers={teamMembers} />,
+            },
+          ]}
+        ></Tabs>
       </div>
     </div>
   );

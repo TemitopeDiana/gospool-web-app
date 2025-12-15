@@ -7,11 +7,10 @@ import InputFooterText from '../input-footer-text';
 import ShowView from '../show-view';
 import SvgIcon from '../svg-icon';
 
-interface InputProps
-  extends Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    'type' | 'name' | 'autoComplete'
-  > {
+interface InputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'type' | 'name' | 'autoComplete'
+> {
   name: string;
   label: string;
   footerText?: string;
@@ -39,7 +38,7 @@ const PasswordInput: FC<InputProps> = ({
       >
         {/* <SvgIcon name="lock" className="h-4 w-4" /> */}
         <div className="flex-1 flex flex-col-reverse">
-          <div className="flex bg-gray-50 py-[13.5px] min-w-[169px] px-4 mt-2 rounded-8">
+          <div className="flex bg-gray-50 py-[13.5px] min-w-42.25 px-4 mt-2 rounded-8">
             <input
               type={showPassword ? 'text' : 'password'}
               name={name}

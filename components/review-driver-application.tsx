@@ -139,14 +139,14 @@ const ReviewDriverApplication = ({
   };
 
   return (
-    <div className="w-full !max-w-[676px]">
+    <div className="w-full max-w-169!">
       <h1 className="dashboard-heading-text">Review Application</h1>
       <p>Please go over driver’s application thoroughly</p>
 
       <div className="dashboard-card mt-8">
         <div className="flex justify-between items-center ">
           <div className="flex gap-3 flex-wrap">
-            <div className="relative w-[73px] h-12">
+            <div className="relative w-18.25 h-12">
               <div className="absolute w-12 h-12 z-10 rounded-full">
                 <Image
                   src="/assets/profile-pic.png"
@@ -221,7 +221,7 @@ const ReviewDriverApplication = ({
                 {(close) => (
                   <FormProvider {...form}>
                     <form
-                      className="bg-background rounded-20 p-5 xsm:p-10 max-w-[442px] mx-auto"
+                      className="bg-background rounded-20 p-5 xsm:p-10 max-w-110.5 mx-auto"
                       onSubmit={handleSubmit(
                         handleReturn(driver.userId, close)
                       )}
@@ -320,7 +320,7 @@ const ReviewDriverApplication = ({
                 {(close) => (
                   <FormProvider {...form}>
                     <form
-                      className="bg-background rounded-20 p-10 text-center max-w-[500px] mx-auto"
+                      className="bg-background rounded-20 p-10 text-center max-w-a-500 mx-auto"
                       onSubmit={handleSubmit(
                         handleReject(driver.userId, close)
                       )}

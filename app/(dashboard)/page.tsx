@@ -1,4 +1,5 @@
 import { currentUser } from '@/actions/current-user';
+import { getOverallStats } from '@/actions/get-overall-stats';
 
 import { getChurches } from '@/actions/getChurches';
 import HomePage from '@/components/home-page';
@@ -11,7 +12,11 @@ export type ChurchRow = {
 };
 
 export default async function Page() {
-  const [user, churches] = await Promise.all([currentUser(), getChurches()]);
+  const [user, churches, stats] = await Promise.all([
+    currentUser(),
+    getChurches(),
+    getOverallStats(),
+  ]);
 
   if (!churches.success) {
     return [];
@@ -21,10 +26,10 @@ export default async function Page() {
     <HomePage
       user={user}
       churchData={churches.data}
-      totalChurches={churches.pagination.total}
-      totalRides={0}
-      totalDrivers={0}
-      totalPassengers={0}
+      totalChurches={stats.data?.churches || 0}
+      totalRides={stats.data?.rides || 0}
+      totalDrivers={stats.data?.drivers || 0}
+      totalPassengers={stats.data?.passengers || 0}
     />
   );
 }

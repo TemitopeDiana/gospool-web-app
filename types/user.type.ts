@@ -40,14 +40,14 @@ export interface User {
   >;
   church?: Pick<Church, 'name' | 'churchId' | 'uniqueIdentifier' | '_id'>;
   createdAt: string;
-  dateOfBirth: string;
+  dateOfBirth?: string;
   department?: Department;
   homeAddress: string;
   id: string;
   driverVerificationReturnTypes: Array<unknown>;
   firstName: string;
   lastName: string;
-  gender: 'male' | 'female';
+  gender?: 'male' | 'female';
   isActive: boolean;
   isDriverVerified: boolean;
   email: string;
