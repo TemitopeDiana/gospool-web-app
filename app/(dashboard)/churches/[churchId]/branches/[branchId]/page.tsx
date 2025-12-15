@@ -43,6 +43,7 @@ const ChurchBranchPage = async ({ params }: Props) => {
           { label: branchInfo.data?.name || 'Branch' },
         ]}
       />
+
       <BranchPage
         teamMembers={teamMembers.data || []}
         drivers={drivers.data || []}

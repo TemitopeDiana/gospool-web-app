@@ -77,9 +77,9 @@ const DriverProfile = ({
 
   return (
     <div className="flex max-lmd:flex-col [&>div]:flex-1 gap-5">
-      <div className="dashboard-card mt-8 lmd:max-w-[380px] lmd:mt-0">
+      <div className="dashboard-card mt-8 lmd:max-w-95 lmd:mt-0">
         <div className="relative flex justify-between items-center mb-8">
-          <div className="relative w-[73px] h-12">
+          <div className="relative w-18.25 h-12">
             <div className="absolute w-12 h-12 z-3 rounded-full">
               <Image
                 src="/assets/profile-pic.png"

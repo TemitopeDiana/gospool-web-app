@@ -26,7 +26,7 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
           <div className="flex gap-4 text-gray-400">
             <div className="flex-1">
               <div className="location-info before:border-primary font-medium pb-2 isolate text-gray-800 before:mt-1 ">
-                <span className="absolute w-1 left-[5px] h-full border-l-2 border-dotted top-3.5 border-primary -z-1"></span>
+                <span className="absolute w-1 left-1.25 h-full border-l-2 border-dotted top-3.5 border-primary -z-1"></span>
                 <span className="line-clamp-1">
                   {rideHistory?.startLocation.address || '--'}
                 </span>
@@ -74,7 +74,7 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
             </div>
           </div>
 
-          <div className="relative w-24 xxs:w-[121px] h-18 shrink-0">
+          <div className="relative w-24 xxs:w-30.25 h-18 shrink-0">
             <Image src="/assets/car.png" alt="car-image" fill sizes="100%" />
           </div>
         </div>

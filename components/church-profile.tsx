@@ -88,7 +88,7 @@ const ChurchProfile = ({
 
   return (
     <div>
-      <div className="dashboard-card  flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
+      <div className="dashboard-card  flex flex-col gap-3 xsm:gap-5 md:gap-8.75">
         <div className="flex flex-col gap-2 xsm:flex-row xsm:gap-0 xsm:justify-between">
           <div className="flex items-center gap-3">
             <div className="relative w-12 h-12 aspect-square xl:w-16 xl:h-16">
@@ -225,7 +225,7 @@ const ChurchProfile = ({
                             // imageURL={checkMark}
                             // imageClassName="w-20 h-20"
                           >
-                            <Button className="mx-auto px-[51px] py-[13.5px] mt-10">
+                            <Button className="mx-auto px-12.75 py-[13.5px] mt-10">
                               Okay
                             </Button>
                           </Modal>
@@ -300,7 +300,7 @@ const ChurchProfile = ({
                           <Button
                             onClick={close}
                             variant="default"
-                            className="py-[13.5px] px-[30px]"
+                            className="py-[13.5px] px-7.5"
                           >
                             Send invite
                           </Button>

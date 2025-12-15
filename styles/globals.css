@@ -29,7 +29,7 @@
   }
 
   thead th {
-    @apply px-3 py-[9px] font-medium text-base-black;
+    @apply px-3 py-2.25 font-medium text-base-black;
   }
 
   thead th:first-child {
@@ -118,7 +118,7 @@
   }
 
   .tooltip-content {
-    @apply rounded-8 p-4 bg-white border outline-none max-w-[400px] shadow  text-sm z-50;
+    @apply rounded-8 p-4 bg-white border outline-none max-w-100 shadow  text-sm z-50;
   }
 
   .border-4-4-dashed {

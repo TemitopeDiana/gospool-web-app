@@ -31,7 +31,7 @@ const PassengerPageComponent = ({ passengers }: Props) => {
           hideCloseButton
         >
           {(close) => (
-            <div className="px-5 py-10 bg-white rounded-20 mx-auto shadow-lg focus:outline-none md:px-10 max-w-[442px]">
+            <div className="px-5 py-10 bg-white rounded-20 mx-auto shadow-lg focus:outline-none md:px-10 max-w-110.5">
               <Title className="text-xl font-semibold mb-6 md:text-3xl capitalize">
                 Download Data
               </Title>

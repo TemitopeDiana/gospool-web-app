@@ -97,7 +97,7 @@ const HomePage = ({
 
   return (
     <div>
-      <div className="w-full md:mt-[23px]">
+      <div className="w-full md:mt-5.75">
         <div className="xsm:flex justify-between items-center">
           <div>
             <h1 className="text-xl font-medium mb-2 md:text-3xl">
@@ -127,20 +127,20 @@ const HomePage = ({
           </Drawer>
         </div>
 
-        <div className="max-w-screen mt-4 md:mt-[35px] pb-3 flex items-center overflow-x-auto gap-4 snap-x snap-mandatory">
+        <div className="max-w-screen mt-4 md:mt-8.75 pb-3 flex items-center overflow-x-auto gap-4 snap-x snap-mandatory">
           {cards.map((card, idx) => (
             <div
               key={idx}
               className="flex-1 h-24 rounded-xl snap-start bg-background py-[22.5px] px-3"
             >
-              <div className="flex items-center justify-between gap-[26px]">
+              <div className="flex items-center justify-between gap-6.5">
                 <div>
                   <p className="text-gray-500 text-sm mb-1 capitalize">
                     {card.name}
                   </p>
                   <p className="font-medium text-xl">{card.count}</p>
                 </div>
-                <div className="w-[46px] h-[46px] bg-gray-50 rounded-40 flex items-center justify-center">
+                <div className="w-11.5 h-11.5 bg-gray-50 rounded-40 flex items-center justify-center">
                   <SvgIcon name={card.iconName} className="w-5 h-5" />
                 </div>
               </div>

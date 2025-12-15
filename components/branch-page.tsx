@@ -49,7 +49,7 @@ function BranchPage({
 
   return (
     <div>
-      <div className="dashboard-card  flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
+      <div className="dashboard-card  flex flex-col gap-3 xsm:gap-5 md:gap-8.75">
         <div className="flex flex-col gap-2 xsm:flex-row xsm:gap-0 xsm:justify-between">
           <div className="flex flex-wrap items-center gap-3">
             <div className="relative w-12 h-12 xl:w-16 xl:h-16">
@@ -68,7 +68,7 @@ function BranchPage({
             </div>
           </div>
 
-          <div className="ml-auto max-w-[140px]">
+          <div className="ml-auto max-w-35">
             <HoverCard
               trigger={
                 <Button className="flex items-center gap-2 mt-2 xxs:mt-0">
