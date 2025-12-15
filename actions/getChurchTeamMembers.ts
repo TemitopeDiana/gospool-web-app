@@ -6,7 +6,7 @@ import { apiV1 } from '@/lib/api';
 import { ApiResponse } from '@/types/api.type';
 import { User } from '@/types/user.type';
 
-export const getCHurchTeamMembers = async (
+export const getChurchTeamMembers = async (
   churchId: string
 ): Promise<ApiResponse<User[]>> => {
   try {
