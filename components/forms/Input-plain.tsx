@@ -5,8 +5,9 @@ import ShowView from '../show-view';
 import SvgIcon from '../svg-icon';
 import { cn } from '@/lib/utils';
 
-interface InputProps
-  extends InputHTMLAttributes<Omit<HTMLInputElement, 'name'>> {
+interface InputProps extends InputHTMLAttributes<
+  Omit<HTMLInputElement, 'name'>
+> {
   name: string;
   label: string;
   footerText?: string;
@@ -35,7 +36,7 @@ const Input = ({
       >
         {icon && <SvgIcon name={icon} className="h-5 w-5" />}
         <div
-          className={`flex w-full flex-row items-center bg-gray-50 py-[13.5px] px-4 min-w-[169px] gap-4 mt-2 rounded-8`}
+          className={`flex w-full flex-row items-center bg-gray-50 py-[13.5px] px-4 min-w-42.25 gap-4 mt-2 rounded-8`}
         >
           <input
             name={name}

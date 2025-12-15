@@ -28,7 +28,8 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   onClick?: () => void;
@@ -67,10 +68,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={loading || disabled}
       >
         <ShowView when={loading}>
-          <div className="inline-flex btn py-1 gap-1 justify-center items-center text-center [&>*]:w-2 [&>*]:h-2 [&>*]:bg-current [&>*]:animate-bounce [&>*]:rounded-1/2 [&>*]:text-a-16">
-            <div className="!delay-700" />
-            <div className="!delay-500" />
-            <div className="!delay-1000" />
+          <div className="inline-flex btn py-1 gap-1 justify-center items-center text-center *:w-2 *:h-2 *:bg-current *:animate-bounce *:rounded-1/2 *:text-a-16">
+            <div className="delay-700!" />
+            <div className="delay-500!" />
+            <div className="delay-1000!" />
           </div>
         </ShowView>
 
