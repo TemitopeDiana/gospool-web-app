@@ -34,17 +34,20 @@ export const RoleLabels: Record<RoleEnum, string> = {
 
 export interface User {
   attendanceDuration: string;
-  branch: Pick<Branch, 'name' | 'branchId' | 'branchIdentifier' | 'id' | '_id'>;
-  church: Pick<Church, 'name' | 'churchId' | 'uniqueIdentifier' | '_id'>;
+  branch?: Pick<
+    Branch,
+    'name' | 'branchId' | 'branchIdentifier' | 'id' | '_id'
+  >;
+  church?: Pick<Church, 'name' | 'churchId' | 'uniqueIdentifier' | '_id'>;
   createdAt: string;
   dateOfBirth: string;
-  department: Department;
+  department?: Department;
   homeAddress: string;
   id: string;
   driverVerificationReturnTypes: Array<unknown>;
   firstName: string;
   lastName: string;
-  gender: 'male' | 'female' | string;
+  gender: 'male' | 'female';
   isActive: boolean;
   isDriverVerified: boolean;
   email: string;
