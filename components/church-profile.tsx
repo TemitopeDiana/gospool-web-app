@@ -3,11 +3,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/button';
 import Input from '@/components/input';
 import SvgIcon from '@/components/svg-icon';
 import BranchesTable from './branches-table';
+import ConfirmActionCard from './confirm-action-card';
 import Drawer from './drawer';
 import DriversTable from './driver-table';
 import CreateChurchBranch from './forms/create-church-branch.form';
@@ -15,7 +17,9 @@ import HoverCard from './hover-card';
 import Modal from './modal-component';
 import PassengersTable from './passengers-table';
 import Tabs from './tabs';
+import TeamMembersTable from './team-members-table';
 
+import { deleteChurchAction } from '@/actions/deleteChurch';
 import { compactNumber } from '@/lib/format';
 import churchLogo from '@/public/assets/default-church-logo.png';
 import profilePic from '@/public/assets/profile-pic.png';
@@ -26,35 +30,61 @@ import { type User } from '@/types/user.type';
 type ProfileType = 'passenger' | 'driver' | 'all' | null;
 type FormatType = 'csv' | 'pdf' | null;
 
-const cards: { name: string; iconName: IconName; team: number }[] = [
-  { name: 'drivers', iconName: 'car', team: 100 },
-  { name: 'members', iconName: 'profile-users', team: 1000 },
-  { name: 'team', iconName: 'profile-users', team: 100 },
-];
-
 interface ChurchProfileProps {
   branches: Branch[];
   passengers: User[];
   drivers: User[];
+  teamMembers: User[];
   churchLogo?: string;
   adminName: string;
   churchName: string;
   totalBranches: number;
   churchId: string;
+  totalTeam: number;
+  totalDrivers: number;
+  totalPassengers: number;
 }
 
 const ChurchProfile = ({
   churchName,
   totalBranches,
+  teamMembers,
   adminName,
   branches,
   churchId,
   passengers,
   drivers,
+  totalDrivers,
+  totalPassengers,
+  totalTeam,
 }: ChurchProfileProps) => {
   const methods = useForm();
   const [profile, setProfile] = useState<ProfileType>(null);
   const [format, setFormat] = useState<FormatType>(null);
+  const [isDeletingChurch, setIsDeletingChurch] = useState(false);
+
+  const cards: { name: string; iconName: IconName; team: number }[] = [
+    { name: 'drivers', iconName: 'car', team: totalDrivers },
+    { name: 'members', iconName: 'profile-users', team: totalPassengers },
+    { name: 'team', iconName: 'profile-users', team: totalTeam },
+  ];
+
+  const handleDeleteChurch = async (churchId: string, close: () => void) => {
+    setIsDeletingChurch(true);
+
+    try {
+      const result = await deleteChurchAction(churchId);
+
+      if (result.success) {
+        toast.success(result.message);
+        close();
+      } else {
+        toast.error(result.message);
+      }
+    } finally {
+      setIsDeletingChurch(false);
+    }
+  };
 
   return (
     <div>
@@ -280,10 +310,31 @@ const ChurchProfile = ({
                   </Modal>
                 </li>
                 <li className="text-error-700">
-                  <Link href="" className="flex items-center gap-2">
-                    <SvgIcon name="trash" className="h-4 w-4" />
-                    Delete
-                  </Link>
+                  <Modal
+                    trigger={
+                      <button className="flex items-center gap-2">
+                        <SvgIcon name="trash" className="h-4 w-4" />
+                        Delete
+                      </button>
+                    }
+                    hideCloseButton
+                    disableOutsideClick
+                  >
+                    {(close) => (
+                      <ConfirmActionCard
+                        close={close}
+                        title={`Delete ${churchName}`}
+                        description="Current members will need to update their church. Prefer to disable it instead?"
+                        dangerColor
+                        icon="trash"
+                        confirmAction={{
+                          buttonText: 'Delete',
+                          onClick: () => handleDeleteChurch(churchId, close),
+                          loading: isDeletingChurch,
+                        }}
+                      />
+                    )}
+                  </Modal>
                 </li>
               </ul>
             </HoverCard>
@@ -305,7 +356,7 @@ const ChurchProfile = ({
           </div>
 
           {/* bottom-right  */}
-          <div className="md:flex flex-1 md:gap-5 max-w-[150px] md:max-w-none">
+          <div className="md:flex flex-1 md:gap-5 max-w-a-150 md:max-w-none">
             {cards.map((el, index) => (
               <div key={index} className="flex items-center gap-2 mb-2 md:mb-0">
                 <div className="w-10 h-10 bg-gray-50 rounded-[48px] flex items-center justify-center">
@@ -338,7 +389,7 @@ const ChurchProfile = ({
             },
             {
               label: 'Team',
-              content: <>Team Table</>,
+              content: <TeamMembersTable teamMembers={teamMembers} />,
             },
           ]}
         ></Tabs>

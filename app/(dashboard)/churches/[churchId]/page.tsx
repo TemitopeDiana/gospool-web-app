@@ -2,10 +2,12 @@ import { Metadata } from 'next';
 
 import Breadcrumb from '@/components/bread-crumbs';
 
+import { getChurchStats } from '@/actions/get-church-stats';
 import { getChurchBranches } from '@/actions/getChurchBranches';
 import { getChurchById } from '@/actions/getChurchById';
 import { getChurchDrivers } from '@/actions/getChurchDrivers';
 import { getChurchPassengers } from '@/actions/getChurchPassengers';
+import { getChurchTeamMembers } from '@/actions/getChurchTeamMembers';
 import ChurchProfile from '@/components/church-profile';
 import { routes } from '@/lib/routes';
 import { notFound } from 'next/navigation';
@@ -26,20 +28,20 @@ type Props = {
 const ChurchPage = async ({ params }: Props) => {
   const { churchId } = await params;
 
-  const [church, branches, passengers, drivers] = await Promise.all([
-    getChurchById(churchId),
-    getChurchBranches(churchId),
-    await getChurchPassengers(churchId),
-    await getChurchDrivers(churchId),
-  ]);
+  const [church, branches, passengers, drivers, stats, teamMembers] =
+    await Promise.all([
+      getChurchById(churchId),
+      getChurchBranches(churchId),
+      getChurchPassengers(churchId),
+      getChurchDrivers(churchId),
+      getChurchStats(churchId),
+      getChurchTeamMembers(churchId),
+    ]);
 
+  console.log({ teamMembers });
   if (!church.success) {
     return notFound();
   }
-
-  console.log({ church });
-
-  console.log('Passengers', { passengers });
 
   return (
     <div>
@@ -54,10 +56,14 @@ const ChurchPage = async ({ params }: Props) => {
         branches={branches.data ?? []}
         passengers={passengers.data ?? []}
         drivers={drivers.data ?? []}
+        teamMembers={teamMembers.data || []}
         churchName={church.data?.name ?? ''}
         adminName={church.data?.adminName ?? ''}
         totalBranches={church.data?.totalBranches ?? 0}
         churchId={churchId}
+        totalDrivers={stats.data?.drivers || 0}
+        totalPassengers={stats.data?.passengers || 0}
+        totalTeam={stats.data?.team || 0}
       />
     </div>
   );
