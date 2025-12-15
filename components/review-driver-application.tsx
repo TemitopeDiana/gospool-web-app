@@ -139,7 +139,7 @@ const ReviewDriverApplication = ({
   };
 
   return (
-    <div className="w-full !max-w-[676px]">
+    <div className="w-full max-w-[676px]!">
       <h1 className="dashboard-heading-text">Review Application</h1>
       <p>Please go over driver’s application thoroughly</p>
 
@@ -320,7 +320,7 @@ const ReviewDriverApplication = ({
                 {(close) => (
                   <FormProvider {...form}>
                     <form
-                      className="bg-background rounded-20 p-10 text-center max-w-[500px] mx-auto"
+                      className="bg-background rounded-20 p-10 text-center max-w-a-500 mx-auto"
                       onSubmit={handleSubmit(
                         handleReject(driver.userId, close)
                       )}

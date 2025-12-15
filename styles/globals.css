@@ -71,7 +71,7 @@
   }
 
   .table-action-popover {
-    @apply w-full min-w-a-150 bg-white border border-gray-100 text-a-12 rounded-8 [&>*]:block [&>*]:py-3 [&>*]:px-5 [&>*]:hover:bg-gray-50/50;
+    @apply w-full min-w-a-150 bg-white border border-gray-100 text-a-12 rounded-8 [&_a]:flex [&_button]:flex [&>li_*]:items-center [&>li_*]:gap-2 *:block *:py-3 *:px-5 *:hover:bg-gray-50/50;
   }
 
   .toggle-button {
@@ -79,7 +79,7 @@
   }
 
   .toggle-button::after {
-    @apply w-4 h-4 absolute left-[2px] top-1/2 transform -translate-y-1/2 will-change-transform bg-white rounded-full shadow-md transition-transform duration-150;
+    @apply w-4 h-4 absolute left-0.5 top-1/2 transform -translate-y-1/2 will-change-transform bg-white rounded-full shadow-md transition-transform duration-150;
     content: '';
   }
 
@@ -114,7 +114,7 @@
   }
 
   .option-menu {
-    @apply min-w-a-150 border bg-white border-gray-100 rounded-8 p-1 [&>*]:not-last:border-b transition-colors ease-in-out [&>*]:flex [&>*]:w-full [&>*]:gap-2 [&>*]:items-center [&>*]:p-2 [&>*]:hover:bg-primary-20 [&_svg]:h-5 [&_svg]:w-5 text-a-14;
+    @apply min-w-a-150 border bg-white border-gray-100 rounded-8 p-1 *:not-last:border-b transition-colors ease-in-out *:flex *:w-full *:gap-2 *:items-center *:p-2 *:hover:bg-primary-20 [&_svg]:h-5 [&_svg]:w-5 text-a-14;
   }
 
   .tooltip-content {

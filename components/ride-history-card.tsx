@@ -31,7 +31,7 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
                   {rideHistory?.startLocation.address || '--'}
                 </span>
               </div>
-              <p className="location-info before:border-gray-900 before:mt-[2px]">
+              <p className="location-info before:border-gray-900 before:mt-0.5">
                 <span className="line-clamp-1">
                   {rideHistory?.destination.address || '--'}
                 </span>
@@ -52,7 +52,7 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
       <div>
         <div className="flex items-center justify-between gap-1 sm:gap-3">
           <div className="flex items-start">
-            <div className="relative w-12 h-12 mr-2 flex-shrink-0">
+            <div className="relative w-12 h-12 mr-2 shrink-0">
               <Image
                 src="/assets/profile-pic.png"
                 alt="passenger-pic"
@@ -66,7 +66,7 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
                 <p className="font-medium text-lg text-gray-800 mb-1">
                   Abraham
                 </p>
-                <div className="bg-gray-100 p-1 rounded-[4px] w-fit border border-b border-gray-300 border-4-4-dashed">
+                <div className="bg-gray-100 p-1 rounded-sm w-fit border border-b border-gray-300 border-4-4-dashed">
                   <p className="text-gray-900 font-medium">ABC-123BC</p>
                 </div>
               </div>
@@ -74,7 +74,7 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
             </div>
           </div>
 
-          <div className="relative w-24 xxs:w-[121px] h-18 flex-shrink-0">
+          <div className="relative w-24 xxs:w-[121px] h-18 shrink-0">
             <Image src="/assets/car.png" alt="car-image" fill sizes="100%" />
           </div>
         </div>
@@ -168,7 +168,7 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
           <div className="flex items-start justify-between">
             {rideHistory.passengers.map((el, idx) => (
               <div className="flex items-center gap-2" key={idx}>
-                <div className="relative w-12 h-12 flex-shrink-0">
+                <div className="relative w-12 h-12 shrink-0">
                   <Image
                     src="/assets/profile-pic.png"
                     alt="passenger-pic"
