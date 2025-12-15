@@ -10,9 +10,16 @@ import { routes } from '@/lib/routes';
 import { Button } from './button';
 import Modal from './modal-component';
 import Popover from './popover';
+import ShowView from './show-view';
 import SvgIcon from './svg-icon';
 
-const PassengerPageComponent = () => {
+import { User } from '@/types/user.type';
+
+interface Props {
+  passengers: User[];
+}
+
+const PassengerPageComponent = ({ passengers }: Props) => {
   return (
     <div>
       <div className="flex justify-between mb-5">
@@ -89,29 +96,37 @@ const PassengerPageComponent = () => {
             </thead>
 
             <tbody>
-              {Array.from({ length: 4 }).map((_, idx) => (
+              {passengers.map((el) => (
                 <tr
-                  key={idx}
+                  key={el._id}
                   className="border-b border-gray-100 hover:bg-gray-50"
                 >
                   <td className="px-4 py-3">
-                    {dayjs('2025-01-12').format(DATE_FORMAT_DMY)}
+                    {dayjs(el.createdAt).format(DATE_FORMAT_DMY)}
                   </td>
-                  <td className="px-4 py-3">Paul Oluwatoni</td>
+                  <td className="px-4 py-3">{`${el.lastName} ${el.firstName}`}</td>
                   <td className="px-4 py-3 flex items-center gap-2">
-                    <Image
-                      src="/assets/favicon.png"
-                      alt="logo"
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
-                    <div>
-                      <p className="font-medium">Harvesters</p>
-                      <p className="text-a-12 text-gray-500">Gbagada</p>
-                    </div>
+                    <ShowView when={!!el.church}>
+                      <Image
+                        src="/assets/favicon.png"
+                        alt="logo"
+                        width={24}
+                        height={24}
+                        className="rounded-full"
+                      />
+                      <div>
+                        <p className="font-medium">
+                          {el?.church?.name || '---'}
+                        </p>
+                        <p className="text-a-12 text-gray-500">
+                          {el?.branch?.name || '---'}
+                        </p>
+                      </div>
+                    </ShowView>
+
+                    <ShowView when={!el.church}>---</ShowView>
                   </td>
-                  <td className="px-4 py-3">Tech</td>
+                  <td className="px-4 py-3">{el?.department?.name || '---'}</td>
                   <td className="px-4 py-3 text-gray-500 ">
                     <Popover
                       trigger={
@@ -120,13 +135,20 @@ const PassengerPageComponent = () => {
                         </button>
                       }
                     >
-                      <div className="w-full bg-white border border-gray-100 text-a-12 rounded font-semibold [&>*]:block [&>*]:py-3 [&>*]:px-5">
-                        <Link
-                          href={`${routes.passengerProfile(idx.toString())}`}
-                        >
-                          View Profile
-                        </Link>
-                      </div>
+                      <ul className="table-action-popover">
+                        <li>
+                          <Link
+                            href={`${routes.passengerProfile(el.userId)}`}
+                            className="flex items-center gap-2"
+                          >
+                            <SvgIcon
+                              name="eye"
+                              className="h-4 w-4 text-gray-500"
+                            />
+                            View Profile
+                          </Link>
+                        </li>
+                      </ul>
                     </Popover>
                   </td>
                 </tr>
