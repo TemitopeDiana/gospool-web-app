@@ -44,7 +44,7 @@ const BranchesTable = ({ branches }: Props) => {
     }
   };
 
-  const handleDeleteChurch = async (
+  const handleDeleteChurchBranch = async (
     branchId: string,
     churchId: string,
     close: () => void
@@ -160,7 +160,7 @@ const BranchesTable = ({ branches }: Props) => {
                                   confirmAction={{
                                     buttonText: 'Delete',
                                     onClick: () =>
-                                      handleDeleteChurch(
+                                      handleDeleteChurchBranch(
                                         el.branchId,
                                         el.churchId,
                                         close
@@ -185,7 +185,7 @@ const BranchesTable = ({ branches }: Props) => {
       <ShowView when={!branches.length}>
         <NoDataCard
           heading="No Branch yet"
-          description="Church is not live yet"
+          description="This Church has no active branch yet"
         />
       </ShowView>
     </>
