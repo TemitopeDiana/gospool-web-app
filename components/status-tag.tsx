@@ -12,7 +12,7 @@ const StatusTag = ({ warning, danger, gray, text }: StatusTagProps) => {
   return (
     <span
       className={cn(
-        'py-[2px] px-2 text-primary bg-primary-20 rounded-full',
+        'py-[2px] px-2 text-primary bg-primary-20 rounded-full text-xs',
         warning && 'bg-warning-50 text-warning-700',
         danger && 'bg-error-50 text-error-700',
         gray && 'bg-gray-50 text-gray-700'

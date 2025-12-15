@@ -3,58 +3,92 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/button';
 import Input from '@/components/input';
-import Modal from '@/components/modal';
 import SvgIcon from '@/components/svg-icon';
+import BranchesTable from './branches-table';
+import ConfirmActionCard from './confirm-action-card';
 import Drawer from './drawer';
+import DriversTable from './driver-table';
 import CreateChurchBranch from './forms/create-church-branch.form';
-import NoDataCard from './no-data-card';
-import ShowView from './show-view';
+import HoverCard from './hover-card';
+import Modal from './modal-component';
+import PassengersTable from './passengers-table';
 import Tabs from './tabs';
+import TeamMembersTable from './team-members-table';
 
+import { deleteChurchAction } from '@/actions/deleteChurch';
 import { compactNumber } from '@/lib/format';
-import { routes } from '@/lib/routes';
-import checkMark from '@/public/assets/check.png';
 import churchLogo from '@/public/assets/default-church-logo.png';
 import profilePic from '@/public/assets/profile-pic.png';
-import { Branch } from '@/types/church.type';
-import { IconName } from '@/types/icon.type';
-import HoverCard from './hover-card';
+import { type Branch } from '@/types/church.type';
+import { type IconName } from '@/types/icon.type';
+import { type User } from '@/types/user.type';
 
 type ProfileType = 'passenger' | 'driver' | 'all' | null;
 type FormatType = 'csv' | 'pdf' | null;
 
-const cards: { name: string; iconName: IconName; team: number }[] = [
-  { name: 'drivers', iconName: 'car', team: 100 },
-  { name: 'members', iconName: 'profile-users', team: 1000 },
-  { name: 'team', iconName: 'profile-users', team: 100 },
-];
-
 interface ChurchProfileProps {
   branches: Branch[];
+  passengers: User[];
+  drivers: User[];
+  teamMembers: User[];
   churchLogo?: string;
   adminName: string;
   churchName: string;
   totalBranches: number;
   churchId: string;
+  totalTeam: number;
+  totalDrivers: number;
+  totalPassengers: number;
 }
 
-function ChurchProfile({
+const ChurchProfile = ({
   churchName,
   totalBranches,
+  teamMembers,
   adminName,
   branches,
   churchId,
-}: ChurchProfileProps) {
+  passengers,
+  drivers,
+  totalDrivers,
+  totalPassengers,
+  totalTeam,
+}: ChurchProfileProps) => {
   const methods = useForm();
   const [profile, setProfile] = useState<ProfileType>(null);
   const [format, setFormat] = useState<FormatType>(null);
+  const [isDeletingChurch, setIsDeletingChurch] = useState(false);
+
+  const cards: { name: string; iconName: IconName; team: number }[] = [
+    { name: 'drivers', iconName: 'car', team: totalDrivers },
+    { name: 'members', iconName: 'profile-users', team: totalPassengers },
+    { name: 'team', iconName: 'profile-users', team: totalTeam },
+  ];
+
+  const handleDeleteChurch = async (churchId: string, close: () => void) => {
+    setIsDeletingChurch(true);
+
+    try {
+      const result = await deleteChurchAction(churchId);
+
+      if (result.success) {
+        toast.success(result.message);
+        close();
+      } else {
+        toast.error(result.message);
+      }
+    } finally {
+      setIsDeletingChurch(false);
+    }
+  };
 
   return (
     <div>
-      <div className="dashboard-card  flex flex-col gap-3 xsm:gap-5 md:gap-[35px]">
+      <div className="dashboard-card  flex flex-col gap-3 xsm:gap-5 md:gap-8.75">
         <div className="flex flex-col gap-2 xsm:flex-row xsm:gap-0 xsm:justify-between">
           <div className="flex items-center gap-3">
             <div className="relative w-12 h-12 aspect-square xl:w-16 xl:h-16">
@@ -62,12 +96,16 @@ function ChurchProfile({
             </div>
             <div>
               <h1 className="font-semibold md:text-xl">{churchName}</h1>
-              <p>{totalBranches} branches</p>
+              <p>
+                {totalBranches} branch{totalBranches > 1 && 'es'}
+              </p>
             </div>
           </div>
 
           <div className="xxs:flex items-center gap-4">
             <Drawer
+              disableEscapeDown
+              disableOutsideClick
               trigger={<Button variant="outline">Add branch</Button>}
               title="Add Church Branch"
               description={
@@ -109,8 +147,8 @@ function ChurchProfile({
                         Download
                       </Link>
                     }
-                    title="Download data"
-                    contentCardClassName="text-left"
+                    // title="Download data"
+                    // contentCardClassName="text-left"
                   >
                     {(close) => (
                       <div className="mt-6">
@@ -182,12 +220,12 @@ function ChurchProfile({
                                 Download
                               </Button>
                             }
-                            title="Check your email"
-                            description="We sent the data there!"
-                            imageURL={checkMark}
-                            imageClassName="w-20 h-20"
+                            // title="Check your email"
+                            // description="We sent the data there!"
+                            // imageURL={checkMark}
+                            // imageClassName="w-20 h-20"
                           >
-                            <Button className="mx-auto px-[51px] py-[13.5px] mt-10">
+                            <Button className="mx-auto px-12.75 py-[13.5px] mt-10">
                               Okay
                             </Button>
                           </Modal>
@@ -216,8 +254,8 @@ function ChurchProfile({
                         Reassign
                       </Link>
                     }
-                    title="Reassign branch leader"
-                    contentCardClassName="text-left"
+                    // title="Reassign branch leader"
+                    // contentCardClassName="text-left"
                   >
                     {(close) => (
                       <div className="mt-6">
@@ -262,7 +300,7 @@ function ChurchProfile({
                           <Button
                             onClick={close}
                             variant="default"
-                            className="py-[13.5px] px-[30px]"
+                            className="py-[13.5px] px-7.5"
                           >
                             Send invite
                           </Button>
@@ -272,10 +310,31 @@ function ChurchProfile({
                   </Modal>
                 </li>
                 <li className="text-error-700">
-                  <Link href="" className="flex items-center gap-2">
-                    <SvgIcon name="trash" className="h-4 w-4" />
-                    Delete
-                  </Link>
+                  <Modal
+                    trigger={
+                      <button className="flex items-center gap-2">
+                        <SvgIcon name="trash" className="h-4 w-4" />
+                        Delete
+                      </button>
+                    }
+                    hideCloseButton
+                    disableOutsideClick
+                  >
+                    {(close) => (
+                      <ConfirmActionCard
+                        close={close}
+                        title={`Delete ${churchName}`}
+                        description="Current members will need to update their church. Prefer to disable it instead?"
+                        dangerColor
+                        icon="trash"
+                        confirmAction={{
+                          buttonText: 'Delete',
+                          onClick: () => handleDeleteChurch(churchId, close),
+                          loading: isDeletingChurch,
+                        }}
+                      />
+                    )}
+                  </Modal>
                 </li>
               </ul>
             </HoverCard>
@@ -297,7 +356,7 @@ function ChurchProfile({
           </div>
 
           {/* bottom-right  */}
-          <div className="md:flex flex-1 md:gap-5 max-w-[150px] md:max-w-none">
+          <div className="md:flex flex-1 md:gap-5 max-w-a-150 md:max-w-none">
             {cards.map((el, index) => (
               <div key={index} className="flex items-center gap-2 mb-2 md:mb-0">
                 <div className="w-10 h-10 bg-gray-50 rounded-[48px] flex items-center justify-center">
@@ -314,127 +373,29 @@ function ChurchProfile({
       </div>
 
       <div className="dashboard-card mt-5">
-        <div className="flex justify-between gap-4 mb-4">
-          <div className="flex flex-1 gap-2 items-center px-3 bg-gray-50 rounded-xl w-35 max-w-a-300">
-            <SvgIcon name="search" className="w-5 h-5 text-gray-500" />
-            <input
-              type="search"
-              name=""
-              id=""
-              className="flex-1 min-w-0 py-2"
-              placeholder="Search"
-            />
-          </div>
-
-          <div className="flex flex-1 w-max gap-2 justify-between items-center px-3  bg-gray-50 rounded-xl max-w-30">
-            All
-            <SvgIcon name="arrow-down" className="w-4 h-4 text-gray-500" />
-          </div>
-        </div>
-
         <Tabs
           tabs={[
             {
               label: 'Branches',
-              content: (
-                <>
-                  <ShowView when={!!branches.length}>
-                    <div className="table-wrapper">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Date Created</th>
-                            <th>Name</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {branches.map((el, index) => (
-                            <tr key={index}>
-                              <td>{el.formattedDate}</td>
-                              <td className="py-6 px-3 capitalize">
-                                {el.name}
-                              </td>
-                              <td>
-                                <button
-                                  className={`${el.status === 'active' ? 'bg-green-500 active' : 'bg-gray-100'} toggle-button`}
-                                ></button>
-                              </td>
-                              <td>
-                                <HoverCard
-                                  trigger={
-                                    <button className="block w-max">
-                                      <SvgIcon
-                                        name="dotted-menu"
-                                        className="w-7 h-5"
-                                      />
-                                    </button>
-                                  }
-                                >
-                                  <ul className="table-action-popover">
-                                    <li>
-                                      <Link
-                                        href={`${routes.branchPage(churchId, el.branchId)}`}
-                                        className="flex items-center gap-2"
-                                      >
-                                        <SvgIcon
-                                          name="eye"
-                                          className="h-4 w-4 text-gray-500"
-                                        />
-                                        View
-                                      </Link>
-                                    </li>
-                                    <li className="text-error-700">
-                                      <Link
-                                        href=""
-                                        className="flex items-center gap-2"
-                                      >
-                                        <SvgIcon
-                                          name="trash"
-                                          className="h-4 w-4"
-                                        />
-                                        Delete
-                                      </Link>
-                                    </li>
-                                    R
-                                  </ul>
-                                </HoverCard>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </ShowView>
-
-                  <ShowView when={!branches.length}>
-                    <NoDataCard
-                      heading="No Branch yet"
-                      description="Church is not live yet"
-                    />
-                  </ShowView>
-                </>
-              ),
+              content: <BranchesTable branches={branches} />,
             },
             {
               label: 'Passengers',
-              content: <>Passengers</>,
+              content: <PassengersTable passengers={passengers} />,
             },
             {
               label: 'Drivers',
-              content: <>Drivers</>,
+              content: <DriversTable drivers={drivers} />,
             },
             {
               label: 'Team',
-              content: <>Drivers</>,
+              content: <TeamMembersTable teamMembers={teamMembers} />,
             },
           ]}
         ></Tabs>
       </div>
     </div>
   );
-}
+};
 
 export default ChurchProfile;

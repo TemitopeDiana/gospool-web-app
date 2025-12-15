@@ -2,14 +2,17 @@ import { Description, Title } from '@radix-ui/react-dialog';
 import SvgIcon from './svg-icon';
 import { Button } from './button';
 import { cn } from '@/lib/utils';
+import { IconName } from '@/types/icon.type';
 
 interface ConfirmActionCardProps {
+  icon?: IconName;
   title: string;
   description: string;
   close: () => void;
   confirmAction: {
     buttonText: string;
     onClick: () => void;
+    loading?: boolean;
   };
   dangerColor?: boolean;
 }
@@ -20,9 +23,10 @@ const ConfirmActionCard = ({
   close,
   confirmAction,
   dangerColor = false,
+  icon,
 }: ConfirmActionCardProps) => {
-  const handleConfirmAction = () => {
-    confirmAction.onClick();
+  const handleConfirmAction = async () => {
+    await confirmAction.onClick();
     close();
   };
   return (
@@ -34,12 +38,12 @@ const ConfirmActionCard = ({
         )}
       >
         <SvgIcon
-          name="bell"
+          name={icon ?? 'bell'}
           className="w-16 h-16 flex items-center justify-center"
         />
       </div>
 
-      <Title className="text-xl font-semibold mb-2 md:text-3xl capitalize">
+      <Title className="text-xl font-semibold mb-2 md:text-2xl capitalize">
         {title}
       </Title>
 
@@ -47,13 +51,14 @@ const ConfirmActionCard = ({
         {description}
       </Description>
 
-      <div className="mt-10 flex gap-4 justify-end">
+      <div className="mt-10 flex gap-4 justify-end [&>button]:min-w-a-150">
         <Button onClick={close} variant="outline">
           Cancel
         </Button>
         <Button
           variant={dangerColor ? 'danger' : 'default'}
           onClick={handleConfirmAction}
+          loading={confirmAction.loading}
         >
           {confirmAction.buttonText}
         </Button>

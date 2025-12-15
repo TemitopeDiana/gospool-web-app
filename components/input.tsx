@@ -1,13 +1,15 @@
 'use client';
-import { RegisterOptions, useFormContext } from 'react-hook-form';
 
+import { RegisterOptions, useFormContext } from 'react-hook-form';
 import { FC, InputHTMLAttributes } from 'react';
 
 import ShowView from './show-view';
+import HoverCard from './hover-card';
 import SvgIcon from './svg-icon';
 import InputFooterText from './input-footer-text';
+
 import { cn } from '@/lib/utils';
-import { IconName } from '@/types/icon.type';
+import { type IconName } from '@/types/icon.type';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
@@ -15,6 +17,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: IconName;
   validation?: RegisterOptions;
   footerText?: string;
+  description?: string;
 }
 
 const Input: FC<InputProps> = ({
@@ -23,6 +26,7 @@ const Input: FC<InputProps> = ({
   validation,
   footerText,
   icon,
+  description,
   ...props
 }) => {
   const {
@@ -34,9 +38,16 @@ const Input: FC<InputProps> = ({
 
   return (
     <div>
-      <label htmlFor={name} className="text-sm">
-        {label}
-      </label>
+      <div className="flex gap-2 text-sm">
+        <label htmlFor={name} className="text-sm">
+          {label}
+        </label>
+        <ShowView when={!!description}>
+          <HoverCard trigger={<SvgIcon name="info" className="h-4 w-4" />}>
+            <p className="tooltip-content">{description}</p>
+          </HoverCard>
+        </ShowView>
+      </div>
       <div
         className={cn(
           'flex gap-2 items-center w-full',

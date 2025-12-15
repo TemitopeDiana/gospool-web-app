@@ -11,8 +11,6 @@ export const getChurchBranches = async (
   try {
     const res = await apiV1.get(`/branches?churchId=${churchId}`);
 
-    console.log('BRANCHES DATA:', res.data);
-
     return { success: true, data: res.data.data };
   } catch (error: unknown) {
     if (error instanceof AxiosError) {

@@ -16,6 +16,7 @@ export interface Branch {
   isActive: boolean;
   church: {
     name: string;
+    churchId?: string;
   };
   leader: {
     firstName: string;
@@ -29,6 +30,8 @@ export interface Branch {
   status: string;
   statusDisplay: string;
   formattedDate: string;
+  id: string;
+  _id: string;
 }
 
 export interface ChurchResponse {
@@ -72,6 +75,7 @@ export interface Pagination {
   page: number;
   limit: number;
   pages: number;
+  current?: 1;
 }
 
 export type ChurchStatus = 'active' | 'inactive' | 'suspended' | string;
@@ -89,5 +93,5 @@ export interface ChurchBranchArgs {
   leaderName: string;
   leaderEmail: string;
   leaderPhoneNumber: string;
-  branchIdentifier: string;
+  branchIdentifier?: string;
 }
