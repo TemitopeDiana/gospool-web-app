@@ -34,7 +34,7 @@ import { toggleUserStatus } from '@/actions/toggleUserStatus';
 
 interface DriversPageProps {
   user?: UserProfile | null;
-  driversData?: Driver[];
+  driversData: Driver[];
   totalDrivers?: number;
   initialStatus: string;
   driverReturnTypes: string[];
