@@ -7,11 +7,10 @@ import InputFooterText from '../input-footer-text';
 import ShowView from '../show-view';
 import SvgIcon from '../svg-icon';
 
-interface InputProps
-  extends Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    'type' | 'name' | 'autoComplete'
-  > {
+interface InputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'type' | 'name' | 'autoComplete'
+> {
   name: string;
   label: string;
   footerText?: string;

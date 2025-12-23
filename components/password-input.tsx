@@ -6,8 +6,10 @@ import ShowView from './show-view';
 import InputFooterText from './input-footer-text';
 import SvgIcon from './svg-icon';
 
-interface InputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+interface InputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'type'
+> {
   name: string;
   label: string;
   validation?: RegisterOptions;

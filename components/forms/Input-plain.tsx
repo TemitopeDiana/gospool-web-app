@@ -5,8 +5,9 @@ import ShowView from '../show-view';
 import SvgIcon from '../svg-icon';
 import { cn } from '@/lib/utils';
 
-interface InputProps
-  extends InputHTMLAttributes<Omit<HTMLInputElement, 'name'>> {
+interface InputProps extends InputHTMLAttributes<
+  Omit<HTMLInputElement, 'name'>
+> {
   name: string;
   label: string;
   footerText?: string;
