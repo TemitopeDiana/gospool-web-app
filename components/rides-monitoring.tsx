@@ -257,7 +257,7 @@ function RidesMonitoring({ rides, initialStatus }: IRides) {
 
                                   <div className="flex mt-8 items-center justify-between gap-1 sm:gap-3">
                                     <div className="flex items-start">
-                                      <div className="relative w-12 h-12 mr-2 flex-shrink-0">
+                                      <div className="relative w-12 h-12 mr-2 shrink-0">
                                         <Image
                                           src="/assets/profile-pic.png"
                                           alt="passenger-pic"
@@ -271,7 +271,7 @@ function RidesMonitoring({ rides, initialStatus }: IRides) {
                                           <p className="font-medium text-lg text-gray-800 mb-1">
                                             {el.driver?.firstName || '--'}
                                           </p>
-                                          <div className="bg-gray-100 p-1 rounded-[4px] w-fit border border-b border-gray-300 border-4-4-dashed">
+                                          <div className="bg-gray-100 p-1 rounded-sm w-fit border border-b border-gray-300 border-4-4-dashed">
                                             <p className="text-gray-900 font-medium">
                                               {el.vehicle?.plateNumber || '--'}
                                             </p>
@@ -283,7 +283,7 @@ function RidesMonitoring({ rides, initialStatus }: IRides) {
                                       </div>
                                     </div>
 
-                                    <div className="relative w-24 xxs:w-[121px] h-18 flex-shrink-0">
+                                    <div className="relative w-24 xxs:w-30.25 h-18 shrink-0">
                                       <Image
                                         src="/assets/car.png"
                                         alt="car-image"
@@ -344,7 +344,7 @@ function RidesMonitoring({ rides, initialStatus }: IRides) {
                                         key={index}
                                         className="flex items-center gap-2  mb-4"
                                       >
-                                        <div className="relative w-12 h-12 flex-shrink-0">
+                                        <div className="relative w-12 h-12 shrink-0">
                                           <Image
                                             src="/assets/profile-pic.png"
                                             alt="passenger-pic"
@@ -377,7 +377,7 @@ function RidesMonitoring({ rides, initialStatus }: IRides) {
                                   >
                                     <Button
                                       variant="danger"
-                                      className="w-full flex justify-center text-background mt-15"
+                                      className="w-full flex justify-center text-background mt-a-60"
                                       onClick={() =>
                                         handleCancelTrip(el.tripId)
                                       }
@@ -416,7 +416,7 @@ function RidesMonitoring({ rides, initialStatus }: IRides) {
             </table>
           </div>
         ) : (
-          <div className="w-[146px] my-30 mx-auto text-center">
+          <div className="w-36.5 my-30 mx-auto text-center">
             <Image
               src="/assets/empty-inbox.png"
               alt="empty-inbox-image"
