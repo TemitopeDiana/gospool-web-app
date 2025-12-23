@@ -24,7 +24,7 @@ export const cancelTrip = async (
 ): Promise<ApiResponse<{ message: string; trip: TripStatusUpdate }>> => {
   try {
     const response = await apiV1.put<CancelTripApiResponse>(
-      `/trips/${payload.tripId}/status`,
+      `/trip/${payload.tripId}/status`,
       {
         status: 'cancelled',
       }

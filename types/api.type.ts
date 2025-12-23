@@ -1,7 +1,10 @@
+import { Pagination } from './church.type';
+
 export interface ApiResponse<T = undefined> {
   success?: boolean;
   message?: string;
   data?: T;
+  pagination?: Pagination;
   error?: unknown;
 }
 
