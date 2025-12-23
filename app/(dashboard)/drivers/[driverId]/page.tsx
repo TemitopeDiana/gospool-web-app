@@ -8,13 +8,20 @@ import { getRideHistory } from '@/actions/getRideHistory';
 import { getEmergencyContact } from '@/actions/getEmergencyContact';
 import { getDriverReturnTypes } from '@/actions/getDriverReturnTypes';
 
-export const metadata: Metadata = {
-  title: 'Driver profile', //change
-};
-
 type Props = {
   params: Promise<{ driverId: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { driverId } = await params;
+  const user = await getDriver(driverId);
+
+  const fullName = user.data?.firstName + ' ' + user.data?.lastName;
+
+  return {
+    title: user.data?.firstName ? `${fullName} Profile` : undefined,
+  };
+}
 
 const DriverPage = async ({ params }: Props) => {
   const { driverId } = await params;

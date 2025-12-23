@@ -83,7 +83,7 @@ export interface Driver {
   lastName: string;
   email: string;
   phoneNumber?: string;
-  dateOfBirth: string;
+  dateOfBirth?: string;
   gender: string;
   homeAddress: string;
   avatar: string;

@@ -1,11 +1,11 @@
-// actions/delete-church.ts
 'use server';
+
+import { AxiosError } from 'axios';
+import { revalidatePath } from 'next/cache';
 
 import { apiV1 } from '@/lib/api';
 import { routes } from '@/lib/routes';
 import { ApiResponse } from '@/types/api.type';
-import { AxiosError } from 'axios';
-import { revalidatePath } from 'next/cache';
 
 export async function toggleChurchStatus(
   churchId: string

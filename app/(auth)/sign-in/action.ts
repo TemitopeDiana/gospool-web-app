@@ -1,11 +1,12 @@
 'use server';
 
+import { z } from 'zod';
+import { cookies } from 'next/headers';
+import { AxiosError } from 'axios';
+
 import { api } from '@/lib/api';
 import { ApiResponse } from '@/types/api.type';
 import type { SignResponse } from '@/types/auth.type';
-import { AxiosError } from 'axios';
-import { cookies } from 'next/headers';
-import { z } from 'zod';
 
 const SignInSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -40,15 +41,18 @@ export async function signIn(
     if (data) {
       const cookieStore = await cookies();
 
-      cookieStore.set('access_token', data.token, {
+      const encryptedToken = data.token;
+      const encryptedRefreshToken = data.refreshToken;
+
+      cookieStore.set('access_token', encryptedToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         path: '/',
-        maxAge: 10 * 60,
+        maxAge: 60 * 60 * 24 * 2,
       });
 
-      cookieStore.set('refresh_token', data.refreshToken, {
+      cookieStore.set('refresh_token', encryptedRefreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',

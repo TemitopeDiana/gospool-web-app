@@ -1,4 +1,4 @@
-# Gospool Web App
+# Gospool Web App.
 
 The package manager used in this project is `pnpm`. You need to have `pnpm` installed on your machine to proceed.
 

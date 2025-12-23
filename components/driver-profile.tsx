@@ -53,6 +53,8 @@ const DriverProfile = ({
     null;
   const trips = rideHistory.trips;
 
+  const age = calculateAge(driver.dateOfBirth || '');
+
   const handleBlock = async (userId: string, close: () => void) => {
     try {
       setBlockingUserId(userId);
@@ -75,9 +77,9 @@ const DriverProfile = ({
 
   return (
     <div className="flex max-lmd:flex-col [&>div]:flex-1 gap-5">
-      <div className="dashboard-card mt-8 lmd:max-w-[380px] lmd:mt-0">
+      <div className="dashboard-card mt-8 lmd:max-w-95 lmd:mt-0">
         <div className="relative flex justify-between items-center mb-8">
-          <div className="relative w-[73px] h-12">
+          <div className="relative w-18.25 h-12">
             <div className="absolute w-12 h-12 z-3 rounded-full">
               <Image
                 src="/assets/profile-pic.png"
@@ -134,7 +136,7 @@ const DriverProfile = ({
                     ? 'Blocking...'
                     : 'Unblocking...';
                   return (
-                    <div className="bg-background rounded-20 p-6 xsm:p-10 text-center max-w-[500px] mx-auto">
+                    <div className="bg-background rounded-20 p-6 xsm:p-10 text-center max-w-a-500 mx-auto">
                       <button
                         onClick={close}
                         aria-label="Close dialog"
@@ -233,7 +235,7 @@ const DriverProfile = ({
                       <p>Age:</p>
                       <p>
                         {driver.dateOfBirth
-                          ? `${calculateAge(driver.dateOfBirth)} years (${dayjs(driver.dateOfBirth).format(DATE_FORMAT_DMY)})`
+                          ? `${age} years (${dayjs(driver.dateOfBirth).format(DATE_FORMAT_DMY)})`
                           : '--'}
                       </p>
                     </li>
@@ -267,27 +269,27 @@ const DriverProfile = ({
                           >
                             <dl className="grid grid-cols-[110px_1fr] gap-4 items-start">
                               <dt className="text-gray-500">Full name</dt>
-                              <dd className="min-w-0 break-words whitespace-normal">
+                              <dd className="min-w-0 wrap-break-word whitespace-normal">
                                 {el?.fullName ?? '—'}
                               </dd>
 
                               <dt className="text-gray-500">Relationship</dt>
-                              <dd className="min-w-0 break-words whitespace-normal capitalize">
+                              <dd className="min-w-0 wrap-break-word whitespace-normal capitalize">
                                 {el?.relationship ?? '—'}
                               </dd>
 
                               <dt className="text-gray-500">Phone number</dt>
-                              <dd className="min-w-0 break-words whitespace-normal">
+                              <dd className="min-w-0 wrap-break-word whitespace-normal">
                                 {el?.phoneNumber ?? '—'}
                               </dd>
 
                               <dt className="text-gray-500">Email</dt>
-                              <dd className="min-w-0 break-words whitespace-normal">
+                              <dd className="min-w-0 wrap-break-word whitespace-normal">
                                 {el?.email ?? '—'}
                               </dd>
 
                               <dt className="text-gray-500">House</dt>
-                              <dd className="min-w-0 break-words whitespace-normal">
+                              <dd className="min-w-0 wrap-break-word whitespace-normal">
                                 {el?.address ?? '—'}
                               </dd>
                             </dl>

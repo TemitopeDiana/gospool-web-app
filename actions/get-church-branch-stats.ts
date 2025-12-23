@@ -2,28 +2,14 @@
 
 import { apiV1 } from '@/lib/api';
 import { ApiResponse } from '@/types/api.type';
-import { HodsAdminUser } from '@/types/user.type';
+import { Stats } from '@/types/stats.type';
 import { AxiosError } from 'axios';
 
-interface SearchHodsAdminsApiResponse {
-  success: boolean;
-  data: HodsAdminUser[];
-}
-
-export const getHodsAdmins = async (
-  query: string,
-  limit: number = 20
-): Promise<ApiResponse<HodsAdminUser[]>> => {
+export const getChurchBranchStats = async (
+  branchId: string
+): Promise<ApiResponse<Stats>> => {
   try {
-    const response = await apiV1.get<SearchHodsAdminsApiResponse>(
-      `/user/search/hods-admins`,
-      {
-        params: {
-          search: query.trim(),
-          limit,
-        },
-      }
-    );
+    const response = await apiV1.get(`/branches/${branchId}/member-stats`);
 
     return { success: true, data: response.data.data };
   } catch (error: unknown) {

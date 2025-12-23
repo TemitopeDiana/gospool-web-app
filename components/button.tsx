@@ -5,7 +5,7 @@ import ShowView from './show-view';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'whitespace-nowrap rounded-full flex gap-2 items-center text-a-14 font-medium px-5 py-2 border border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/[0.5] btn focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30 disabled:pointer-events-none',
+  'whitespace-nowrap rounded-full flex gap-2 items-center justify-center text-a-14 font-medium px-5 py-2 border border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/[0.5] btn focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30 disabled:pointer-events-none',
   {
     variants: {
       variant: {
@@ -67,10 +67,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={loading || disabled}
       >
         <ShowView when={loading}>
-          <div className="inline-flex btn py-1 justify-center items-center text-center [&>*]:w-2 [&>*]:h-2 [&>*]:bg-current [&>*]:animate-bounce [&>*]:rounded-1/2 [&>*]:text-a-16">
-            <div className="!delay-700" />
-            <div className="!delay-500" />
-            <div className="!delay-1000" />
+          <div className="inline-flex btn py-1 gap-1 justify-center items-center text-center *:w-2 *:h-2 *:bg-current *:animate-bounce *:rounded-1/2 *:text-a-16">
+            <div className="delay-700!" />
+            <div className="delay-500!" />
+            <div className="delay-1000!" />
           </div>
         </ShowView>
 
