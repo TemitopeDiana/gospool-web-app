@@ -60,8 +60,6 @@ function RidesMonitoring({ rides, initialStatus }: IRides) {
       try {
         const result = await cancelTrip({ tripId });
 
-        console.log(tripId);
-
         if (result.success) {
           toast.success('Trip cancelled successfully');
           if (closePopover) closePopover();
