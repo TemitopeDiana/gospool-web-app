@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import dayjs from 'dayjs';
-import { useEffect, useRef, useTransition } from 'react';
+import { useTransition } from 'react';
 import { toast } from 'sonner';
 
 import { GoogleMapsEmbed } from '@next/third-parties/google';
@@ -38,7 +38,6 @@ const MAX_TOOLTIP_CHARS = 40;
 
 function RidesMonitoring({ rides, initialStatus }: IRides) {
   const [isCancellingTrip, startCancelTransition] = useTransition();
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -73,14 +72,6 @@ function RidesMonitoring({ rides, initialStatus }: IRides) {
       }
     });
   };
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
 
   return (
     <div>
