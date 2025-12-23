@@ -8,7 +8,7 @@ import StarRating from './start-rating';
 
 import Trip from '@/types/trip.type';
 import { GoogleMapsEmbed } from '@next/third-parties/google';
-import { DATE_FORMAT_MON_DAY, TIME_FORMAT_HM } from '@/lib/constants';
+import { DATE_FORMAT_MD, TIME_FORMAT_HM } from '@/lib/constants';
 
 interface RideHistoryProps {
   rideHistory: Trip;
@@ -114,7 +114,7 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
           <div className="text-xs">
             <span>
               {rideHistory?.eventDate
-                ? dayjs(rideHistory?.eventDate).format(DATE_FORMAT_MON_DAY)
+                ? dayjs(rideHistory?.eventDate).format(DATE_FORMAT_MD)
                 : '--'}
             </span>
             <span>, </span>
@@ -150,7 +150,7 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
           <div className="text-xs">
             <span>
               {rideHistory?.eventDate
-                ? dayjs(rideHistory?.eventDate).format(DATE_FORMAT_MON_DAY)
+                ? dayjs(rideHistory?.eventDate).format(DATE_FORMAT_MD)
                 : '--'}
             </span>
             <span>, </span>

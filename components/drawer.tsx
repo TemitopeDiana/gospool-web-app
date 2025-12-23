@@ -77,7 +77,7 @@ const Drawer = forwardRef<unknown, IDrawerProps>(
         <Portal>
           <DialogOverlay
             className={cn(
-              `backdrop-blur-sm bg-[#344054B2] fixed inset-0 z-30 `
+              `backdrop-blur-sm bg-[#344054B2] fixed inset-0 z-50 `
             )}
           >
             <AnimatePresence>

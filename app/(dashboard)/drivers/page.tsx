@@ -30,14 +30,10 @@ export default async function DriversPage({
     ? driverReturnTypesRes.data
     : [];
 
-  if (!drivers.success) {
-    return [];
-  }
-
   return (
     <DriversPageComponent
       user={user.user}
-      driversData={drivers?.data}
+      driversData={drivers?.data ?? []}
       totalDrivers={drivers?.pagination?.total}
       initialStatus={status}
       driverReturnTypes={driverReturnTypes ?? []}
