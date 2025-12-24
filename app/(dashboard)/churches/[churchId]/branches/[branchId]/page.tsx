@@ -15,7 +15,7 @@ type Props = {
 };
 
 const ChurchBranchPage = async ({ params }: Props) => {
-  const branchId = (await params).branchId;
+  const { branchId } = await params;
 
   const [branchInfo, stats, drivers, passengers, teamMembers] =
     await Promise.all([
@@ -54,7 +54,7 @@ const ChurchBranchPage = async ({ params }: Props) => {
         totalDrivers={stats.data?.drivers || 0}
         totalPassengers={stats.data?.passengers || 0}
         totalTeam={stats.data?.team || 0}
-        churchId={branchInfo.data?.churchId || ''}
+        branchId={branchId}
       />
     </div>
   );
