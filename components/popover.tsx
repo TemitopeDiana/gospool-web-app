@@ -8,13 +8,18 @@ import {
   Root,
   Trigger,
 } from '@radix-ui/react-popover';
+import SvgIcon from './svg-icon';
 
 interface IPopover extends PopoverContentProps {
   children: ReactNode;
-  trigger: ReactNode;
+  trigger?: ReactNode;
 }
 
-const Popover = ({ children, trigger, ...props }: IPopover) => {
+const Popover = ({
+  children,
+  trigger = <SvgIcon name="info" className="w-4 h-4" />,
+  ...props
+}: IPopover) => {
   return (
     <Root>
       <Trigger asChild>{trigger}</Trigger>

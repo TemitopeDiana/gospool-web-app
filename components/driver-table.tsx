@@ -2,8 +2,8 @@ import dayjs from 'dayjs';
 import Link from 'next/link';
 
 import DeleteUserModal from './delete-user-modal';
-import HoverCard from './hover-card';
 import NoDataCard from './no-data-card';
+import Popover from './popover';
 import ShowView from './show-view';
 import SvgIcon from './svg-icon';
 import ToggleUserStatus from './toggle-user-status-modal';
@@ -52,7 +52,7 @@ const DriversTable = ({ drivers }: Props) => {
                   </td>
 
                   <td>
-                    <HoverCard
+                    <Popover
                       trigger={
                         <button className="block w-max">
                           <SvgIcon name="dotted-menu" className="w-7 h-5" />
@@ -88,7 +88,7 @@ const DriversTable = ({ drivers }: Props) => {
                           />
                         </li>
                       </ul>
-                    </HoverCard>
+                    </Popover>
                   </td>
                 </tr>
               ))}
