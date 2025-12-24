@@ -98,6 +98,10 @@
   .form-group {
     @apply grid gap-3 xsm:grid-cols-[repeat(auto-fit,minmax(220px,1fr))];
   }
+
+  .input {
+    @apply w-full block mb-5 [&>label]:block [&>label]:text-a-16 [&>label]:mb-2.5 [&>input]:border [&>input]:py-4 [&>input]:w-full [&>input]:block [&>input]:px-a-10  md:[&>input]:px-5 [&>input]:rounded-8 [&>textarea]:border [&>textarea]:rounded-8 [&>textarea]:resize-none [&>textarea]:px-a-10 md:[&>textarea]:px-5 [&>textarea]:min-h-24 [&>textarea]:py-4 [&>textarea]:w-full [&>textarea]:block;
+  }
 }
 
 @layer utilities {

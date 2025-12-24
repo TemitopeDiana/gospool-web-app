@@ -135,9 +135,7 @@ export default function TypeSelect({
                 key={val}
                 className="flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 text-sm text-gray-800"
               >
-                <span className="max-w-[240px] truncate">
-                  {opt?.label ?? val}
-                </span>
+                <span className="max-w-60 truncate">{opt?.label ?? val}</span>
                 <button
                   type="button"
                   onClick={() => removeChip(val)}
