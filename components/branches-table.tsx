@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import ConfirmActionCard from './confirm-action-card';
-import HoverCard from './hover-card';
 import Modal from './modal-component';
 import NoDataCard from './no-data-card';
+import Popover from './popover';
 import ShowView from './show-view';
 import SvgIcon from './svg-icon';
 
@@ -119,7 +119,7 @@ const BranchesTable = ({ branches }: Props) => {
                       </Modal>
                     </td>
                     <td>
-                      <HoverCard
+                      <Popover
                         trigger={
                           <button className="block w-max">
                             <SvgIcon name="dotted-menu" className="w-7 h-5" />
@@ -172,7 +172,7 @@ const BranchesTable = ({ branches }: Props) => {
                             </Modal>
                           </li>
                         </ul>
-                      </HoverCard>
+                      </Popover>
                     </td>
                   </tr>
                 );

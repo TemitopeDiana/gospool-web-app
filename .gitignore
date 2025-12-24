@@ -45,3 +45,4 @@ next-env.d.ts
 pnpm-workspace.yaml
 
 notes.txt
+*dont-push.tsx

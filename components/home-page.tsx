@@ -10,8 +10,8 @@ import SvgIcon from '@/components/svg-icon';
 import ConfirmActionCard from './confirm-action-card';
 import Drawer from './drawer';
 import CreateChurchForm from './forms/create-church.form';
-import HoverCard from './hover-card';
 import Modal from './modal-component';
+import Popover from './popover';
 
 import { deleteChurchAction } from '@/actions/deleteChurch';
 import { toggleChurchStatus } from '@/actions/toggleChurchStatus';
@@ -227,7 +227,7 @@ const HomePage = ({
                         </Modal>
                       </td>
                       <td>
-                        <HoverCard
+                        <Popover
                           trigger={
                             <button className="block w-max ml-auto">
                               <SvgIcon name="dotted-menu" className="w-7 h-5" />
@@ -278,7 +278,7 @@ const HomePage = ({
                               </Modal>
                             </li>
                           </ul>
-                        </HoverCard>
+                        </Popover>
                       </td>
                     </tr>
                   );
