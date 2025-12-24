@@ -4,16 +4,17 @@ import Link from 'next/link';
 
 import { Button } from '@/components/button';
 import SvgIcon from '@/components/svg-icon';
+import CreateChurchServiceModal from './create-church-service-modal';
 import DriversTable from './driver-table';
-import HoverCard from './hover-card';
 import PassengersTable from './passengers-table';
+import Popover from './popover';
 import Tabs from './tabs';
 import TeamMembersTable from './team-members-table';
 
 import { compactNumber } from '@/lib/format';
 import profilePic from '@/public/assets/profile-pic.png';
-import { type User } from '@/types/user.type';
 import { type IconName } from '@/types/icon.type';
+import { type User } from '@/types/user.type';
 
 interface BranchPageProps {
   passengers: User[];
@@ -26,7 +27,7 @@ interface BranchPageProps {
   totalTeam: number;
   totalDrivers: number;
   totalPassengers: number;
-  churchId: string;
+  branchId: string;
 }
 
 function BranchPage({
@@ -40,6 +41,7 @@ function BranchPage({
   totalDrivers,
   totalPassengers,
   totalTeam,
+  branchId,
 }: BranchPageProps) {
   const cards: { name: string; iconName: IconName; team: number }[] = [
     { name: 'drivers', iconName: 'car', team: totalDrivers },
@@ -69,7 +71,7 @@ function BranchPage({
           </div>
 
           <div className="ml-auto max-w-35">
-            <HoverCard
+            <Popover
               trigger={
                 <Button className="flex items-center gap-2 mt-2 xxs:mt-0">
                   Actions
@@ -80,7 +82,17 @@ function BranchPage({
                 </Button>
               }
             >
-              <ul className="table-action-popover [&>li:hover]:bg-primary-100/20 [&>li:focus-within]:ring-2 [&>li:focus-within]:ring-primary-100/20">
+              <ul className="option-menu">
+                <CreateChurchServiceModal
+                  trigger={
+                    <li>
+                      {' '}
+                      <SvgIcon name="plus" className="h-4 w-4 text-gray-500" />
+                      Create Service
+                    </li>
+                  }
+                  branchId={branchId}
+                />
                 <li>
                   <Link href="" className="flex items-center gap-2">
                     <SvgIcon
@@ -105,37 +117,8 @@ function BranchPage({
                     Reassign
                   </Link>
                 </li>
-                {/* <li className="text-error-700">
-                  <Modal
-                    trigger={
-                      <button className="flex items-center gap-2">
-                        <SvgIcon name="trash" className="h-4 w-4" />
-                        Delete
-                      </button>
-                    }
-                    hideCloseButton
-                    disableOutsideClick
-                  >
-                    {(close) => (
-                      <ConfirmActionCard
-                        close={close}
-                        title={`Delete $`}
-                        description="Current members will need to update their church. Prefer to disable it instead?"
-                        dangerColor
-                        icon="trash"
-                        confirmAction={{
-                          buttonText: 'Delete',
-                          onClick: () =>
-                            // handleDeleteChurch(churchId, close),
-                            console.log('first'),
-                          loading: false,
-                        }}
-                      />
-                    )}
-                  </Modal>
-                </li> */}
               </ul>
-            </HoverCard>
+            </Popover>
           </div>
         </div>
 

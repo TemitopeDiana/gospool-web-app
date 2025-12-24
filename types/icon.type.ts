@@ -43,10 +43,14 @@ export type IconName =
   | 'image'
   | 'upload'
   | 'info'
-  | 'toggle';
+  | 'toggle'
+  | 'chevron-down'
+  | 'plus';
 
 export const iconNames: IconName[] = [
   'toggle',
+  'plus',
+  'chevron-down',
   'image',
   'info',
   'upload',

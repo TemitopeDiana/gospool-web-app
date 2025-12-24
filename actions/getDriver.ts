@@ -2,13 +2,14 @@
 import { AxiosError } from 'axios';
 
 import { apiV1 } from '@/lib/api';
-import { Driver, DriverAPIResponse } from '@/types/driver.type';
+import { Driver } from '@/types/driver.type';
+import { ApiResponse } from '@/types/api.type';
 
 export const getDriver = async (
   driverId: string
-): Promise<DriverAPIResponse<Driver>> => {
+): Promise<ApiResponse<Driver>> => {
   try {
-    const response = await apiV1.get<DriverAPIResponse<Driver>>(
+    const response = await apiV1.get<ApiResponse<Driver>>(
       `/drivers/${driverId}`
     );
 

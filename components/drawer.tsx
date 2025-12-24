@@ -77,7 +77,7 @@ const Drawer = forwardRef<unknown, IDrawerProps>(
         <Portal>
           <DialogOverlay
             className={cn(
-              `backdrop-blur-sm bg-[#344054B2] fixed inset-0 z-30 `
+              `backdrop-blur-sm bg-[#344054B2] fixed inset-0 z-50 `
             )}
           >
             <AnimatePresence>
@@ -86,7 +86,7 @@ const Drawer = forwardRef<unknown, IDrawerProps>(
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className={`relative ml-auto w-full max-w-[600px] border-l h-screen overflow-y-auto bg-background shadow-lg ${className}`}
+                className={`relative ml-auto w-full max-w-150 border-l h-screen overflow-y-auto bg-background shadow-lg ${className}`}
               >
                 <Content
                   ref={ref as ForwardedRef<HTMLDivElement>}
@@ -96,9 +96,9 @@ const Drawer = forwardRef<unknown, IDrawerProps>(
                   onEscapeKeyDown={(e) =>
                     disableEscapeDown && e.preventDefault()
                   }
-                  className="h-full overflow-auto flex flex-col focus:outline-none [&>*]:p-8"
+                  className="h-full overflow-auto flex flex-col focus:outline-none *:p-8"
                 >
-                  <div className="flex justify-between gap-2 !pb-4 bg-background border-b sticky top-0 z-1">
+                  <div className="flex justify-between gap-2 pb-4! bg-background border-b sticky top-0 z-50">
                     <div className="flex-1  ">
                       <Title className="text-a-16 md:text-a-20 font-semibold">
                         {title}

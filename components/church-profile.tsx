@@ -13,9 +13,9 @@ import ConfirmActionCard from './confirm-action-card';
 import Drawer from './drawer';
 import DriversTable from './driver-table';
 import CreateChurchBranch from './forms/create-church-branch.form';
-import HoverCard from './hover-card';
 import Modal from './modal-component';
 import PassengersTable from './passengers-table';
+import Popover from './popover';
 import Tabs from './tabs';
 import TeamMembersTable from './team-members-table';
 
@@ -121,7 +121,7 @@ const ChurchProfile = ({
                 </div>
               )}
             </Drawer>
-            <HoverCard
+            <Popover
               trigger={
                 <Button
                   variant="default"
@@ -337,7 +337,7 @@ const ChurchProfile = ({
                   </Modal>
                 </li>
               </ul>
-            </HoverCard>
+            </Popover>
           </div>
         </div>
 
