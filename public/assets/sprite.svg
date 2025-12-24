@@ -426,5 +426,15 @@
             <path d="M9 8.5H2.5c-.828 0-2 .325-2 2s1.172 2 2 2H9"></path>
          </g>
       </symbol>
+
+      <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="chevron-down">
+         <path fill="currentColor"
+            d="M16.293 9.293L12 13.586L7.707 9.293l-1.414 1.414L12 16.414l5.707-5.707z"></path>
+      </symbol>
+
+      <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="plus">
+         <path fill="currentColor" d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"></path>
+      </symbol>
+
    </def>
 </svg>
