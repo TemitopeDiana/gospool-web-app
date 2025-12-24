@@ -43,7 +43,7 @@ export const ClearIndicator = (props: ClearIndicatorProps) => {
 export const Control = (
   props: ControlProps & { dataTest?: string; error?: boolean }
 ) => {
-  const { dataTest, isFocused, isDisabled, error, ...restProps } = props;
+  const { dataTest, isFocused, isDisabled, ...restProps } = props;
 
   return (
     <components.Control
@@ -52,8 +52,8 @@ export const Control = (
       data-test={dataTest}
       className={cn(
         ' py-[13.5px] px-4 text-a-16 rounded-10 bg-gray-50 rounded-8 border',
-        isDisabled && 'cursor-not-allowed hidden',
-        error && 'border-error-300',
+        isDisabled && 'cursor-not-allowed',
+        // error && 'border-error-300',
         isFocused && 'border-none'
       )}
       {...restProps}

@@ -91,11 +91,20 @@ const CreateChurchServiceForm = ({ close, branchId }: Props) => {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {fields.map((field, index) => (
           <div key={field.id} className="rounded border p-4 space-y-4">
-            <Input name={`services.${index}.name`} label="Service Name" />
+            <Input
+              name={`services.${index}.name`}
+              label="Service Name"
+              validation={{
+                required: 'Service name is required',
+              }}
+            />
 
             <Controller
               name={`services.${index}.day`}
               control={control}
+              rules={{
+                required: 'Service day is required',
+              }}
               render={({ field, fieldState: { error } }) => (
                 <Select
                   inputId={`day-${index}`}
@@ -113,6 +122,9 @@ const CreateChurchServiceForm = ({ close, branchId }: Props) => {
               name={`services.${index}.time`}
               label="Service Time"
               type="time"
+              validation={{
+                required: 'Service time is required',
+              }}
             />
 
             {fields.length > 1 && (

@@ -34,7 +34,12 @@ const Input: FC<InputProps> = ({
     formState: { errors },
   } = useFormContext();
 
-  const error = errors[name]?.message;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getError = (path: string, obj: any) => {
+    return path.split('.').reduce((acc, key) => acc?.[key], obj);
+  };
+
+  const error = getError(name, errors)?.message as string | undefined;
 
   return (
     <div>
