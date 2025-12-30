@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { Day } from '@/types/services.type';
 
 dayjs.extend(customParseFormat);
 const formatTimeToAmPm = (time24: string) => {
@@ -64,7 +65,7 @@ const CreateChurchServiceForm = ({ close, branchId }: Props) => {
     const payload = {
       services: data.services.map((service) => ({
         name: service.name,
-        day: service.day?.value ?? '',
+        day: service.day?.value as Day,
         time: formatTimeToAmPm(service.time),
       })),
     };
