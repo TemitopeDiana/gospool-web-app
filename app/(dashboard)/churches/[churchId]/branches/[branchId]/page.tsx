@@ -26,8 +26,6 @@ const ChurchBranchPage = async ({ params }: Props) => {
       getChurchBranchTeamMembers(branchId),
     ]);
 
-  console.log({ teamMembers });
-
   if (!branchInfo.success) {
     return notFound();
   }

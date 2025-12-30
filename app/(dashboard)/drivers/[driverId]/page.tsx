@@ -7,6 +7,8 @@ import DriverProfile from '@/components/driver-profile';
 import { getRideHistory } from '@/actions/getRideHistory';
 import { getEmergencyContact } from '@/actions/getEmergencyContact';
 import { getDriverReturnTypes } from '@/actions/getDriverReturnTypes';
+import Breadcrumb from '@/components/bread-crumbs';
+import { routes } from '@/lib/routes';
 
 type Props = {
   params: Promise<{ driverId: string }>;
@@ -36,17 +38,32 @@ const DriverPage = async ({ params }: Props) => {
     ? driverReturnTypesRes.data
     : [];
 
-  return driver.statusDisplay === 'Pending' ? (
-    <ReviewDriverApplication
-      driver={driver}
-      driverReturnTypes={driverReturnTypes ?? []}
-    />
-  ) : (
-    <DriverProfile
-      driver={driver}
-      rideHistory={rideHistory}
-      emergencyContact={emergencyContact.data ?? []}
-    />
+  return (
+    <div>
+      <Breadcrumb
+        items={[
+          { label: 'Driver', href: routes.drivers() },
+          {
+            label:
+              driver.firstName || driver.lastName
+                ? `${driver.firstName} ${driver.lastName}`
+                : 'Driver',
+          },
+        ]}
+      />
+      {driver.statusDisplay === 'Pending' ? (
+        <ReviewDriverApplication
+          driver={driver}
+          driverReturnTypes={driverReturnTypes ?? []}
+        />
+      ) : (
+        <DriverProfile
+          driver={driver}
+          rideHistory={rideHistory}
+          emergencyContact={emergencyContact.data ?? []}
+        />
+      )}
+    </div>
   );
 };
 

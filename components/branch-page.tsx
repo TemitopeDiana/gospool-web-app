@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 import { Button } from '@/components/button';
 import SvgIcon from '@/components/svg-icon';
+import CreateChurchDepartmentModal from './create-church-department-modal';
 import CreateChurchServiceModal from './create-church-service-modal';
 import DriversTable from './driver-table';
 import PassengersTable from './passengers-table';
@@ -83,6 +84,16 @@ function BranchPage({
               }
             >
               <ul className="option-menu">
+                <CreateChurchDepartmentModal
+                  trigger={
+                    <li>
+                      {' '}
+                      <SvgIcon name="plus" className="h-4 w-4 text-gray-500" />
+                      Create Department
+                    </li>
+                  }
+                  branchId={branchId}
+                />
                 <CreateChurchServiceModal
                   trigger={
                     <li>
