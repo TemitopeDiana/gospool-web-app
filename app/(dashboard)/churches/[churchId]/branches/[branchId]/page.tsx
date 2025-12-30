@@ -9,6 +9,7 @@ import { getChurchBranchStats } from '@/actions/get-church-branch-stats';
 import { getChurchBranchDrivers } from '@/actions/getChurchBranchDrivers';
 import { getChurchBranchPassengers } from '@/actions/getChurchBranchPassengers';
 import { getChurchBranchTeamMembers } from '@/actions/getChurchBranchTeamMembers';
+import { getChurchBranchServices } from '@/actions/get-church-branch-services';
 
 type Props = {
   params: Promise<{ branchId: string }>;
@@ -17,14 +18,17 @@ type Props = {
 const ChurchBranchPage = async ({ params }: Props) => {
   const { branchId } = await params;
 
-  const [branchInfo, stats, drivers, passengers, teamMembers] =
+  const [branchInfo, stats, drivers, passengers, teamMembers, services] =
     await Promise.all([
       getChurchBranchById(branchId),
       getChurchBranchStats(branchId),
       getChurchBranchDrivers(branchId),
       getChurchBranchPassengers(branchId),
       getChurchBranchTeamMembers(branchId),
+      getChurchBranchServices(branchId),
     ]);
+
+  console.log({ services });
 
   if (!branchInfo.success) {
     return notFound();
@@ -53,6 +57,7 @@ const ChurchBranchPage = async ({ params }: Props) => {
         totalPassengers={stats.data?.passengers || 0}
         totalTeam={stats.data?.team || 0}
         branchId={branchId}
+        services={services.data?.services || []}
       />
     </div>
   );
