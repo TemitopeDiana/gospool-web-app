@@ -64,13 +64,17 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
             <div>
               <div>
                 <p className="font-medium text-lg text-gray-800 mb-1">
-                  Abraham
+                  {rideHistory.driver.firstName}
                 </p>
                 <div className="bg-gray-100 p-1 rounded-sm w-fit border border-b border-gray-300 border-4-4-dashed">
-                  <p className="text-gray-900 font-medium">ABC-123BC</p>
+                  <p className="text-gray-900 font-medium">
+                    {rideHistory.vehicle?.plateNumber || '--'}
+                  </p>
                 </div>
               </div>
-              <p className="text-sm text-gray-500 mt-1">White Toyota Matrix</p>
+              <p className="text-sm text-gray-500 mt-1">
+                {rideHistory.vehicle?.carModel || '--'}
+              </p>
             </div>
           </div>
 
@@ -100,7 +104,7 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
               <div>
                 <p className="text-gray-500">Leaving from</p>
                 <ToolTip
-                  content=" 1234 Ahmadu Bello Way 1234 Ahmadu Bello Way 1234 Ahmadu Bello Way"
+                  content={rideHistory?.startLocation.address || '--'}
                   trigger={
                     <p className="mt-2 max-w-40 xsm:max-w-80 truncate">
                       {rideHistory?.startLocation.address || '--'}
@@ -136,7 +140,7 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
               <div>
                 <p className="text-gray-500">Going to</p>
                 <ToolTip
-                  content=" 1234 Ahmadu Bello Way 1234 Ahmadu Bello Way 1234 Ahmadu Bello Way"
+                  content={rideHistory?.destination.address || '--'}
                   trigger={
                     <p className="mt-2 max-w-40 xsm:max-w-80 truncate">
                       {rideHistory?.destination.address || '--'}
@@ -192,7 +196,7 @@ const RideHistory = ({ rideHistory }: RideHistoryProps) => {
                 </div>
               </div>
             ))}
-            <StarRating rating={4.1} /> {/* still manual for now */}
+            <StarRating rating={4.1} />
           </div>
         </div>
       </div>
