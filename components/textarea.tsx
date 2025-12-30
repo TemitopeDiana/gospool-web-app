@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, InputHTMLAttributes } from 'react';
+import { FC, TextareaHTMLAttributes } from 'react';
 import { RegisterOptions, useFormContext } from 'react-hook-form';
 
 import InputFooterText from './input-footer-text';
@@ -11,7 +11,7 @@ import SvgIcon from './svg-icon';
 import { cn } from '@/lib/utils';
 import { type IconName } from '@/types/icon.type';
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   name: string;
   label: string;
   icon?: IconName;
@@ -20,7 +20,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   description?: string;
 }
 
-const Input: FC<InputProps> = ({
+const Textarea: FC<TextareaProps> = ({
   name,
   label,
   validation,
@@ -63,7 +63,7 @@ const Input: FC<InputProps> = ({
         <div
           className={`flex w-full flex-row items-center bg-gray-50 py-[13.5px] px-4 min-w-42.25 gap-4 mt-2 rounded-8`}
         >
-          <input
+          <textarea
             {...register(name, validation)}
             id={name}
             className=" outline-none bg-transparent w-full border-none placeholder:text-gray-300 text-sm md:text-base"
@@ -81,4 +81,4 @@ const Input: FC<InputProps> = ({
   );
 };
 
-export default Input;
+export default Textarea;
