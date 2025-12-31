@@ -9,17 +9,19 @@ import CreateChurchServiceModal from './create-church-service-modal';
 import DriversTable from './driver-table';
 import PassengersTable from './passengers-table';
 import Popover from './popover';
+import ChurchServicesTable from './services-table';
 import Tabs from './tabs';
 import TeamMembersTable from './team-members-table';
 
 import { compactNumber } from '@/lib/format';
-import profilePic from '@/public/assets/profile-pic.png';
 import { type IconName } from '@/types/icon.type';
+import { type ChurchService } from '@/types/services.type';
 import { type User } from '@/types/user.type';
 
 interface BranchPageProps {
   passengers: User[];
   drivers: User[];
+  services: ChurchService[];
   teamMembers: User[];
   churchName: string;
   churchAddress: string;
@@ -29,20 +31,23 @@ interface BranchPageProps {
   totalDrivers: number;
   totalPassengers: number;
   branchId: string;
+  adminAvatar?: string;
 }
 
 function BranchPage({
   passengers,
   teamMembers,
   drivers,
+  services,
   churchName,
   churchAddress,
   churchAdmin,
-  churchLogo = '/assets/default-church-logo.png',
+  churchLogo = '/assets/favicon.png',
   totalDrivers,
   totalPassengers,
   totalTeam,
   branchId,
+  adminAvatar = '/assets/user-icon.png',
 }: BranchPageProps) {
   const cards: { name: string; iconName: IconName; team: number }[] = [
     { name: 'drivers', iconName: 'car', team: totalDrivers },
@@ -136,7 +141,7 @@ function BranchPage({
         <div className="w-full flex flex-col gap-2 xss:flex-row">
           <div className="flex flex-1 items-center gap-3 ">
             <div className="flex-none relative w-12 h-12">
-              <Image src={profilePic} alt="profile-pic" fill sizes="100%" />
+              <Image src={adminAvatar} alt="profile-pic" fill sizes="100%" />
             </div>
 
             <div>
@@ -200,6 +205,12 @@ function BranchPage({
             {
               label: 'Team',
               content: <TeamMembersTable teamMembers={teamMembers} />,
+            },
+            {
+              label: 'Services',
+              content: (
+                <ChurchServicesTable services={services} branchId={branchId} />
+              ),
             },
           ]}
         ></Tabs>

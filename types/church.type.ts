@@ -23,6 +23,7 @@ export interface Branch {
     lastName: string;
     email: string;
     phoneNumber: string;
+    avatar: string;
   };
   leaderName: string;
   leaderEmail: string;
@@ -56,6 +57,7 @@ export interface Church {
   adminName: string;
   adminEmail: string;
   adminPhone: string;
+  adminAvatar?: string;
   status: ChurchStatus;
   statusDisplay: string;
 }
