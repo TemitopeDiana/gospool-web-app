@@ -266,8 +266,7 @@ const ChurchProfile = ({
                       Upload logo
                     </li>
                   }
-                  title="Create Church Profile"
-                  description="Enter details to begin"
+                  title="Upload Church Logo"
                   disableEscapeDown
                   disableOutsideClick
                 >
