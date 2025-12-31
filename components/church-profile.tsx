@@ -14,6 +14,7 @@ import ConfirmActionCard from './confirm-action-card';
 import Drawer from './drawer';
 import DriversTable from './driver-table';
 import CreateChurchBranch from './forms/create-church-branch.form';
+import UploadChurchLogoForm from './forms/upload-church-logo-form';
 import Modal from './modal-component';
 import PassengersTable from './passengers-table';
 import Popover from './popover';
@@ -146,7 +147,7 @@ const ChurchProfile = ({
                 </Button>
               }
             >
-              <ul className="table-action-popover [&>li:hover]:bg-primary-100/20 [&>li:focus-within]:ring-2 [&>li:focus-within]:ring-primary-100/20">
+              <ul className="option-menu">
                 <li>
                   <Modal
                     trigger={
@@ -254,16 +255,36 @@ const ChurchProfile = ({
                     Generate
                   </Link>
                 </li>
+
+                <Drawer
+                  trigger={
+                    <li>
+                      <SvgIcon
+                        name="upload"
+                        className="h-4 w-4 text-gray-500"
+                      />
+                      Upload logo
+                    </li>
+                  }
+                  title="Create Church Profile"
+                  description="Enter details to begin"
+                  disableEscapeDown
+                  disableOutsideClick
+                >
+                  {(close) => (
+                    <UploadChurchLogoForm close={close} churchId={churchId} />
+                  )}
+                </Drawer>
                 <li>
                   <Modal
                     trigger={
-                      <Link href="" className="flex items-center gap-2">
+                      <button className="flex items-center gap-2">
                         <SvgIcon
                           name="refresh"
                           className="h-4 w-4 text-gray-500"
                         />
                         Reassign
-                      </Link>
+                      </button>
                     }
                     // title="Reassign branch leader"
                     // contentCardClassName="text-left"
