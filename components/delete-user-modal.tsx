@@ -4,15 +4,18 @@ import { ReactElement, useState } from 'react';
 import { toast } from 'sonner';
 import ConfirmActionCard from './confirm-action-card';
 import Modal from './modal-component';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   trigger: ReactElement;
   userId: string;
   name: string;
+  redirectTo?: string;
 }
 
-const DeleteUserModal = ({ trigger, userId, name }: Props) => {
+const DeleteUserModal = ({ trigger, userId, name, redirectTo }: Props) => {
   const [isDeletingUser, setIsDeletingUser] = useState(false);
+  const router = useRouter();
 
   const handleDeleteUser = async (close: () => void) => {
     setIsDeletingUser(true);
@@ -22,6 +25,11 @@ const DeleteUserModal = ({ trigger, userId, name }: Props) => {
 
       if (result.success) {
         toast.success(result.message);
+
+        if (redirectTo) {
+          router.push(redirectTo);
+        }
+
         close();
       } else {
         toast.error(result.message);

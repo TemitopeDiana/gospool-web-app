@@ -187,16 +187,18 @@ const HomePage = ({
                   console.log('LOGO', el.logo);
                   return (
                     <tr key={index}>
-                      <td className="capitalize  items-center gap-2">
-                        <span className="relative w-6 h-6 rounded-full overflow-hidden ">
-                          <Image
-                            src={el.logo ?? '/assets/a.png'}
-                            alt={el.name}
-                            fill
-                            sizes="24px"
-                          />
-                        </span>
-                        <span className="inline-block">{el.name}</span>
+                      <td className="capitalize">
+                        <div className="flex items-center gap-2">
+                          <span className="relative block w-9 h-9 rounded-full aspect-square overflow-hidden ">
+                            <Image
+                              src={el.logo || '/assets/a.png'}
+                              alt={el.name}
+                              fill
+                              sizes="24px"
+                            />
+                          </span>
+                          <span className="inline-block">{el.name}</span>
+                        </div>
                       </td>
                       <td className="py-6 px-3 capitalize">{el.adminName}</td>
                       <td>{el.totalBranches}</td>

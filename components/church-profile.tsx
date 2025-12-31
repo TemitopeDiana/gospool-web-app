@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -21,6 +22,7 @@ import TeamMembersTable from './team-members-table';
 
 import { deleteChurchAction } from '@/actions/deleteChurch';
 import { compactNumber } from '@/lib/format';
+import { routes } from '@/lib/routes';
 import profilePic from '@/public/assets/profile-pic.png';
 import { type Branch } from '@/types/church.type';
 import { type IconName } from '@/types/icon.type';
@@ -36,6 +38,7 @@ interface ChurchProfileProps {
   teamMembers: User[];
   churchLogo?: string;
   adminName: string;
+  adminAvatar?: string;
   churchName: string;
   totalBranches: number;
   churchId: string;
@@ -57,11 +60,13 @@ const ChurchProfile = ({
   totalPassengers,
   totalTeam,
   churchLogo,
+  adminAvatar,
 }: ChurchProfileProps) => {
   const methods = useForm();
   const [profile, setProfile] = useState<ProfileType>(null);
   const [format, setFormat] = useState<FormatType>(null);
   const [isDeletingChurch, setIsDeletingChurch] = useState(false);
+  const router = useRouter();
 
   const cards: { name: string; iconName: IconName; team: number }[] = [
     { name: 'drivers', iconName: 'car', team: totalDrivers },
@@ -77,6 +82,7 @@ const ChurchProfile = ({
 
       if (result.success) {
         toast.success(result.message);
+        router.push(routes.home());
         close();
       } else {
         toast.error(result.message);
@@ -349,7 +355,12 @@ const ChurchProfile = ({
         <div className="w-full flex flex-col gap-2 xss:flex-row">
           <div className="flex flex-1 items-center gap-3 ">
             <div className="flex-none relative w-12 h-12">
-              <Image src={profilePic} alt="profile-pic" fill sizes="100%" />
+              <Image
+                src={adminAvatar || '/assets/user-icon.png'}
+                alt="profile-pic"
+                fill
+                sizes="100%"
+              />
             </div>
 
             <div>
