@@ -32,7 +32,7 @@ interface IDrawerProps {
   disableOutsideClick?: boolean;
   className?: string;
   title: string;
-  description: string | JSX.Element;
+  description?: string | JSX.Element;
 }
 
 export type DrawerRefActions = {
@@ -103,9 +103,11 @@ const Drawer = forwardRef<unknown, IDrawerProps>(
                       <Title className="text-a-16 md:text-a-20 font-semibold">
                         {title}
                       </Title>
-                      <Description className="text-gray-500 font-normal">
-                        {description}
-                      </Description>
+                      <ShowView when={!!description}>
+                        <Description className="text-gray-500 font-normal">
+                          {description}
+                        </Description>
+                      </ShowView>
                     </div>
 
                     <ShowView when={!hideCloseButton}>
