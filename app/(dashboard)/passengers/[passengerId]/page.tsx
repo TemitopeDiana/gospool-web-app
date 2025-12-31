@@ -57,7 +57,7 @@ const PassengerProfile = async ({ params }: Props) => {
       />
 
       <div className="flex max-lmd:flex-col [&>div]:flex-1 gap-5">
-        <div className="dashboard-card w-full h-max flex- lmd:max-w-[350px]">
+        <div className="dashboard-card w-full h-max flex- lmd:max-w-87.5">
           <div className="flex justify-between items-center">
             <div className="relative rounded-full w-16 aspect-square overflow-hidden">
               <Image
@@ -101,6 +101,7 @@ const PassengerProfile = async ({ params }: Props) => {
                   }
                   userId={user.data.userId}
                   name={`${user.data.firstName} ${user.data.lastName}`}
+                  redirectTo={routes.passengers()}
                 />
               </div>
             </Popover>

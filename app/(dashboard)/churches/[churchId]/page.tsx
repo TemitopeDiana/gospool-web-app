@@ -38,8 +38,7 @@ const ChurchPage = async ({ params }: Props) => {
       getChurchTeamMembers(churchId),
     ]);
 
-  console.log({ teamMembers });
-  if (!church.success) {
+  if (!church.data) {
     return notFound();
   }
 
@@ -64,6 +63,8 @@ const ChurchPage = async ({ params }: Props) => {
         totalDrivers={stats.data?.drivers || 0}
         totalPassengers={stats.data?.passengers || 0}
         totalTeam={stats.data?.team || 0}
+        churchLogo={church.data?.logo}
+        adminAvatar={church.data?.adminAvatar}
       />
     </div>
   );

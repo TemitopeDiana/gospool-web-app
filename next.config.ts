@@ -8,7 +8,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: '*.cloudinary.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'gospool-s7r4.onrender.com',
       },
       {
         protocol: 'http',
