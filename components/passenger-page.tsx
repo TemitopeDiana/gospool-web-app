@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import Image from 'next/image';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { useEffect, useState } from 'react';
 
 import { DATE_FORMAT_DMY } from '@/lib/constants';
 import { routes } from '@/lib/routes';
@@ -14,10 +15,33 @@ import ShowView from './show-view';
 import SvgIcon from './svg-icon';
 
 import { User } from '@/types/user.type';
+import { getChurchLogo } from '@/actions/get-church-logo';
 
 interface Props {
   passengers: User[];
 }
+
+const ChurchLogoImage = ({ churchId }: { churchId: string }) => {
+  const [logoUrl, setLogoUrl] = useState<string>('/assets/favicon.png');
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      const churchLogo = await getChurchLogo(churchId);
+      setLogoUrl(churchLogo.logoUrl || '/assets/favicon.png');
+    };
+    fetchLogo();
+  }, [churchId]);
+
+  return (
+    <Image
+      src={logoUrl}
+      alt="logo"
+      width={24}
+      height={24}
+      className="rounded-full"
+    />
+  );
+};
 
 const PassengerPageComponent = ({ passengers }: Props) => {
   return (
@@ -107,12 +131,8 @@ const PassengerPageComponent = ({ passengers }: Props) => {
                   <td className="px-4 py-3">{`${el.lastName} ${el.firstName}`}</td>
                   <td className="px-4 py-3 flex items-center gap-2">
                     <ShowView when={!!el.church}>
-                      <Image
-                        src="/assets/favicon.png"
-                        alt="logo"
-                        width={24}
-                        height={24}
-                        className="rounded-full"
+                      <ChurchLogoImage
+                        churchId={el.church?.churchId as string}
                       />
                       <div>
                         <p className="font-medium">
