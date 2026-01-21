@@ -19,16 +19,12 @@ export const getChurchById = async (
     );
 
     return { success: true, data: response.data.data };
-  } catch (error: unknown) {
-    if (error instanceof AxiosError) {
-      console.error('Unexpected error:', error);
-      return {
-        success: false,
-        error: error.response?.data,
-      };
-    }
-
+  } catch (error) {
+    const err = error as AxiosError<ApiResponse>;
     console.error('Unexpected error:', error);
-    return { success: false, error: 'Network or unexpected error' };
+    return {
+      ...err,
+      success: false,
+    };
   }
 };
