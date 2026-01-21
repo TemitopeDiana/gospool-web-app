@@ -1,8 +1,6 @@
 import { DATE_FORMAT_DMY } from '@/lib/constants';
-import { routes } from '@/lib/routes';
 import { Department } from '@/types/church.type';
 import dayjs from 'dayjs';
-import Link from 'next/link';
 import { Button } from './button';
 import CreateChurchDepartmentModal from './create-church-department-modal';
 import DeleteChurchDepartmentModal from './delete-church-department-modal.';
@@ -61,18 +59,6 @@ const ChurchDepartmentTable = ({ departments, branchId }: Props) => {
                       }
                     >
                       <ul className="table-action-popover">
-                        <li>
-                          <Link
-                            href={`${routes.driverProfile(el._id)}`}
-                            className="flex items-center gap-2"
-                          >
-                            <SvgIcon
-                              name="eye"
-                              className="h-4 w-4 text-gray-500"
-                            />
-                            View
-                          </Link>
-                        </li>
                         <li className="">
                           <Drawer
                             disableEscapeDown
