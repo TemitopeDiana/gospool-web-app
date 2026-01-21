@@ -14,14 +14,17 @@ import Tabs from './tabs';
 import TeamMembersTable from './team-members-table';
 
 import { compactNumber } from '@/lib/format';
+import { Department } from '@/types/church.type';
 import { type IconName } from '@/types/icon.type';
 import { type ChurchService } from '@/types/services.type';
 import { type User } from '@/types/user.type';
+import ChurchDepartmentTable from './church-department-table';
 
 interface BranchPageProps {
   passengers: User[];
   drivers: User[];
   services: ChurchService[];
+  departments: Department[];
   teamMembers: User[];
   churchName: string;
   churchAddress: string;
@@ -39,6 +42,7 @@ function BranchPage({
   teamMembers,
   drivers,
   services,
+  departments,
   churchName,
   churchAddress,
   churchAdmin,
@@ -210,6 +214,15 @@ function BranchPage({
               label: 'Services',
               content: (
                 <ChurchServicesTable services={services} branchId={branchId} />
+              ),
+            },
+            {
+              label: 'Departments',
+              content: (
+                <ChurchDepartmentTable
+                  departments={departments}
+                  branchId={branchId}
+                />
               ),
             },
           ]}
