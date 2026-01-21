@@ -82,6 +82,20 @@ export interface Pagination {
 
 export type ChurchStatus = 'active' | 'inactive' | 'suspended' | string;
 
+export interface Department {
+  _id: string;
+  branchId: string;
+  name: string;
+  description: string;
+  isDeleted: boolean;
+  departmentId: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  branch: Branch;
+  hod: null;
+}
+
 export interface ChurchBranchArgs {
   churchId: string;
   name: string;

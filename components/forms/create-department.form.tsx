@@ -8,22 +8,34 @@ import Textarea from '../textarea';
 
 import { createBranchDepartment } from '@/actions/create-branch-department';
 
-interface Props {
-  close: () => void;
-  branchId: string;
-}
+import { updateBranchDepartment } from '@/actions/update-branch-department';
 
-interface DepartmentFormValues {
+type Props = {
+  close: () => void;
+  branchId?: string;
+  values?: DepartmentFormValues;
+} & (
+  | { edit?: true; departmentId: string; branchId?: never }
+  | { edit?: false; departmentId?: never; branchId: string }
+);
+
+type DepartmentFormValues = {
   name: string;
   description?: string;
-}
-
-const defaultValues: DepartmentFormValues = {
-  name: '',
-  description: '',
 };
 
-const CreateChurchDepartmentForm = ({ close, branchId }: Props) => {
+const CreateChurchDepartmentForm = ({
+  close,
+  branchId,
+  edit,
+  values,
+  departmentId,
+}: Props) => {
+  const defaultValues: DepartmentFormValues = {
+    name: values?.name ?? '',
+    description: values?.description ?? '',
+  };
+
   const [isCreatingDepartment, setIsCreatingDepartment] = useState(false);
   const form = useForm<DepartmentFormValues>({
     defaultValues,
@@ -34,13 +46,17 @@ const CreateChurchDepartmentForm = ({ close, branchId }: Props) => {
   const onSubmit: SubmitHandler<DepartmentFormValues> = async (data) => {
     const payload = {
       ...data,
-      branchId,
     };
 
     try {
       setIsCreatingDepartment(true);
 
-      const result = await createBranchDepartment(payload);
+      const result = edit
+        ? await updateBranchDepartment({ ...payload, departmentId })
+        : await createBranchDepartment({
+            ...payload,
+            branchId: branchId ?? '',
+          });
 
       if (result.success) {
         close();
@@ -67,7 +83,7 @@ const CreateChurchDepartmentForm = ({ close, branchId }: Props) => {
         <Textarea name="description" label="Department Description" />
 
         <Button className="w-full" loading={isCreatingDepartment}>
-          Add Department
+          {edit ? 'Update' : 'Add'} Department
         </Button>
       </form>
     </FormProvider>
