@@ -20,7 +20,7 @@ const formatTimeToAmPm = (time24: string) => {
   return dayjs(time24, 'HH:mm').format('h:mma');
 };
 
-const daysOptions = [
+export const daysOptions = [
   { value: 'sunday', label: 'Sunday' },
   { value: 'monday', label: 'Monday' },
   { value: 'tuesday', label: 'Tuesday' },
@@ -35,7 +35,7 @@ interface Props {
   branchId: string;
 }
 
-interface ServiceItem {
+export interface ServiceItem {
   name: string;
   day: SelectOptionType | null;
   time: string;

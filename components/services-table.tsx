@@ -1,15 +1,15 @@
 import { DATE_FORMAT_DMY } from '@/lib/constants';
-import { routes } from '@/lib/routes';
 import { ChurchService } from '@/types/services.type';
 import dayjs from 'dayjs';
-import Link from 'next/link';
+import { Button } from './button';
+import CreateChurchServiceModal from './create-church-service-modal';
 import DeleteChurchServiceModal from './delete-church-service-modal';
+import Drawer from './drawer';
+import UpdateChurchServiceForm from './forms/update-service-form';
 import NoDataCard from './no-data-card';
 import Popover from './popover';
 import ShowView from './show-view';
 import SvgIcon from './svg-icon';
-import CreateChurchServiceModal from './create-church-service-modal';
-import { Button } from './button';
 
 interface Props {
   services: ChurchService[];
@@ -37,18 +37,7 @@ const ChurchServicesTable = ({ services, branchId }: Props) => {
                 <tr key={index}>
                   <td>{dayjs(el.createdAt).format(DATE_FORMAT_DMY)}</td>
                   <td className="py-6 px-3 capitalize">{el.name}</td>
-                  {/* <td>
-                              <ToggleUserStatus
-                                 trigger={
-                                    <button
-                                       className={`${el.isActive ? 'bg-green-500 active' : 'bg-gray-100'} toggle-button`}
-                                    />
-                                 }
-                                 userId={el.userId}
-                                 name={`${el.firstName} ${el.lastName}`}
-                                 isActive={el.isActive}
-                              />
-                           </td> */}
+
                   <td className="capitalize">{el.day}</td>
                   <td>{el.time}</td>
 
@@ -61,17 +50,31 @@ const ChurchServicesTable = ({ services, branchId }: Props) => {
                       }
                     >
                       <ul className="table-action-popover">
-                        <li>
-                          <Link
-                            href={`${routes.driverProfile(el.serviceId)}`}
-                            className="flex items-center gap-2"
+                        <li className="">
+                          <Drawer
+                            disableEscapeDown
+                            disableOutsideClick
+                            title="Edit Department"
+                            trigger={
+                              <button>
+                                <SvgIcon name="edit" />
+                                <p>Edit</p>
+                              </button>
+                            }
                           >
-                            <SvgIcon
-                              name="eye"
-                              className="h-4 w-4 text-gray-500"
-                            />
-                            View
-                          </Link>
+                            {(close) => (
+                              <UpdateChurchServiceForm
+                                close={close}
+                                values={{
+                                  name: el.name,
+                                  day: el.day,
+                                  time: el.time,
+                                }}
+                                branchId={branchId}
+                                serviceId={el.serviceId}
+                              />
+                            )}
+                          </Drawer>
                         </li>
                         <li className="text-error-700">
                           <DeleteChurchServiceModal
