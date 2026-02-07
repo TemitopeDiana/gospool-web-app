@@ -6,12 +6,12 @@ import { Bus } from '@/types/bus.type';
 import { AxiosError } from 'axios';
 
 export interface CreateBusPayload {
+  name: string;
   busType: string;
   year: number;
   availableSeats: number;
   plateNumber: string;
   color: string;
-  name: string;
   churchId: string;
   branchId: string;
 }

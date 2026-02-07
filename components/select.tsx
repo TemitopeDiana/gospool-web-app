@@ -104,7 +104,7 @@ export default function TypeSelect({
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((s) => !s)}
-        className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border
+        className={`${className} w-full flex items-center justify-between px-4 py-3 rounded-lg border
                     border-gray-200 bg-background text-left   focus:outline-none focus:ring-0 focus:border-gray-200 focus:shadow-none transition-shadow`}
       >
         <div className="flex-1 truncate">
