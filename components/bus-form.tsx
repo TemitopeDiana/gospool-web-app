@@ -86,9 +86,6 @@ export function BusForm({
               required: 'Please enter bus name',
             })}
           />
-          {typeof errors.name?.message === 'string' && (
-            <InputFooterText text={errors.name.message} isError />
-          )}
         </div>
         <div className="flex-1 min-w-0">
           <Input
@@ -122,6 +119,7 @@ export function BusForm({
                 onChange={field.onChange}
                 placeholder="Select a church"
                 className="bg-gray-50"
+                noBorder
               />
             )}
           />
@@ -150,6 +148,7 @@ export function BusForm({
                       : 'Select church first'
                 }
                 className="bg-gray-50"
+                noBorder
               />
             )}
           />
