@@ -1,3 +1,17 @@
+export interface BusPassengers {
+  busBookingId: string;
+  passengerId: string;
+  name: string;
+  email: string;
+  photo: string;
+  dateBooked: string;
+  travelDate: string;
+  seatsBooked: number;
+  status: string;
+  isBoarded: boolean;
+  boardedAt: string;
+}
+
 export interface Bus {
   busId: string;
   name: string;
@@ -19,6 +33,7 @@ export interface Bus {
   remainingSeats: number;
   createdAt: string;
   updatedAt: string;
+  passengers: BusPassengers[];
 }
 
 export interface BusFilters {
