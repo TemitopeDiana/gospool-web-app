@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 import { Button } from '@/components/button';
 import Input from '@/components/input';
@@ -17,14 +18,24 @@ import Drawer from '@/components/drawer';
 import RemoveUserIcon from '@/public/assets/user-remove.png';
 
 import { routes } from '@/lib/routes';
+import {
+  TIME_FORMAT_12HR,
+  TIME_FORMAT_AM_PM,
+  TIME_FORMAT_HM,
+} from '@/lib/constants';
 import { createBusProfile } from '@/actions/createBusProfile';
+import { getChurchBranches } from '@/actions/getChurchBranches';
 import { Bus } from '@/types/bus.type';
 import { Branch, Church, Pagination } from '@/types/church.type';
+
 import Select from './select';
 import InputFooterText from './input-footer-text';
-import { getChurchBranches } from '@/actions/getChurchBranches';
 import { BusForm } from './bus-form';
-import { TIME_FORMAT_HM } from '@/lib/constants';
+import { updateBusDetails } from '@/actions/updateBusDetails';
+import { toggleBusPresence } from '@/actions/toggleBusPresence';
+import { deleteBus } from '@/actions/deleteBus';
+
+dayjs.extend(customParseFormat);
 
 type CreateBusFormValues = {
   busType: string;
@@ -35,6 +46,32 @@ type CreateBusFormValues = {
   name: string;
   churchId: string;
   branchId: string;
+};
+
+type EditBusFormValues = {
+  driverName: string;
+  driverPhoto: string;
+  plateNumber: string;
+  color: string;
+  availableSeats: number;
+  isPublic: boolean;
+  churchId: string;
+  branchId: string;
+  pickupLocation: string;
+  departureTime: string;
+  busType: string;
+  year: number;
+  name: string;
+  isActive: boolean;
+  destination: string;
+};
+
+type MakePublicFormValues = {
+  driverPhoto?: string;
+  driverName: string;
+  pickupLocation: string;
+  destination: string;
+  departureTime: string;
 };
 
 interface BusPageComponentProps {
@@ -67,17 +104,47 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
     },
   });
 
+  const editMethods = useForm<EditBusFormValues>();
+
+  const publicMethods = useForm<MakePublicFormValues>({
+    defaultValues: {
+      driverPhoto: '',
+      driverName: '',
+      pickupLocation: '',
+      destination: '',
+      departureTime: '',
+    },
+  });
+
   const {
     handleSubmit,
-    control,
     watch,
     setValue,
     reset,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting },
   } = methods;
+
+  const {
+    handleSubmit: handleEditSubmit,
+    control: editControl,
+    watch: editWatch,
+    setValue: editSetValue,
+    reset: editReset,
+    register: editRegister,
+    formState: { isSubmitting: isEditSubmitting, errors: editErrors },
+  } = editMethods;
+
+  const {
+    handleSubmit: handlePublicSubmit,
+    register: publicRegister,
+    reset: handlePublicReset,
+    formState: { isSubmitting: handlePublicSubmitting },
+  } = publicMethods;
 
   const selectedChurchId = watch('churchId');
   const selectedBranchId = watch('branchId');
+
+  const editSelectedChurchId = editWatch('churchId');
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -108,6 +175,35 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
     fetchBranches();
   }, [selectedChurchId, setValue]);
 
+  useEffect(() => {
+    const fetchEditBranches = async () => {
+      if (!editSelectedChurchId) {
+        setBranches([]);
+        editSetValue('branchId', '');
+        return;
+      }
+
+      setLoadingBranches(true);
+      try {
+        const result = await getChurchBranches(editSelectedChurchId);
+        if (result.success) {
+          setBranches(result.data || []);
+        } else {
+          toast.error('Failed to load branches');
+          setBranches([]);
+        }
+      } catch (error) {
+        console.error('Error fetching branches:', error);
+        toast.error('Failed to load branches');
+        setBranches([]);
+      } finally {
+        setLoadingBranches(false);
+      }
+    };
+
+    fetchEditBranches();
+  }, [editSelectedChurchId, editSetValue]);
+
   const churchOptions: Option[] = churches.map((church) => ({
     value: church.churchId,
     label: church.name,
@@ -136,6 +232,110 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
       toast.error('Failed to add bus');
     }
   });
+
+  const handleEditBus = (busId: string, closeDrawer: () => void) => {
+    return handleEditSubmit(async (values) => {
+      const formattedTime = dayjs(values.departureTime, TIME_FORMAT_HM).format(
+        TIME_FORMAT_12HR
+      );
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { churchId, ...rest } = values;
+
+      const payload = {
+        ...rest,
+        departureTime: formattedTime,
+      };
+
+      if (values.driverPhoto) {
+        payload.driverPhoto = values.driverPhoto;
+      }
+
+      const res = await updateBusDetails(busId, payload);
+
+      if (res.success) {
+        toast.success(res.message || 'Bus updated successfully');
+        editReset();
+        closeDrawer();
+        router.refresh();
+      } else {
+        toast.error(res.message || 'Failed to update bus');
+      }
+    });
+  };
+
+  const openEditDrawer = (bus: Bus) => {
+    editReset({
+      driverName: bus.driverName || '',
+      plateNumber: bus.plateNumber || '',
+      color: bus.color || '',
+      availableSeats: bus.availableSeats || 0,
+      isPublic: bus.isPublic || false,
+      isActive: bus.isActive || false,
+      churchId: bus.churchId || '',
+      branchId: bus.branchId || '',
+      pickupLocation: bus.pickupLocation || '',
+      departureTime: bus.departureTime
+        ? dayjs(bus.departureTime, TIME_FORMAT_12HR).format(TIME_FORMAT_HM)
+        : '',
+      name: bus.name || '',
+      busType: bus.busType || '',
+      year: bus.year || undefined,
+    });
+  };
+
+  const handleMakePublicSubmit = (busId: string, closeModal: () => void) => {
+    return handlePublicSubmit(async (values) => {
+      const formattedTime = dayjs(values.departureTime, TIME_FORMAT_HM).format(
+        TIME_FORMAT_12HR
+      );
+
+      const payload: MakePublicFormValues = {
+        driverName: values.driverName,
+        pickupLocation: values.pickupLocation,
+        destination: values.destination,
+        departureTime: formattedTime,
+      };
+
+      if (values.driverPhoto) {
+        payload.driverPhoto = values.driverPhoto;
+      }
+
+      const res = await toggleBusPresence(busId, payload);
+
+      if (res.success) {
+        toast.success(res.message || 'Bus made public successfully');
+        handlePublicReset();
+        closeModal();
+        reset();
+        router.refresh();
+      } else {
+        toast.error(res.message || 'Failed to update bus');
+      }
+    });
+  };
+
+  const openPublicModal = (bus: Bus) => {
+    publicMethods.reset({
+      driverPhoto: '',
+      driverName: bus.driverName || '',
+      pickupLocation: bus.pickupLocation || '',
+      destination: '',
+      departureTime: bus.departureTime || '',
+    });
+  };
+
+  const handleDeleteBus = async (busId: string, closeModal: () => void) => {
+    const res = await deleteBus(busId);
+
+    if (res.success) {
+      toast.success(res.message);
+      closeModal();
+      router.refresh();
+    } else {
+      toast.error(res.message);
+    }
+  };
 
   return (
     <div className="w-full max-w-225 mx-auto">
@@ -218,16 +418,108 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                         <p>{el.driverName}</p>
                         <p>
                           {el?.departureTime
-                            ? dayjs(el.departureTime).format(TIME_FORMAT_HM)
+                            ? dayjs(el.departureTime, TIME_FORMAT_12HR).format(
+                                TIME_FORMAT_AM_PM
+                              )
                             : '--'}
                         </p>
                       </div>
                     </td>
                     <td className="px-4 py-3">{el.availableSeats}</td>
 
-                    <td className="px-4 py-3">
-                      <button className="bg-gray-100 toggle-button"></button>
-                    </td>
+                    <Modal
+                      trigger={
+                        <td
+                          className="px-4 py-3"
+                          onClick={() => openPublicModal(el)}
+                        >
+                          <button
+                            className={`toggle-button ${el.isPublic ? 'bg-green-500 active' : 'bg-gray-100'}`}
+                          ></button>
+                        </td>
+                      }
+                      title="Make Public"
+                      contentCardClassName="text-left"
+                    >
+                      {(closeModal) => (
+                        <FormProvider {...publicMethods}>
+                          <div className="flex items-center gap-2 mt-5">
+                            <div>
+                              <Image
+                                src="/assets/profile-pic.png"
+                                alt="profile-pic"
+                                width={48}
+                                height={48}
+                              />
+                            </div>
+                            <div className="text-left">
+                              <p>Driver's photo</p>
+                              <p className="mb-1 text-gray-500">
+                                For easier recognition
+                              </p>
+                            </div>
+                          </div>
+                          <form
+                            className="mt-4 flex flex-col gap-4"
+                            onSubmit={handleMakePublicSubmit(
+                              el.busId,
+                              closeModal
+                            )}
+                          >
+                            <Input
+                              type="text"
+                              label="Driver name"
+                              {...publicRegister('driverName', {
+                                required: 'Driver name is required',
+                              })}
+                            />
+
+                            <Input
+                              type="text"
+                              label="Pickup location"
+                              {...publicRegister('pickupLocation', {
+                                required: 'Pickup location is required',
+                              })}
+                            />
+
+                            <Input
+                              type="time"
+                              label="Departure time"
+                              {...publicRegister('departureTime', {
+                                required: 'Departure time is required',
+                              })}
+                            />
+
+                            <Input
+                              type="text"
+                              label="Destination"
+                              {...publicRegister('destination', {
+                                required: 'Destination is required',
+                              })}
+                            />
+
+                            <div className="mt-6 flex items-center justify-between">
+                              <Button
+                                variant="outline"
+                                className="xxs:py-[13px] xxs:px-10"
+                                onClick={closeModal}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                variant="default"
+                                className="xxs:py-[13px] xxs:px-[34px]"
+                                disabled={handlePublicSubmitting}
+                              >
+                                {handlePublicSubmitting
+                                  ? 'Updating...'
+                                  : 'Update'}
+                              </Button>
+                            </div>
+                          </form>
+                        </FormProvider>
+                      )}
+                    </Modal>
                     <td className="px-4 py-3">
                       <Popover
                         trigger={
@@ -253,10 +545,13 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                             <Drawer
                               key={index}
                               trigger={
-                                <button className="flex items-center gap-2">
+                                <button
+                                  className="flex items-center gap-2"
+                                  onClick={() => openEditDrawer(el)}
+                                >
                                   <SvgIcon
                                     name="edit"
-                                    className="h-4 w-4 text-gray-500"
+                                    className="h-4 w-4 text-gray-500 "
                                   />
                                   Edit
                                 </button>
@@ -264,150 +559,267 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                               title="Edit bus details"
                               description=""
                             >
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <Image
-                                    src="/assets/profile-pic.png"
-                                    alt="profile-pic"
-                                    width={48}
-                                    height={48}
-                                  />
-                                  <div>
-                                    <p className="text-sm">Driver's photo</p>
-                                    <p className="text-xs text-gray-500">
-                                      For easier recognition
-                                    </p>
+                              {(closeDrawer) => (
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <Image
+                                      src="/assets/profile-pic.png"
+                                      alt="profile-pic"
+                                      width={48}
+                                      height={48}
+                                    />
+                                    <div>
+                                      <p className="text-sm">Driver's photo</p>
+                                      <p className="text-xs text-gray-500">
+                                        For easier recognition
+                                      </p>
+                                    </div>
                                   </div>
-                                </div>
 
-                                <FormProvider {...methods}>
-                                  <form className="flex flex-col gap-5 mt-5">
-                                    <Input
-                                      type="text"
-                                      name="driver-name"
-                                      label="Driver name"
-                                    />
-                                    <div className="flex flex-wrap items-center gap-6">
-                                      <div className="flex-1">
-                                        <Input
-                                          type="text"
-                                          name="number-plate"
-                                          label="Plate Number"
-                                        />
-                                      </div>
-                                      <div className="flex-1">
-                                        <Input
-                                          type="text"
-                                          name="color"
-                                          label="Color"
-                                        />
-                                      </div>
-                                    </div>
-                                    <Input
-                                      type="number"
-                                      name="available-seats"
-                                      label="Available seats"
-                                    />
-                                    <div className="flex items-center gap-3">
-                                      <button
-                                        className="toggle-button"
-                                        type="button"
-                                      ></button>
-                                      <div>
-                                        <p>Make public?</p>
-                                        <p>
-                                          List this bus on gospool for members
-                                        </p>
-                                      </div>
-                                    </div>
-                                    <div className="flex flex-wrap items-center gap-6 ">
-                                      <div className="flex-1">
-                                        <Input
-                                          type="text"
-                                          name="pickup-location"
-                                          label="Pickup location"
-                                        />
-                                      </div>
-
-                                      <div className="flex-1">
-                                        <Input
-                                          type="time"
-                                          name="departure-time"
-                                          label="Departure time"
-                                        />
-                                      </div>
-                                    </div>
-
-                                    <div className="flex flex-col md:flex-row flex-wrap gap-6 md:items-center mt-6">
-                                      <div className="flex-1 min-w-0">
-                                        <label className="block text-sm font-normal mb-2">
-                                          Church
-                                        </label>
-                                        <Controller
-                                          name="churchId"
-                                          control={control}
-                                          rules={{
-                                            required: 'Please select a church',
-                                          }}
-                                          render={({ field }) => (
-                                            <Select
-                                              options={churchOptions}
-                                              value={field.value}
-                                              onChange={field.onChange}
-                                              placeholder="Select a church"
-                                              className="bg-gray-50"
-                                            />
-                                          )}
-                                        />
-
-                                        {typeof errors.churchId?.message ===
-                                          'string' && (
-                                          <InputFooterText
-                                            text={errors.churchId.message}
-                                            isError
-                                          />
-                                        )}
-                                      </div>
-
-                                      <div className="flex-1 min-w-0">
-                                        <label className="block text-sm font-normal mb-2">
-                                          Branch
-                                        </label>
-                                        <Controller
-                                          name="branchId"
-                                          control={control}
-                                          rules={{
-                                            required: 'Please select a branch',
-                                          }}
-                                          render={({ field }) => (
-                                            <Select
-                                              options={branchOptions}
-                                              value={field.value}
-                                              onChange={field.onChange}
-                                              placeholder={
-                                                loadingBranches
-                                                  ? 'Loading branches...'
-                                                  : selectedChurchId
-                                                    ? 'Select a branch'
-                                                    : 'Select church first'
-                                              }
-                                              className="bg-gray-50"
-                                            />
-                                          )}
-                                        />
-                                      </div>
-
-                                      {typeof errors.branchId?.message ===
-                                        'string' && (
-                                        <InputFooterText
-                                          text={errors.branchId.message}
-                                          isError
-                                        />
+                                  <FormProvider {...editMethods}>
+                                    <form
+                                      className="flex flex-col gap-5 mt-5"
+                                      onSubmit={handleEditBus(
+                                        el.busId,
+                                        closeDrawer
                                       )}
-                                    </div>
-                                  </form>
-                                </FormProvider>
-                              </div>
+                                    >
+                                      <div>
+                                        <Input
+                                          type="text"
+                                          label="Driver name"
+                                          {...editRegister('driverName', {
+                                            required: 'Driver name is required',
+                                          })}
+                                        />
+                                      </div>
+
+                                      <div className="flex flex-wrap items-center gap-6">
+                                        <div className="flex-1 min-w-0">
+                                          <Input
+                                            label="Bus name"
+                                            {...editRegister('name', {
+                                              required: 'Please enter bus name',
+                                            })}
+                                          />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                          <Input
+                                            label="Bus type"
+                                            {...editRegister('busType', {
+                                              required:
+                                                'Please enter the bus type',
+                                            })}
+                                          />
+                                        </div>
+                                      </div>
+
+                                      <div className="flex flex-wrap items-center gap-6">
+                                        <div className="flex-1">
+                                          <Input
+                                            type="text"
+                                            label="Plate Number"
+                                            {...editRegister('plateNumber', {
+                                              required:
+                                                'Plate number is required',
+                                            })}
+                                          />
+                                        </div>
+                                        <div className="flex-1">
+                                          <Input
+                                            type="text"
+                                            label="Color"
+                                            {...editRegister('color', {
+                                              required: 'Color is required',
+                                            })}
+                                          />
+                                        </div>
+                                      </div>
+
+                                      <div className="flex flex-wrap items-center gap-6">
+                                        <div className="flex-1 min-w-0">
+                                          <Input
+                                            type="number"
+                                            label="Available seats"
+                                            {...editRegister('availableSeats', {
+                                              required:
+                                                'Available seats is required',
+                                            })}
+                                          />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                          <Input
+                                            label="Year"
+                                            type="number"
+                                            {...editRegister('year', {
+                                              required: 'Please enter bus year',
+                                              valueAsNumber: true,
+                                              min: {
+                                                value: 1900,
+                                                message: 'Enter a valid year',
+                                              },
+                                            })}
+                                          />
+                                        </div>
+                                      </div>
+
+                                      <div className="flex items-center gap-3">
+                                        <Controller
+                                          name="isPublic"
+                                          control={editControl}
+                                          render={({ field }) => (
+                                            <button
+                                              className={`toggle-button ${field.value ? 'bg-green-500 active' : 'bg-gray-100'}`}
+                                              type="button"
+                                              onClick={() =>
+                                                field.onChange(!field.value)
+                                              }
+                                            />
+                                          )}
+                                        />
+                                        <div>
+                                          <p>Make public?</p>
+                                          <p>
+                                            List this bus on gospool for members
+                                          </p>
+                                        </div>
+                                      </div>
+                                      <div className="flex items-center gap-3">
+                                        <Controller
+                                          name="isActive"
+                                          control={editControl}
+                                          render={({ field }) => (
+                                            <button
+                                              className={`toggle-button ${field.value ? 'bg-green-500 active' : 'bg-gray-100'}`}
+                                              type="button"
+                                              onClick={() =>
+                                                field.onChange(!field.value)
+                                              }
+                                            />
+                                          )}
+                                        />
+                                        <div>
+                                          <p>Active bus?</p>
+                                          <p>
+                                            Keep this bus in the church fleet
+                                          </p>
+                                        </div>
+                                      </div>
+                                      <div className="flex flex-col md:flex-row flex-wrap gap-6 md:items-center">
+                                        <div className="flex-1 min-w-0">
+                                          <label className="block text-sm font-normal mb-2">
+                                            Church
+                                          </label>
+                                          <Controller
+                                            name="churchId"
+                                            control={editControl}
+                                            rules={{
+                                              required:
+                                                'Please select a church',
+                                            }}
+                                            render={({ field }) => (
+                                              <Select
+                                                options={churchOptions}
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                placeholder="Select a church"
+                                                className="bg-gray-50"
+                                                noBorder
+                                              />
+                                            )}
+                                          />
+
+                                          {typeof editErrors.churchId
+                                            ?.message === 'string' && (
+                                            <InputFooterText
+                                              text={editErrors.churchId.message}
+                                              isError
+                                            />
+                                          )}
+                                        </div>
+
+                                        <div className="flex-1 min-w-0">
+                                          <label className="block text-sm font-normal mb-2">
+                                            Branch
+                                          </label>
+                                          <Controller
+                                            name="branchId"
+                                            control={editControl}
+                                            rules={{
+                                              required:
+                                                'Please select a branch',
+                                            }}
+                                            render={({ field }) => (
+                                              <Select
+                                                options={branchOptions}
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                placeholder={
+                                                  loadingBranches
+                                                    ? 'Loading branches...'
+                                                    : editSelectedChurchId
+                                                      ? 'Select a branch'
+                                                      : 'Select church first'
+                                                }
+                                                className="bg-gray-50"
+                                                noBorder
+                                              />
+                                            )}
+                                          />
+                                          {typeof editErrors.branchId
+                                            ?.message === 'string' && (
+                                            <InputFooterText
+                                              text={editErrors.branchId.message}
+                                              isError
+                                            />
+                                          )}
+                                        </div>
+                                      </div>
+                                      <div className="flex flex-wrap items-center gap-6 ">
+                                        <div className="flex-1">
+                                          <Input
+                                            type="text"
+                                            label="Pickup location"
+                                            {...editRegister('pickupLocation', {
+                                              required:
+                                                'Pickup location is required',
+                                            })}
+                                          />
+                                        </div>
+
+                                        <div className="flex-1">
+                                          <Input
+                                            type="time"
+                                            label="Departure time"
+                                            {...editRegister('departureTime', {
+                                              required:
+                                                'Departure time is required',
+                                            })}
+                                          />
+                                        </div>
+                                      </div>
+
+                                      <div className="ml-auto flex flex-wrap items-center gap-5 max-w-fit mt-20">
+                                        <Button
+                                          variant="outline"
+                                          className="xxs:py-[13.5px] xxs:px-15"
+                                          onClick={closeDrawer}
+                                        >
+                                          Cancel
+                                        </Button>
+                                        <Button
+                                          variant="default"
+                                          className="xxs:py-[13.5px] xxs:px-[34.5px]"
+                                        >
+                                          {isEditSubmitting
+                                            ? 'Saving...'
+                                            : 'Save Changes'}
+                                        </Button>
+                                      </div>
+                                    </form>
+                                  </FormProvider>
+                                </div>
+                              )}
                             </Drawer>
                           </li>
                           <li className="text-error-700">
@@ -423,20 +835,26 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                               imageURL={RemoveUserIcon}
                               imageClassName="w-15 h-15"
                             >
-                              <div className="mx-auto flex flex-wrap items-center gap-5 mt-10 max-w-fit">
-                                <Button
-                                  variant="outline"
-                                  className="xxs:py-[13.5px] xxs:px-[34.5px]"
-                                >
-                                  Cancel
-                                </Button>
-                                <Button
-                                  variant="danger"
-                                  className="xxs:py-[13.5px] xxs:px-10"
-                                >
-                                  Remove
-                                </Button>
-                              </div>
+                              {(closeModal) => (
+                                <div className="mx-auto flex flex-wrap items-center gap-5 mt-10 max-w-fit">
+                                  <Button
+                                    variant="outline"
+                                    className="xxs:py-[13.5px] xxs:px-[34.5px]"
+                                    onClick={closeModal}
+                                  >
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    variant="danger"
+                                    className="xxs:py-[13.5px] xxs:px-10"
+                                    onClick={() =>
+                                      handleDeleteBus(el.busId, closeModal)
+                                    }
+                                  >
+                                    Remove
+                                  </Button>
+                                </div>
+                              )}
                             </Modal>
                           </li>
                         </ul>
