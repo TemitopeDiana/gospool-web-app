@@ -10,6 +10,7 @@ interface SelectProps {
   onChange: (value: string | string[] | null) => void;
   placeholder?: string;
   className?: string;
+  noBorder?: boolean;
 }
 
 export default function TypeSelect({
@@ -19,6 +20,7 @@ export default function TypeSelect({
   onChange,
   placeholder = 'Select',
   className = '',
+  noBorder,
 }: SelectProps) {
   const [open, setOpen] = useState(false);
   const [activeIdx, setActiveIdx] = useState<number>(-1);
@@ -94,18 +96,14 @@ export default function TypeSelect({
   };
 
   return (
-    <div
-      ref={rootRef}
-      className={`relative w-full ${className}`}
-      onKeyDown={onKeyDown}
-    >
+    <div ref={rootRef} className="relative w-full" onKeyDown={onKeyDown}>
       <button
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((s) => !s)}
-        className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border
-                    border-gray-200 bg-background text-left   focus:outline-none focus:ring-0 focus:border-gray-200 focus:shadow-none transition-shadow`}
+        className={`${className} w-full flex items-center justify-between px-4 py-3 rounded-lg ${noBorder ? 'border border-transparent' : 'border border-gray-200'}
+ bg-background text-left   focus:outline-none focus:ring-0 focus:border-gray-200 focus:shadow-none transition-shadow`}
       >
         <div className="flex-1 truncate">
           {selectedArray.length === 0 ? (
