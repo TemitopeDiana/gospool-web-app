@@ -34,6 +34,12 @@ export interface Bus {
   createdAt: string;
   updatedAt: string;
   passengers: BusPassengers[];
+  pickupTime: string;
+  destination: string;
+  isRoundTrip: boolean;
+  pickupDate: string;
+  departureLocation: string;
+  departureDate: string;
 }
 
 export interface BusFilters {
