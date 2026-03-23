@@ -7,6 +7,7 @@ import { AxiosError } from 'axios';
 import { api } from '@/lib/api';
 import { ApiResponse } from '@/types/api.type';
 import type { SignResponse } from '@/types/auth.type';
+import { encrypt } from '@/utils/encrypt';
 
 const SignInSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -17,6 +18,7 @@ const SignInSchema = z.object({
 
 export interface InitialSignInState extends ApiResponse<SignResponse> {
   errors?: Record<string, string[]>;
+  values?: Record<string, unknown>;
   redirectTo?: string;
 }
 
@@ -25,56 +27,89 @@ export async function signIn(
   formData: FormData
 ): Promise<InitialSignInState> {
   const fields = Object.fromEntries(formData.entries());
+
   const validated = SignInSchema.safeParse(fields);
 
+  // 🔴 Validation error
   if (!validated.success) {
-    return { success: false, errors: validated.error.flatten().fieldErrors };
+    return {
+      success: false,
+      errors: validated.error.flatten().fieldErrors,
+      values: fields,
+    };
   }
 
   try {
-    const response = await api.post<SignResponse>(
+    // ✅ Correct API typing
+    const response = await api.post<ApiResponse<SignResponse>>(
       '/auth/login',
       validated.data
     );
-    const data = response.data;
 
-    if (data) {
-      const cookieStore = await cookies();
+    const result = response.data;
 
-      const encryptedToken = data.token;
-      const encryptedRefreshToken = data.refreshToken;
+    console.log('Sign In Response:', result);
 
-      cookieStore.set('access_token', encryptedToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        path: '/',
-        maxAge: 60 * 60 * 24 * 2,
-      });
-
-      cookieStore.set('refresh_token', encryptedRefreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        path: '/',
-        maxAge: 60 * 60 * 24 * 7,
-      });
-
+    // 🔴 Backend returned failure
+    if (!result.success || !result.data) {
       return {
-        success: true,
-        data,
-        message: 'Sign in successful, redirecting...',
+        success: false,
+        message: result.message || 'Invalid credentials',
+        values: fields,
       };
     }
 
-    return { success: false, message: 'Invalid credentials' };
+    const { token, refreshToken } = result.data;
+
+    // 🔴 Extra safety check
+    if (!token || !refreshToken) {
+      throw new Error('Invalid authentication response');
+    }
+
+    const cookieStore = await cookies();
+
+    const encryptedToken = encrypt(token);
+    const encryptedRefreshToken = encrypt(refreshToken);
+
+    cookieStore.set('access_token', encryptedToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 2,
+    });
+
+    cookieStore.set('refresh_token', encryptedRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return {
+      success: true,
+      message: result.message || 'Sign in successful',
+      data: result.data,
+    };
   } catch (error: unknown) {
+    console.error('Sign In Error:', error);
+
     if (error instanceof AxiosError) {
       return {
         success: false,
-        message: error.response?.data?.message || 'Login failed',
+        message:
+          error.response?.data?.message ||
+          error.response?.data?.error ||
+          'Login failed',
+        values: fields,
       };
     }
-    return { success: false, message: 'Unexpected error occurred' };
+
+    return {
+      success: false,
+      message: 'Unexpected error occurred',
+      values: fields,
+    };
   }
 }
