@@ -2,6 +2,7 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { cookies } from 'next/headers';
 import { jwtDecode } from 'jwt-decode';
 import dayjs from 'dayjs';
+import { decrypt, encrypt } from '@/utils/encrypt';
 
 export const api = axios.create({
   baseURL: `${process.env.API_URL}/api/v1`,
@@ -14,56 +15,76 @@ export const apiV1 = axios.create({
 });
 
 const refreshAccessToken = async (): Promise<string | null> => {
-  const cookieStore = await cookies();
-  const refreshToken = cookieStore.get('refresh_token')?.value;
+  try {
+    const cookieStore = await cookies();
+    const encryptedRefreshToken = cookieStore.get('refresh_token')?.value;
 
-  if (refreshToken) {
-    try {
-      const res = await api.post(`/auth/refresh-token`, { refreshToken });
+    if (!encryptedRefreshToken) return null;
 
-      return res.data.token;
-    } catch (err) {
-      console.error('[refreshAccessToken] failed', err);
-      return null;
-    }
+    const refreshToken = decrypt(encryptedRefreshToken);
+
+    const res = await axios.post(
+      `${process.env.API_URL}/api/auth/refresh-token`,
+      { refreshToken }
+    );
+
+    const { token } = res.data;
+
+    if (!token) return null;
+
+    cookieStore.set('access_token', encrypt(token), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 2,
+    });
+
+    return token;
+  } catch (err) {
+    console.error('[refreshAccessToken] failed:', err);
+    return null;
   }
-
-  return null;
 };
 
 apiV1.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
     const cookieStore = await cookies();
-    let token = cookieStore.get('access_token')?.value;
+    let encryptedToken = cookieStore.get('access_token')?.value;
 
-    if (!token) {
+    // 🔁 If no token → try refresh
+    if (!encryptedToken) {
       const newToken = await refreshAccessToken();
       if (!newToken) {
-        throw new Error('AUTH_REQUIRED IN REQUEST USE');
+        throw new Error('AUTH_REQUIRED');
       }
-      token = newToken;
+
+      encryptedToken = encrypt(newToken);
     }
 
-    const decoded = jwtDecode(token);
+    let token = decrypt(encryptedToken);
 
-    const isExpired =
-      dayjs.unix(decoded?.exp || 0).diff(dayjs(), 'second') <= 30;
+    const decoded = jwtDecode<{ exp: number }>(token);
+
+    const isExpired = dayjs.unix(decoded.exp).diff(dayjs(), 'second') <= 0;
 
     if (isExpired) {
       const newToken = await refreshAccessToken();
+
       if (!newToken) {
-        throw new Error('AUTH_REQUIRED IN IS EXPIRED');
+        throw new Error('AUTH_REQUIRED');
       }
+
       token = newToken;
 
-      cookieStore.set('access_token', token, {
+      const cookieStore = await cookies();
+      cookieStore.set('access_token', encrypt(newToken), {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
         path: '/',
       });
-
-      config.headers.set('Authorization', `Bearer ${token}`);
     }
+
+    config.headers.set('Authorization', `Bearer ${token}`);
 
     return config;
   },
