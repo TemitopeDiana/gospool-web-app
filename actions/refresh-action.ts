@@ -1,9 +1,11 @@
 'use server';
 
-import { api } from '@/lib/api';
-import { routes } from '@/lib/routes';
+import axios from 'axios';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+
+import { routes } from '@/lib/routes';
+import { encrypt } from '@/utils/encrypt';
 
 export const refreshAccessToken = async () => {
   const cookieStore = await cookies();
@@ -11,16 +13,19 @@ export const refreshAccessToken = async () => {
 
   if (!refreshToken) {
     cookieStore.delete('access_token');
-    cookieStore.delete('refresh_token');
     redirect(routes.signIn());
   }
 
   try {
-    const response = await api.post<{ token: string }>('/auth/refresh-token');
+    const res = await axios.post(
+      '/api/auth/refresh-token',
+      {},
+      { withCredentials: true }
+    );
 
-    const { token } = response.data;
+    const { token } = res.data;
 
-    cookieStore.set('access_token', token, {
+    cookieStore.set('access_token', encrypt(token), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
@@ -33,4 +38,13 @@ export const refreshAccessToken = async () => {
     cookieStore.delete('refresh_token');
     redirect(routes.signIn());
   }
+};
+
+export const setAuthCookies = async (access_token: string) => {
+  const cookieStore = await cookies();
+
+  cookieStore.set('access_token', encrypt(access_token), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV !== 'development',
+  });
 };

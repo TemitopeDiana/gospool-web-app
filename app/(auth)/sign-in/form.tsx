@@ -40,16 +40,18 @@ const SignInForm = () => {
           placeholder="your-name@example.com"
           autoComplete="email"
           error={state.errors?.email?.[0]}
+          defaultValue={state.values?.email as string}
         />
         <PasswordInput
           name="password"
           label="Password"
           placeholder="******************"
           error={state.errors?.password?.[0]}
+          defaultValue={state.values?.password as string}
         />
       </div>
       <Button
-        className="place-self-end py-[13.5px] px-[39px]"
+        className="place-self-end py-[13.5px] px-9.75"
         loading={isPending}
       >
         Login
