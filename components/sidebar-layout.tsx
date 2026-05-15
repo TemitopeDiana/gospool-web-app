@@ -14,12 +14,14 @@ import { cn } from '@/lib/utils';
 import { type IconName } from '@/types/icon.type';
 import { type Role } from '@/types/user.type';
 import { useGetUser } from '@/hooks/useGetUser';
+import RBAC from './rbac';
 // import { useCheckSession } from '@/hooks/useCheckSession';
 
 export interface SidebarItems {
   label: string;
   link: string;
   svg: IconName;
+  minimumPermission: string;
 }
 
 interface SidebarLayoutProps {
@@ -61,18 +63,24 @@ const SidebarLayout = ({ menu, children, name, role }: SidebarLayoutProps) => {
 
         <ul className="">
           {menu.map((item) => (
-            <li key={item.label}>
-              <Link
-                href={item.link}
-                className={cn(
-                  'flex gap-2 items-center p-a-10 rounded mb-1',
-                  isActive(item.link) && 'bg-white text-primary font-semibold'
-                )}
-              >
-                <SvgIcon name={item.svg} className="w-5 h-5" />
-                {item.label}
-              </Link>
-            </li>
+            <RBAC
+              key={item.label}
+              roles={[role]}
+              requiredPermission={item.minimumPermission}
+            >
+              <li>
+                <Link
+                  href={item.link}
+                  className={cn(
+                    'flex gap-2 items-center p-a-10 rounded mb-1',
+                    isActive(item.link) && 'bg-white text-primary font-semibold'
+                  )}
+                >
+                  <SvgIcon name={item.svg} className="w-5 h-5" />
+                  {item.label}
+                </Link>
+              </li>
+            </RBAC>
           ))}
         </ul>
       </aside>

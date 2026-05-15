@@ -43,6 +43,7 @@ next-env.d.ts
 .eslintcache
 /.vscode
 pnpm-workspace.yaml
+yarn.lock
 
 notes.txt
 *dont-push.tsx
