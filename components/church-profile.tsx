@@ -30,6 +30,7 @@ import { type Branch } from '@/types/church.type';
 import { type IconName } from '@/types/icon.type';
 import { RoleEnum, type User } from '@/types/user.type';
 import { getUsers } from '@/actions/getUsers';
+import { assignChurchToAdmin } from '@/actions/assign-church-to-admin';
 
 type ProfileType = 'passenger' | 'driver' | 'all' | null;
 type FormatType = 'csv' | 'pdf' | null;
@@ -293,6 +294,7 @@ const ChurchProfile = ({
                         <ReassignAdminModal
                           close={close}
                           adminName={adminName}
+                          churchId={churchId}
                         />
                       );
                     }}
@@ -395,10 +397,13 @@ const ChurchProfile = ({
 const ReassignAdminModal = ({
   adminName,
   close,
+  churchId,
 }: {
   adminName: string;
   close: () => void;
+  churchId: string;
 }) => {
+  const router = useRouter();
   const [reassignTab, setReassignTab] = useState<'choose' | 'invite'>('choose');
   const [selectedAdmin, setSelectedAdmin] = useState<SelectOptionType | null>(
     null
@@ -425,14 +430,33 @@ const ReassignAdminModal = ({
       label: `${member.firstName} ${member.lastName}`,
     })) || [];
 
-  const handleAssign = (close: () => void) => {
+  const [isAssigning, setIsAssigning] = useState(false);
+
+  const handleAssign = async (close: () => void) => {
     if (!selectedAdmin) {
       toast.error('Please choose an admin to assign');
       return;
     }
 
-    toast.success(`Assigned ${selectedAdmin.label}`);
-    close();
+    try {
+      setIsAssigning(true);
+      const res = await assignChurchToAdmin({
+        adminId: selectedAdmin.value,
+        churchId,
+      });
+
+      if (res?.success) {
+        toast.success(res.message || `Assigned ${selectedAdmin.label}`);
+        router.refresh();
+        close();
+      } else {
+        toast.error(res?.message || 'Failed to assign church');
+      }
+    } catch {
+      toast.error('Failed to assign church. Please try again.');
+    } finally {
+      setIsAssigning(false);
+    }
   };
 
   const handleSendInvite = (data: {
@@ -525,7 +549,7 @@ const ReassignAdminModal = ({
               ? () => handleAssign(close)
               : methods.handleSubmit((data) => handleSendInvite(data))
           }
-          loading={isGettingAdmins}
+          loading={isGettingAdmins || isAssigning}
           variant="default"
           className="py-[13.5px] px-7.5"
         >
