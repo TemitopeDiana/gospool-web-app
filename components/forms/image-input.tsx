@@ -37,7 +37,7 @@ const ImageUploadInput = ({
   const error = errors[name]?.message;
 
   useEffect(() => {
-    if (fileList && fileList[0]) {
+    if (fileList?.[0]) {
       const file = fileList[0];
       setPreview(URL.createObjectURL(file));
     } else {
@@ -46,16 +46,13 @@ const ImageUploadInput = ({
   }, [fileList]);
 
   return (
-    <div className="input">
-      <label htmlFor={name} className="text-sm">
-        {label}
-      </label>
+    <label htmlFor={name} className="input mb-0">
+      <span className="text-sm">{label}</span>
 
       <div className="flex gap-3 items-center flex-wrap text-primary">
-        <label
-          htmlFor={name}
+        <div
           className={cn(
-            'grid place-items-center w-[100px] aspect-square rounded-10 border relative overflow-hidden border-dashed cursor-pointer',
+            'grid place-items-center w-[100px] aspect-square rounded-full border relative overflow-hidden border-dashed cursor-pointer',
             error && 'border-red-400 text-red-500',
             isSecondary && 'w-[150px] aspect-[4/5] bg-primary/[0.02]'
           )}
@@ -78,15 +75,12 @@ const ImageUploadInput = ({
               </ShowView>
             </div>
           </ShowView>
-        </label>
+        </div>
 
-        <label
-          htmlFor={name}
-          className="px-5 py-2 flex items-center bg-primary/5 gap-3 rounded-10 cursor-pointer"
-        >
+        <div className="px-5 py-2 flex items-center bg-primary/5 gap-3 rounded-10 cursor-pointer">
           <SvgIcon name="upload" />
           <span>Upload Logo</span>
-        </label>
+        </div>
       </div>
 
       <ShowView when={!!error || !!footerText}>
@@ -98,7 +92,7 @@ const ImageUploadInput = ({
 
       <input
         {...register(name, {
-          required: requiredText ? requiredText : false,
+          required: requiredText || false,
           validate: (fileList: FileList) => {
             const file = fileList?.[0];
             if (!file) return true;
@@ -121,7 +115,7 @@ const ImageUploadInput = ({
         accept="image/png, image/jpeg, image/jpg"
         {...props}
       />
-    </div>
+    </label>
   );
 };
 

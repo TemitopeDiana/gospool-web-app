@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 const page = () => {
   if (process.env.NODE_ENV !== 'development') {
-    redirect(routes.home());
+    redirect(routes.branches());
   }
 
   return <IconsPage />;

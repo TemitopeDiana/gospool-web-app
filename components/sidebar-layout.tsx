@@ -37,9 +37,9 @@ const SidebarLayout = ({ menu, children, name, role }: SidebarLayoutProps) => {
   const pathname = usePathname();
 
   const isActive = (route: string) => {
-    if (route === routes.home()) {
+    if (route === routes.branches()) {
       return (
-        pathname === routes.home() || pathname.startsWith(routes.churches())
+        pathname === routes.branches() || pathname.startsWith(routes.churches())
       );
     }
 
@@ -50,7 +50,7 @@ const SidebarLayout = ({ menu, children, name, role }: SidebarLayoutProps) => {
     <div className="flex">
       <aside className="bg-primary text-white w-full sticky top-0 left-0 h-screen overflow-y-auto max-lg:hidden max-w-a-300 p-8 pt-0">
         <div className="p-8 pl-0 sticky top-0 bg-primary mb-4">
-          <Link href={routes.home()} className="block relative  w-32 h-6">
+          <Link href={routes.branches()} className="block relative  w-32 h-6">
             <Image
               src="/assets/logo-white.png"
               alt="gospool logo"

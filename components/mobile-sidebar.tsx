@@ -28,9 +28,9 @@ const MobileSideBar = ({ menu, name, role }: MobileSidebarProps) => {
   const signOut = useSignOut();
 
   const isActive = (route: string) => {
-    if (route === routes.home()) {
+    if (route === routes.branches()) {
       return (
-        pathname === routes.home() || pathname.startsWith(routes.churches())
+        pathname === routes.branches() || pathname.startsWith(routes.churches())
       );
     }
 
@@ -71,7 +71,7 @@ const MobileSideBar = ({ menu, name, role }: MobileSidebarProps) => {
         <div className="flex flex-col gap-5">
           <div className="flex justify-between bg-primary items-center p-5 sticky top-0  default-bg-color">
             <Link
-              href={routes.home()}
+              href={routes.branches()}
               className="relative block w-32 h-6 lg:hidden"
             >
               <Image

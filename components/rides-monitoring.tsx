@@ -236,7 +236,7 @@ function RidesMonitoring({ rides, initialStatus }: IRides) {
                                         className="w-3 h-3"
                                       />
                                       <p className="text-gray-500 text-sm">
-                                        {el.startLocation.address}
+                                        {el?.startLocation?.address}
                                       </p>
                                     </div>
                                   </ShowView>
@@ -305,19 +305,21 @@ function RidesMonitoring({ rides, initialStatus }: IRides) {
                                           <p className="text-gray-500">
                                             Leaving from
                                           </p>
-                                          {el.startLocation.address.length >
+                                          {el?.startLocation?.address.length >
                                           MAX_TOOLTIP_CHARS ? (
                                             <ToolTip
-                                              content={el.startLocation.address}
+                                              content={
+                                                el?.startLocation?.address
+                                              }
                                               trigger={
                                                 <p className="mt-2 max-w-40 xsm:max-w-80 truncate">
-                                                  {el.startLocation.address}
+                                                  {el?.startLocation?.address}
                                                 </p>
                                               }
                                             />
                                           ) : (
                                             <p className="mt-2 max-w-40 xsm:max-w-80 truncate">
-                                              {el.startLocation.address}
+                                              {el?.startLocation?.address}
                                             </p>
                                           )}
                                         </div>
@@ -354,12 +356,15 @@ function RidesMonitoring({ rides, initialStatus }: IRides) {
                                         </div>
                                         <div>
                                           <p className="capitalize font-medium mb-2">
-                                            {passenger.passenger.firstName}
+                                            {passenger?.passenger?.firstName}
                                           </p>
                                           <p className="text-gray-500">
                                             Pick up:{' '}
                                             <span className="text-gray-800">
-                                              {passenger.pickupLocation.address}
+                                              {
+                                                passenger?.pickupLocation
+                                                  ?.address
+                                              }
                                             </span>
                                             <span className="ml-1">
                                               {dayjs(el.departureTime).format(

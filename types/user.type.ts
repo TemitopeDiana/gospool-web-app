@@ -73,6 +73,7 @@ export interface UserProfile {
   email: string;
   avatar?: string;
   church?: {
+    churchId?: string;
     name?: string;
     uniqueIdentifier?: string;
   } | null;
