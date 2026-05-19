@@ -1,8 +1,8 @@
 'use server';
 
 import { apiV1 } from '@/lib/api';
+import { handleActionError } from '@/lib/utils';
 import { ChurchResponse } from '@/types/church.type';
-import { AxiosError } from 'axios';
 
 export interface ChurchFilters {
   page?: number;
@@ -13,7 +13,7 @@ export interface ChurchFilters {
 
 export const getChurches = async (
   filters: ChurchFilters = {}
-): Promise<ChurchResponse | { success: false; error: unknown }> => {
+): Promise<ChurchResponse | { success: false; error: unknown; authRequired?: boolean }> => {
   try {
     const {
       page = 1,
@@ -28,14 +28,6 @@ export const getChurches = async (
 
     return response.data;
   } catch (error: unknown) {
-    if (error instanceof AxiosError) {
-      return {
-        success: false,
-        error: error.response?.data,
-      };
-    }
-
-    console.error('Unexpected error:', error);
-    return { success: false, error: 'Network or unexpected error' };
+    return handleActionError(error);
   }
 };

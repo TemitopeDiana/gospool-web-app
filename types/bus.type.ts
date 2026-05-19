@@ -12,6 +12,15 @@ export interface BusPassengers {
   boardedAt: string;
 }
 
+export interface PickupStop {
+  label: string;
+  time?: string;
+}
+
+export interface DestinationStop {
+  label: string;
+}
+
 export interface Bus {
   busId: string;
   name: string;
@@ -22,7 +31,12 @@ export interface Bus {
   availableSeats: number;
   driverName?: string;
   driverPhoto?: string;
+  /** @deprecated use pickupLocations */
   pickupLocation?: string;
+  pickupLocations: PickupStop[];
+  destinations: DestinationStop[];
+  departureLocations: PickupStop[];
+  pickupDate?: string;
   departureTime?: string;
   isPublic: boolean;
   isActive: boolean;

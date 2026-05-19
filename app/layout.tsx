@@ -28,7 +28,7 @@ const RootLayout = ({
 }>) => {
   return (
     <html lang="en">
-      <body className={`${primaryFont.className} antialiased`}>
+      <body className={`${primaryFont.className} antialiased`} suppressHydrationWarning>
         {children}
         <Toaster position="top-center" expand richColors />
       </body>
