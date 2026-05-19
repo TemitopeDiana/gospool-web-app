@@ -40,7 +40,8 @@ export async function updateBusDetails(
     const result = handleActionError(err);
     return {
       success: false,
-      message: result.error || 'Failed to update bus profile. Please try again.',
+      message:
+        result.error || 'Failed to update bus profile. Please try again.',
     };
   }
 }

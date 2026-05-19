@@ -13,7 +13,9 @@ export interface GetBusesResponse {
 
 export const getBuses = async (
   filters: BusFilters = {}
-): Promise<GetBusesResponse | { success: false; error: unknown; authRequired?: boolean }> => {
+): Promise<
+  GetBusesResponse | { success: false; error: unknown; authRequired?: boolean }
+> => {
   try {
     const {
       church,

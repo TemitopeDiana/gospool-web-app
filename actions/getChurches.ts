@@ -13,7 +13,9 @@ export interface ChurchFilters {
 
 export const getChurches = async (
   filters: ChurchFilters = {}
-): Promise<ChurchResponse | { success: false; error: unknown; authRequired?: boolean }> => {
+): Promise<
+  ChurchResponse | { success: false; error: unknown; authRequired?: boolean }
+> => {
   try {
     const {
       page = 1,

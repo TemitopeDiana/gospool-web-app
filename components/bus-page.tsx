@@ -1,7 +1,15 @@
 'use client';
 
 import Image from 'next/image';
-import { Controller, FormProvider, useForm, useFieldArray, UseFormRegister, Control, FieldValues } from 'react-hook-form';
+import {
+  Controller,
+  FormProvider,
+  useForm,
+  useFieldArray,
+  UseFormRegister,
+  Control,
+  FieldValues,
+} from 'react-hook-form';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -99,8 +107,17 @@ interface StopListEditorProps {
   control: Control<FieldValues>;
 }
 
-function StopListEditor({ title, fieldName, withTime = false, register, control }: StopListEditorProps) {
-  const { fields, append, remove } = useFieldArray({ control, name: fieldName });
+function StopListEditor({
+  title,
+  fieldName,
+  withTime = false,
+  register,
+  control,
+}: StopListEditorProps) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: fieldName,
+  });
 
   return (
     <div className="flex flex-col gap-2">
@@ -109,7 +126,9 @@ function StopListEditor({ title, fieldName, withTime = false, register, control 
         <button
           type="button"
           className="text-xs text-primary underline"
-          onClick={() => append(withTime ? { label: '', time: '' } : { label: '' })}
+          onClick={() =>
+            append(withTime ? { label: '', time: '' } : { label: '' })
+          }
         >
           + Add stop
         </button>
@@ -126,7 +145,9 @@ function StopListEditor({ title, fieldName, withTime = false, register, control 
             <input
               placeholder="Stop label"
               className="w-full bg-gray-50 py-[13.5px] px-4 rounded-8 outline-none text-sm border-none placeholder:text-gray-300"
-              {...register(`${fieldName}.${index}.label`, { required: 'Label is required' })}
+              {...register(`${fieldName}.${index}.label`, {
+                required: 'Label is required',
+              })}
             />
           </div>
           {withTime && (
@@ -135,7 +156,9 @@ function StopListEditor({ title, fieldName, withTime = false, register, control 
               <input
                 type="time"
                 className="w-full bg-gray-50 py-[13.5px] px-4 rounded-8 outline-none text-sm border-none"
-                {...register(`${fieldName}.${index}.time`, { required: 'Time is required' })}
+                {...register(`${fieldName}.${index}.time`, {
+                  required: 'Time is required',
+                })}
               />
             </div>
           )}
@@ -361,7 +384,9 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
       pickupLocations: cleanStops(bus.pickupLocations ?? []),
       destination: bus.destinations?.[0]?.label ?? '',
       departureLocations: cleanStops(bus.departureLocations ?? []),
-      pickupDate: bus.pickupDate ? dayjs(bus.pickupDate).format('YYYY-MM-DD') : '',
+      pickupDate: bus.pickupDate
+        ? dayjs(bus.pickupDate).format('YYYY-MM-DD')
+        : '',
       name: bus.name || '',
       busType: bus.busType || '',
       year: bus.year || undefined,
@@ -378,7 +403,9 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
         const payload = {
           driverName: values.driverName,
           pickupLocations: values.pickupLocations,
-          destinations: values.destination ? [{ label: values.destination }] : [],
+          destinations: values.destination
+            ? [{ label: values.destination }]
+            : [],
           departureLocations: values.departureLocations,
           pickupDate: values.pickupDate
             ? new Date(values.pickupDate).toISOString()
@@ -413,7 +440,9 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
       pickupLocations: cleanStops(bus.pickupLocations ?? []),
       destination: bus.destinations?.[0]?.label ?? '',
       departureLocations: cleanStops(bus.departureLocations ?? []),
-      pickupDate: bus.pickupDate ? dayjs(bus.pickupDate).format('YYYY-MM-DD') : '',
+      pickupDate: bus.pickupDate
+        ? dayjs(bus.pickupDate).format('YYYY-MM-DD')
+        : '',
     });
   };
 
@@ -530,7 +559,10 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                     {/* Make public toggle */}
                     <Modal
                       trigger={
-                        <td className="px-4 py-3" onClick={() => openPublicModal(el)}>
+                        <td
+                          className="px-4 py-3"
+                          onClick={() => openPublicModal(el)}
+                        >
                           <button
                             className={`toggle-button ${el.isPublic ? 'bg-green-500 active' : 'bg-gray-100'}`}
                           />
@@ -550,12 +582,16 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                             />
                             <div className="text-left">
                               <p>Driver&apos;s photo</p>
-                              <p className="mb-1 text-gray-500">For easier recognition</p>
+                              <p className="mb-1 text-gray-500">
+                                For easier recognition
+                              </p>
                             </div>
                           </div>
                           <form
                             className="mt-4 flex flex-col gap-4"
-                            onSubmit={(e) => handleMakePublicSubmit(el.busId, closeModal)(e)}
+                            onSubmit={(e) =>
+                              handleMakePublicSubmit(el.busId, closeModal)(e)
+                            }
                           >
                             <Input
                               type="text"
@@ -576,7 +612,9 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                               fieldName="pickupLocations"
                               withTime
                               register={publicRegister}
-                              control={publicControl as unknown as Control<FieldValues>}
+                              control={
+                                publicControl as unknown as Control<FieldValues>
+                              }
                             />
 
                             <Input
@@ -591,7 +629,9 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                               fieldName="departureLocations"
                               withTime
                               register={publicRegister}
-                              control={publicControl as unknown as Control<FieldValues>}
+                              control={
+                                publicControl as unknown as Control<FieldValues>
+                              }
                             />
 
                             <div className="mt-6 flex items-center justify-between">
@@ -607,7 +647,9 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                 className="xxs:py-[13px] xxs:px-[34px]"
                                 disabled={handlePublicSubmitting}
                               >
-                                {handlePublicSubmitting ? 'Updating...' : 'Update'}
+                                {handlePublicSubmitting
+                                  ? 'Updating...'
+                                  : 'Update'}
                               </Button>
                             </div>
                           </form>
@@ -630,7 +672,10 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                               href={`${routes.busProfile(el.busId)}`}
                               className="flex items-center gap-2"
                             >
-                              <SvgIcon name="eye" className="h-4 w-4 text-gray-500" />
+                              <SvgIcon
+                                name="eye"
+                                className="h-4 w-4 text-gray-500"
+                              />
                               View
                             </Link>
                           </li>
@@ -642,7 +687,10 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                   className="flex items-center gap-2"
                                   onClick={() => openEditDrawer(el)}
                                 >
-                                  <SvgIcon name="edit" className="h-4 w-4 text-gray-500" />
+                                  <SvgIcon
+                                    name="edit"
+                                    className="h-4 w-4 text-gray-500"
+                                  />
                                   Edit
                                 </button>
                               }
@@ -659,15 +707,21 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                       height={48}
                                     />
                                     <div>
-                                      <p className="text-sm">Driver&apos;s photo</p>
-                                      <p className="text-xs text-gray-500">For easier recognition</p>
+                                      <p className="text-sm">
+                                        Driver&apos;s photo
+                                      </p>
+                                      <p className="text-xs text-gray-500">
+                                        For easier recognition
+                                      </p>
                                     </div>
                                   </div>
 
                                   <FormProvider {...editMethods}>
                                     <form
                                       className="flex flex-col gap-5 mt-5"
-                                      onSubmit={(e) => handleEditBus(el.busId, closeDrawer)(e)}
+                                      onSubmit={(e) =>
+                                        handleEditBus(el.busId, closeDrawer)(e)
+                                      }
                                     >
                                       <Input
                                         type="text"
@@ -690,7 +744,8 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                           <Input
                                             label="Bus type"
                                             {...editRegister('busType', {
-                                              required: 'Please enter the bus type',
+                                              required:
+                                                'Please enter the bus type',
                                             })}
                                           />
                                         </div>
@@ -702,7 +757,8 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                             type="text"
                                             label="Plate Number"
                                             {...editRegister('plateNumber', {
-                                              required: 'Plate number is required',
+                                              required:
+                                                'Plate number is required',
                                             })}
                                           />
                                         </div>
@@ -723,7 +779,8 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                             type="number"
                                             label="Available seats"
                                             {...editRegister('availableSeats', {
-                                              required: 'Available seats is required',
+                                              required:
+                                                'Available seats is required',
                                             })}
                                           />
                                         </div>
@@ -734,7 +791,10 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                             {...editRegister('year', {
                                               required: 'Please enter bus year',
                                               valueAsNumber: true,
-                                              min: { value: 1900, message: 'Enter a valid year' },
+                                              min: {
+                                                value: 1900,
+                                                message: 'Enter a valid year',
+                                              },
                                             })}
                                           />
                                         </div>
@@ -755,7 +815,9 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                         fieldName="pickupLocations"
                                         withTime
                                         register={editRegister}
-                                        control={editControl as unknown as Control<FieldValues>}
+                                        control={
+                                          editControl as unknown as Control<FieldValues>
+                                        }
                                       />
 
                                       <Input
@@ -770,7 +832,9 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                         fieldName="departureLocations"
                                         withTime
                                         register={editRegister}
-                                        control={editControl as unknown as Control<FieldValues>}
+                                        control={
+                                          editControl as unknown as Control<FieldValues>
+                                        }
                                       />
 
                                       <div className="flex items-center gap-3">
@@ -781,13 +845,17 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                             <button
                                               className={`toggle-button ${field.value ? 'bg-green-500 active' : 'bg-gray-100'}`}
                                               type="button"
-                                              onClick={() => field.onChange(!field.value)}
+                                              onClick={() =>
+                                                field.onChange(!field.value)
+                                              }
                                             />
                                           )}
                                         />
                                         <div>
                                           <p>Make public?</p>
-                                          <p>List this bus on gospool for members</p>
+                                          <p>
+                                            List this bus on gospool for members
+                                          </p>
                                         </div>
                                       </div>
 
@@ -799,23 +867,32 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                             <button
                                               className={`toggle-button ${field.value ? 'bg-green-500 active' : 'bg-gray-100'}`}
                                               type="button"
-                                              onClick={() => field.onChange(!field.value)}
+                                              onClick={() =>
+                                                field.onChange(!field.value)
+                                              }
                                             />
                                           )}
                                         />
                                         <div>
                                           <p>Active bus?</p>
-                                          <p>Keep this bus in the church fleet</p>
+                                          <p>
+                                            Keep this bus in the church fleet
+                                          </p>
                                         </div>
                                       </div>
 
                                       <div className="flex flex-col md:flex-row flex-wrap gap-6 md:items-center">
                                         <div className="flex-1 min-w-0">
-                                          <label className="block text-sm font-normal mb-2">Church</label>
+                                          <label className="block text-sm font-normal mb-2">
+                                            Church
+                                          </label>
                                           <Controller
                                             name="churchId"
                                             control={editControl}
-                                            rules={{ required: 'Please select a church' }}
+                                            rules={{
+                                              required:
+                                                'Please select a church',
+                                            }}
                                             render={({ field }) => (
                                               <Select
                                                 options={churchOptions}
@@ -827,17 +904,26 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                               />
                                             )}
                                           />
-                                          {typeof editErrors.churchId?.message === 'string' && (
-                                            <InputFooterText text={editErrors.churchId.message} isError />
+                                          {typeof editErrors.churchId
+                                            ?.message === 'string' && (
+                                            <InputFooterText
+                                              text={editErrors.churchId.message}
+                                              isError
+                                            />
                                           )}
                                         </div>
 
                                         <div className="flex-1 min-w-0">
-                                          <label className="block text-sm font-normal mb-2">Branch</label>
+                                          <label className="block text-sm font-normal mb-2">
+                                            Branch
+                                          </label>
                                           <Controller
                                             name="branchId"
                                             control={editControl}
-                                            rules={{ required: 'Please select a branch' }}
+                                            rules={{
+                                              required:
+                                                'Please select a branch',
+                                            }}
                                             render={({ field }) => (
                                               <Select
                                                 options={branchOptions}
@@ -855,8 +941,12 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                               />
                                             )}
                                           />
-                                          {typeof editErrors.branchId?.message === 'string' && (
-                                            <InputFooterText text={editErrors.branchId.message} isError />
+                                          {typeof editErrors.branchId
+                                            ?.message === 'string' && (
+                                            <InputFooterText
+                                              text={editErrors.branchId.message}
+                                              isError
+                                            />
                                           )}
                                         </div>
                                       </div>
@@ -875,7 +965,9 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                           className="xxs:py-[13.5px] xxs:px-[34.5px]"
                                           disabled={isEditSubmitting}
                                         >
-                                          {isEditSubmitting ? 'Saving...' : 'Save Changes'}
+                                          {isEditSubmitting
+                                            ? 'Saving...'
+                                            : 'Save Changes'}
                                         </Button>
                                       </div>
                                     </form>
@@ -909,7 +1001,9 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                   <Button
                                     variant="danger"
                                     className="xxs:py-[13.5px] xxs:px-10"
-                                    onClick={() => handleDeleteBus(el.busId, closeModal)}
+                                    onClick={() =>
+                                      handleDeleteBus(el.busId, closeModal)
+                                    }
                                   >
                                     Remove
                                   </Button>

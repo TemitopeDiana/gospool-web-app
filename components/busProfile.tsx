@@ -16,7 +16,6 @@ function BusProfile({ bus }: BusProfileProps) {
     <div className="flex flex-col sm:items-start sm:flex-row gap-6">
       {/* ── Left panel ─────────────────────────────────────────── */}
       <div className="bg-background flex flex-col gap-5 py-8 px-5 rounded-20 w-full sm:max-w-[326px]">
-
         {/* Driver photo + name */}
         <div>
           <div className="flex relative mb-3">
@@ -110,7 +109,9 @@ function BusProfile({ bus }: BusProfileProps) {
         {/* Pickup stops */}
         {bus.pickupLocations?.length > 0 && (
           <div>
-            <p className="text-gray-500 text-sm font-medium mb-2">Pickup stops</p>
+            <p className="text-gray-500 text-sm font-medium mb-2">
+              Pickup stops
+            </p>
             <ul className="flex flex-col gap-2">
               {bus.pickupLocations.map((stop, i) => (
                 <li
@@ -119,7 +120,9 @@ function BusProfile({ bus }: BusProfileProps) {
                 >
                   <span>{stop.label}</span>
                   {stop.time && (
-                    <span className="text-gray-500 shrink-0 ml-2">{stop.time}</span>
+                    <span className="text-gray-500 shrink-0 ml-2">
+                      {stop.time}
+                    </span>
                   )}
                 </li>
               ))}
@@ -130,7 +133,9 @@ function BusProfile({ bus }: BusProfileProps) {
         {/* Destinations */}
         {bus.destinations?.length > 0 && (
           <div>
-            <p className="text-gray-500 text-sm font-medium mb-2">Destination</p>
+            <p className="text-gray-500 text-sm font-medium mb-2">
+              Destination
+            </p>
             <div className="text-sm bg-gray-50 rounded-8 px-3 py-2">
               {bus.destinations[0].label}
             </div>
@@ -149,7 +154,9 @@ function BusProfile({ bus }: BusProfileProps) {
                 >
                   <span>{stop.label}</span>
                   {stop.time && (
-                    <span className="text-gray-500 shrink-0 ml-2">{stop.time}</span>
+                    <span className="text-gray-500 shrink-0 ml-2">
+                      {stop.time}
+                    </span>
                   )}
                 </li>
               ))}
