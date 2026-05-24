@@ -3,6 +3,9 @@ import { cookies } from 'next/headers';
 import { jwtDecode } from 'jwt-decode';
 import dayjs from 'dayjs';
 import { decrypt, encrypt } from '@/utils/encrypt';
+import { AuthRequiredError } from '@/lib/errors';
+
+export { AuthRequiredError };
 
 export const api = axios.create({
   baseURL: `${process.env.API_URL}/api/v1`,
@@ -24,7 +27,7 @@ const refreshAccessToken = async (): Promise<string | null> => {
     const refreshToken = decrypt(encryptedRefreshToken);
 
     const res = await axios.post(
-      `${process.env.API_URL}/api/auth/refresh-token`,
+      `${process.env.API_URL}/api/v1/auth/refresh-token`,
       { refreshToken }
     );
 
@@ -56,7 +59,7 @@ apiV1.interceptors.request.use(
     if (!encryptedToken) {
       const newToken = await refreshAccessToken();
       if (!newToken) {
-        throw new Error('AUTH_REQUIRED');
+        throw new AuthRequiredError();
       }
 
       encryptedToken = encrypt(newToken);
@@ -72,7 +75,7 @@ apiV1.interceptors.request.use(
       const newToken = await refreshAccessToken();
 
       if (!newToken) {
-        throw new Error('AUTH_REQUIRED');
+        throw new AuthRequiredError();
       }
 
       token = newToken;

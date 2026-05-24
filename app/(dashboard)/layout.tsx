@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation';
+
 import SidebarLayout from '@/components/sidebar-layout';
 
 import { currentUser } from '@/actions/current-user';
@@ -69,6 +71,10 @@ const DashboardLayout = async ({
   children: React.ReactNode;
 }>) => {
   const user = await currentUser();
+
+  if (user.authRequired) {
+    redirect(routes.signIn());
+  }
 
   await checkSession();
 

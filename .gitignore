@@ -42,6 +42,7 @@ next-env.d.ts
 
 .eslintcache
 /.vscode
+.husky
 pnpm-workspace.yaml
 yarn.lock
 
