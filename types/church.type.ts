@@ -17,6 +17,7 @@ export interface Branch {
   church: {
     name: string;
     churchId?: string;
+    logo?: string;
   };
   leader: {
     firstName: string;

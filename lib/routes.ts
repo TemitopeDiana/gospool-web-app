@@ -17,6 +17,7 @@ const bus = () => '/bus';
 const busProfile = (busId: string) => `${bus()}/${busId}`;
 
 export const routes = {
+  branches: home,
   home,
   passengers,
   passengerProfile,

@@ -14,7 +14,7 @@ export function useGetUser() {
       try {
         const user = await currentUser();
 
-        if (user && user.user) setUser(user.user);
+        if (user?.user) setUser(user.user);
 
         return;
       } catch {

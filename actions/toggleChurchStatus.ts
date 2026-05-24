@@ -17,7 +17,7 @@ export async function toggleChurchStatus(
   try {
     const res = await apiV1.patch(`/churches/${churchId}/toggle-status`);
 
-    revalidatePath(routes.home());
+    revalidatePath(routes.branches());
 
     return {
       success: res.data?.success ?? true,

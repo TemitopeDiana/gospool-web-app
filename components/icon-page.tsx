@@ -30,7 +30,7 @@ const IconsPage = () => {
   return (
     <>
       <header className="app-padding p-8">
-        <Link href={routes.home()} className="relative w-32 h-8 block  ">
+        <Link href={routes.branches()} className="relative w-32 h-8 block  ">
           <Image
             src="/assets/logo-green.png"
             alt="gospool logo"

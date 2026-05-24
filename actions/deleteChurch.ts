@@ -21,7 +21,7 @@ export async function deleteChurchAction(
   try {
     const res = await apiV1.delete(`/churches/${churchId}`);
 
-    revalidatePath(routes.home());
+    revalidatePath(routes.branches());
 
     return {
       success: res.data?.success ?? false,

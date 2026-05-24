@@ -46,7 +46,7 @@ const ChurchPage = async ({ params }: Props) => {
     <div>
       <Breadcrumb
         items={[
-          { label: 'Churches', href: routes.home() },
+          { label: 'Churches', href: routes.branches() },
           { label: church.data?.name || 'Church' },
         ]}
       />

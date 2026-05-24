@@ -21,7 +21,7 @@ export const createChurchAction = async (
   try {
     await apiV1.post('/churches/with-admin', data);
 
-    revalidatePath(routes.home());
+    revalidatePath(routes.branches());
     return { success: true, message: 'Church created successfully' };
   } catch (err) {
     const axiosErr = err as AxiosError<{ message?: string; error: string }>;

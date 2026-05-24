@@ -12,6 +12,7 @@ export interface CreateChurchArgs {
   adminLastName: string;
   adminEmail: string;
   adminPhoneNumber: string;
+  adminId?: string;
   logo?: File | null;
 }
 
@@ -44,6 +45,53 @@ export async function createChurchWithUpload(
     console.log(payload);
 
     await apiV1.post('/churches/with-admin', payload);
+
+    revalidatePath(routes.branches());
+
+    return { success: true, message: 'Church created successfully' };
+  } catch (err) {
+    const axiosErr = err as AxiosError<{ message?: string; error?: string }>;
+    console.error('Upload + Create Error:', err);
+
+    return {
+      success: false,
+      message:
+        axiosErr.response?.data?.message ||
+        axiosErr.response?.data?.error ||
+        'An unexpected error occurred',
+      error: axiosErr.message,
+    };
+  }
+}
+
+export async function onboardChurchWithUpload(
+  data: Pick<CreateChurchArgs, 'name' | 'logo' | 'adminId'>
+): Promise<ApiResponse> {
+  try {
+    let logoUrl = '';
+
+    if (data.logo) {
+      const formData = new FormData();
+      formData.append('file', data.logo);
+
+      const uploadRes = await apiV1.post('/upload/file', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (!uploadRes?.data?.data?.fileUrl) {
+        throw new Error('Failed to upload church logo');
+      }
+
+      logoUrl = uploadRes.data.data.fileUrl;
+    }
+
+    const payload = {
+      ...data,
+      logo: logoUrl,
+    };
+    console.log(payload);
+
+    await apiV1.post('/churches', payload);
 
     revalidatePath(routes.home());
 
