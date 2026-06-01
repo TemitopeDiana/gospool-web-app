@@ -10,6 +10,7 @@ import {
   Control,
   FieldValues,
 } from 'react-hook-form';
+import { LocationInput } from '@/components/location-input';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -142,12 +143,16 @@ function StopListEditor({
         <div key={field.id} className="flex items-end gap-2">
           <div className="flex-1 min-w-0">
             <label className="text-sm block mb-2">Stop</label>
-            <input
-              placeholder="Stop label"
-              className="w-full bg-gray-50 py-[13.5px] px-4 rounded-8 outline-none text-sm border-none placeholder:text-gray-300"
-              {...register(`${fieldName}.${index}.label`, {
-                required: 'Label is required',
-              })}
+            <Controller
+              control={control}
+              name={`${fieldName}.${index}.label`}
+              rules={{ required: 'Label is required' }}
+              render={({ field: stopField }) => (
+                <LocationInput
+                  value={stopField.value}
+                  onChange={stopField.onChange}
+                />
+              )}
             />
           </div>
           {withTime && (
@@ -617,12 +622,23 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                               }
                             />
 
-                            <Input
-                              type="text"
-                              label="Destination"
-                              placeholder="e.g. Church Auditorium, GRA"
-                              {...publicRegister('destination')}
-                            />
+                            <div>
+                              <label className="text-sm">Destination</label>
+                              <Controller
+                                control={
+                                  publicControl as unknown as Control<FieldValues>
+                                }
+                                name="destination"
+                                render={({ field }) => (
+                                  <LocationInput
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    placeholder="e.g. Church Auditorium, GRA"
+                                    className="outline-none bg-transparent w-full border-none placeholder:text-gray-300 text-sm"
+                                  />
+                                )}
+                              />
+                            </div>
 
                             <StopListEditor
                               title="Drop offs (return trip)"
@@ -820,12 +836,23 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                         }
                                       />
 
-                                      <Input
-                                        type="text"
-                                        label="Destination"
-                                        placeholder="e.g. Church Auditorium, GRA"
-                                        {...editRegister('destination')}
-                                      />
+                                      <div>
+                                        <label className="text-sm">
+                                          Destination
+                                        </label>
+                                        <Controller
+                                          control={editControl}
+                                          name="destination"
+                                          render={({ field }) => (
+                                            <LocationInput
+                                              value={field.value}
+                                              onChange={field.onChange}
+                                              placeholder="e.g. Church Auditorium, GRA"
+                                              className="outline-none bg-transparent w-full border-none placeholder:text-gray-300 text-sm"
+                                            />
+                                          )}
+                                        />
+                                      </div>
 
                                       <StopListEditor
                                         title="Drop offs (return trip)"

@@ -86,9 +86,14 @@ const Modal = forwardRef<DrawerRefActions, IModalProps>(
             )}
           >
             <Content
-              onPointerDownOutside={(e) =>
-                disableOutsideClick && e.preventDefault()
-              }
+              onPointerDownOutside={(e) => {
+                const target = e.detail.originalEvent.target as Element;
+                if (target?.closest?.('.pac-container')) {
+                  e.preventDefault();
+                  return;
+                }
+                if (disableOutsideClick) e.preventDefault();
+              }}
               onEscapeKeyDown={(e) => disableEscapeDown && e.preventDefault()}
               className={cn(
                 `relative w-full ${maxWidthClassName} mx-4 rounded-20 bg-background shadow-lg focus:outline-none`,
