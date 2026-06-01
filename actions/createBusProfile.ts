@@ -6,7 +6,6 @@ import { Bus } from '@/types/bus.type';
 import { AxiosError } from 'axios';
 
 export interface CreateBusPayload {
-  name: string;
   busType: string;
   year: number;
   availableSeats: number;

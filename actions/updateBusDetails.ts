@@ -6,7 +6,6 @@ import { PickupStop, DestinationStop } from '@/types/bus.type';
 import { handleActionError } from '@/lib/utils';
 
 export interface UpdateBusPayload {
-  name?: string;
   busType?: string;
   plateNumber?: string;
   year?: number;

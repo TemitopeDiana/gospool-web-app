@@ -51,7 +51,6 @@ type CreateBusFormValues = {
   availableSeats: number;
   plateNumber: string;
   color: string;
-  name: string;
   churchId: string;
   branchId: string;
 };
@@ -72,7 +71,6 @@ type EditBusFormValues = {
   pickupDate: string;
   busType: string;
   year: number;
-  name: string;
 };
 
 type MakePublicFormValues = {
@@ -199,7 +197,6 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
       availableSeats: undefined,
       plateNumber: '',
       color: '',
-      name: '',
       churchId: '',
       branchId: '',
     },
@@ -392,7 +389,6 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
       pickupDate: bus.pickupDate
         ? dayjs(bus.pickupDate).format('YYYY-MM-DD')
         : '',
-      name: bus.name || '',
       busType: bus.busType || '',
       year: bus.year || undefined,
     });
@@ -748,14 +744,6 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                       />
 
                                       <div className="flex flex-wrap items-center gap-6">
-                                        <div className="flex-1 min-w-0">
-                                          <Input
-                                            label="Bus name"
-                                            {...editRegister('name', {
-                                              required: 'Please enter bus name',
-                                            })}
-                                          />
-                                        </div>
                                         <div className="flex-1 min-w-0">
                                           <Input
                                             label="Bus type"
