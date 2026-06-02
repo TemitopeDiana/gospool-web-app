@@ -81,14 +81,6 @@ export function BusForm({
       <div className="flex flex-col md:flex-row flex-wrap gap-6 md:items-center mt-6 ">
         <div className="flex-1 min-w-0">
           <Input
-            label="Bus name"
-            {...register('name', {
-              required: 'Please enter bus name',
-            })}
-          />
-        </div>
-        <div className="flex-1 min-w-0">
-          <Input
             label="Plate number"
             {...register('plateNumber', {
               required: 'Please enter plate number',

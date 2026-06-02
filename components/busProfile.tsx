@@ -33,7 +33,6 @@ function BusProfile({ bus }: BusProfileProps) {
           <h1 className="font-medium text-xl md:text-3xl">
             {bus.driverName || '--'}
           </h1>
-          <p className="text-gray-500 text-sm">{bus.name}</p>
         </div>
 
         {/* Status badges */}

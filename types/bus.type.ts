@@ -23,7 +23,6 @@ export interface DestinationStop {
 
 export interface Bus {
   busId: string;
-  name: string;
   busType: string;
   plateNumber: string;
   year: number;
