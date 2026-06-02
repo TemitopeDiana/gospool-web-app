@@ -13,6 +13,7 @@ import { verifyUserHasOnboarded } from './util';
 import { use } from 'react';
 import SvgIcon from '@/components/svg-icon';
 import { redirect } from 'next/navigation';
+import { getTeamMembers } from '@/actions/getUsers';
 
 export type ChurchRow = {
   name: string;
@@ -98,19 +99,19 @@ async function renderChurchAdminView(user: UserProfile) {
 }
 
 async function renderBranchLeaderView(user: UserProfile) {
-  const [churches, stats] = await Promise.all([
-    getChurches(),
+  const [teamMembers, stats] = await Promise.all([
+    getTeamMembers(user.branch?.branchId || ''),
     getOverallStats(),
   ]);
 
-  if (!churches.success) {
+  if (!teamMembers.success) {
     return [];
   }
 
   return (
     <BranchLeaderHomePage
       user={{ user: { firstName: user.firstName, lastName: user.lastName } }}
-      churchData={churches.data}
+      teamsData={teamMembers.data || []}
       totalChurches={stats.data?.churches || 0}
       totalRides={stats.data?.rides || 0}
       totalDrivers={stats.data?.drivers || 0}

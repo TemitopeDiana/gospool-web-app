@@ -25,7 +25,13 @@ const menu: {
     label: 'Branches',
     link: routes.branches(),
     svg: 'church',
-    minimumPermission: permissions.branch_view,
+    minimumPermission: permissions.branches_view,
+  },
+   {
+    label: 'Teams',
+    link: routes.teams(),
+    svg: 'church',
+    minimumPermission: permissions.teams_view,
   },
   {
     label: 'Drivers',
