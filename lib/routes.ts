@@ -3,6 +3,7 @@ const passengers = () => '/passengers';
 const churches = () => '/churches';
 const passengerProfile = (passengerId: string) =>
   `${passengers()}/${passengerId}`;
+const teamProfile = (teamId: string) => `teams/${teamId}`;
 const churchProfile = (churchId: string) => `${churches()}/${churchId}`;
 const createSuperAdminProfile = () => '/create-super-admin-profile';
 const branchPage = (churchId: string, branchId: string) =>
@@ -18,11 +19,13 @@ const busProfile = (busId: string) => `${bus()}/${busId}`;
 
 export const routes = {
   branches: home,
+  teams: home,
   home,
   passengers,
   passengerProfile,
   churchProfile,
   createSuperAdminProfile,
+  teamProfile,
   branchPage,
   addBranch,
   drivers,
