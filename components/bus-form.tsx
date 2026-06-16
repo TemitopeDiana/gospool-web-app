@@ -22,7 +22,6 @@ export function BusForm({
   selectedChurchId,
 }: BusFormProps) {
   const {
-    register,
     control,
     formState: { errors },
   } = useFormContext();
@@ -43,37 +42,78 @@ export function BusForm({
         <div className="flex-1 min-w-0">
           <Input
             label="Bus type"
-            {...register('busType', {
+            name="busType"
+            validation={{
               required: 'Please enter the bus type',
-            })}
+            }}
           />
         </div>
         <div className="flex-1 min-w-0">
           <Input
             label="Year"
             type="number"
-            {...register('year', {
+            onKeyDown={(e) => {
+              const allowed = [
+                'Backspace',
+                'Delete',
+                'Tab',
+                'ArrowLeft',
+                'ArrowRight',
+                'ArrowUp',
+                'ArrowDown',
+                'Home',
+                'End',
+              ];
+              if (!allowed.includes(e.key) && !/^\d$/.test(e.key)) {
+                e.preventDefault();
+              }
+            }}
+            name="year"
+            validation={{
               required: 'Please enter bus year',
               valueAsNumber: true,
               min: {
-                value: 1900,
-                message: 'Enter a valid year',
+                value: 1990,
+                message: 'Year must be 1990 or later',
               },
-            })}
+              max: {
+                value: new Date().getFullYear(),
+                message: `Year cannot be in the future`,
+              },
+              validate: (val) =>
+                Number.isInteger(val) || 'Please enter a valid year',
+            }}
           />
         </div>
         <div className="flex-1 min-w-0">
           <Input
             label="Available seats"
             type="number"
-            {...register('availableSeats', {
+            name="availableSeats"
+            onKeyDown={(e) => {
+              const allowed = [
+                'Backspace',
+                'Delete',
+                'Tab',
+                'ArrowLeft',
+                'ArrowRight',
+                'ArrowUp',
+                'ArrowDown',
+                'Home',
+                'End',
+              ];
+              if (!allowed.includes(e.key) && !/^\d$/.test(e.key)) {
+                e.preventDefault();
+              }
+            }}
+            validation={{
               required: 'Please enter available seats',
               valueAsNumber: true,
               min: {
                 value: 1,
                 message: 'Seats must be at least 1',
               },
-            })}
+            }}
           />
         </div>
       </div>
@@ -82,17 +122,19 @@ export function BusForm({
         <div className="flex-1 min-w-0">
           <Input
             label="Plate number"
-            {...register('plateNumber', {
+            name="plateNumber"
+            validation={{
               required: 'Please enter plate number',
-            })}
+            }}
           />
         </div>
         <div className="flex-1 min-w-0">
           <Input
             label="Color"
-            {...register('color', {
+            name="color"
+            validation={{
               required: 'Please enter bus color',
-            })}
+            }}
           />
         </div>
       </div>
