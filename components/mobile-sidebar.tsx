@@ -141,6 +141,16 @@ const MobileSideBar = ({ menu, name, role }: MobileSidebarProps) => {
             <span>Sign out</span>
           </button>
         </ExpandableMenu>
+
+        <div className="mt-8">
+          <Link
+            href="/privacy-policy"
+            target="_blank"
+            className="text-sm text-gray-400 hover:text-white hover:underline flex items-center gap-2"
+          >
+            Privacy Policy
+          </Link>
+        </div>
       </aside>
     </div>
   );

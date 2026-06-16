@@ -21,6 +21,18 @@ const SignInPage = () => {
             priority
           />
           <SignInForm />
+
+          <div className="mt-8 text-center text-sm text-gray-500">
+            By logging in, you agree to our{' '}
+            <a
+              href="/privacy-policy"
+              className="text-primary hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Privacy Policy
+            </a>
+          </div>
         </div>
       </div>
     </div>
