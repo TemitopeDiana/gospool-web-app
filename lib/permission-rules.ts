@@ -41,7 +41,7 @@ export const permissionRules = {
     permissions.church_branch_view,
     permissions.church_branch_edit,
     permissions.church_branch_add,
-    permissions.branches_view,
+    // permissions.branches_view,
     permissions.branches_edit,
     permissions.branches_add,
     permissions.driver_view,
@@ -100,9 +100,6 @@ export const permissionRules = {
     permissions.bus_view,
     permissions.bus_edit,
     permissions.bus_add,
-    permissions.branches_view,
-    permissions.branches_edit,
-    permissions.branches_add,
     permissions.ride_view,
   ],
   hod: [
