@@ -27,7 +27,7 @@ const menu: {
     svg: 'church',
     minimumPermission: permissions.branches_view,
   },
-   {
+  {
     label: 'Teams',
     link: routes.teams(),
     svg: 'church',

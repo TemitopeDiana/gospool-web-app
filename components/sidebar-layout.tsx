@@ -83,6 +83,16 @@ const SidebarLayout = ({ menu, children, name, role }: SidebarLayoutProps) => {
             </RBAC>
           ))}
         </ul>
+
+        <div className="absolute bottom-8 left-8 right-8">
+          <Link
+            href="/privacy-policy"
+            target="_blank"
+            className="text-sm text-gray-300 hover:text-white hover:underline flex items-center gap-2"
+          >
+            Privacy Policy
+          </Link>
+        </div>
       </aside>
 
       <div className="min-h-screen w-full bg-gray-100 flex-1">

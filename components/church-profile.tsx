@@ -31,6 +31,7 @@ import { type IconName } from '@/types/icon.type';
 import { RoleEnum, type User } from '@/types/user.type';
 import { getUsers } from '@/actions/getUsers';
 import { assignChurchToAdmin } from '@/actions/assign-church-to-admin';
+import { inviteAdmin } from '@/actions/invite-admin';
 
 type ProfileType = 'passenger' | 'driver' | 'all' | null;
 type FormatType = 'csv' | 'pdf' | null;
@@ -410,12 +411,16 @@ const ReassignAdminModal = ({
   );
 
   const methods = useForm<{
-    'new-branch-leader-name': string;
-    'branch-leader-email-address': string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
   }>({
     defaultValues: {
-      'new-branch-leader-name': '',
-      'branch-leader-email-address': '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneNumber: '',
     },
   });
 
@@ -431,6 +436,7 @@ const ReassignAdminModal = ({
     })) || [];
 
   const [isAssigning, setIsAssigning] = useState(false);
+  const [isInviting, setIsInviting] = useState(false);
 
   const handleAssign = async (close: () => void) => {
     if (!selectedAdmin) {
@@ -459,20 +465,34 @@ const ReassignAdminModal = ({
     }
   };
 
-  const handleSendInvite = (data: {
-    'new-branch-leader-name': string;
-    'branch-leader-email-address': string;
+  const handleSendInvite = async (data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
   }) => {
-    if (
-      !data['new-branch-leader-name'] ||
-      !data['branch-leader-email-address']
-    ) {
-      toast.error('Please fill out both fields');
-      return;
-    }
+    try {
+      setIsInviting(true);
+      const res = await inviteAdmin({
+        churchId,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+      });
 
-    toast.success(`Invite sent to ${data['branch-leader-email-address']}`);
-    close();
+      if (res?.success) {
+        toast.success(res.message || `Invite sent to ${data.email}`);
+        router.refresh();
+        close();
+      } else {
+        toast.error(res?.message || 'Failed to send invite');
+      }
+    } catch {
+      toast.error('Failed to send invite. Please try again.');
+    } finally {
+      setIsInviting(false);
+    }
   };
 
   useEffect(() => {
@@ -529,12 +549,42 @@ const ReassignAdminModal = ({
       ) : (
         <FormProvider {...methods}>
           <form className="flex flex-col gap-5">
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <Input
+                  label="First Name"
+                  name="firstName"
+                  validation={{ required: 'First name is required' }}
+                />
+              </div>
+              <div className="flex-1">
+                <Input
+                  label="Last Name"
+                  name="lastName"
+                  validation={{ required: 'Last name is required' }}
+                />
+              </div>
+            </div>
+
             <Input
-              label="New branch leader full name"
-              name="new-branch-leader-name"
+              label="Email address"
+              name="email"
+              type="email"
+              validation={{
+                required: 'Email address is required',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Invalid email address',
+                },
+              }}
             />
 
-            <Input label="Email address" name="branch-leader-email-address" />
+            <Input
+              label="Phone number"
+              name="phoneNumber"
+              type="tel"
+              validation={{ required: 'Phone number is required' }}
+            />
           </form>
         </FormProvider>
       )}
@@ -549,7 +599,7 @@ const ReassignAdminModal = ({
               ? () => handleAssign(close)
               : methods.handleSubmit((data) => handleSendInvite(data))
           }
-          loading={isGettingAdmins || isAssigning}
+          loading={isGettingAdmins || isAssigning || isInviting}
           variant="default"
           className="py-[13.5px] px-7.5"
         >

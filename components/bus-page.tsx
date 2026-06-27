@@ -27,6 +27,7 @@ import Drawer from '@/components/drawer';
 import RemoveUserIcon from '@/public/assets/user-remove.png';
 
 import { routes } from '@/lib/routes';
+import { parseTimeStr } from '@/lib/timeUtils';
 import { createBusProfile } from '@/actions/createBusProfile';
 import { getChurchBranches } from '@/actions/getChurchBranches';
 import { Bus, PickupStop } from '@/types/bus.type';
@@ -177,6 +178,45 @@ function StopListEditor({
       ))}
     </div>
   );
+}
+
+function validateBusTimeAlignmentFrontend(
+  pickupLocations: PickupStop[],
+  departureLocations: PickupStop[]
+): string | null {
+  let lastPickupTime: number | null = null;
+  let lastPickupLabel = '';
+
+  for (const stop of pickupLocations) {
+    if (stop.time) {
+      const timeVal = parseTimeStr(stop.time);
+      if (timeVal !== null) {
+        if (lastPickupTime !== null && timeVal <= lastPickupTime) {
+          return `Pick-up time at ${stop.label} (${stop.time}) must be after the previous pick-up (${lastPickupLabel}).`;
+        }
+        lastPickupTime = timeVal;
+        lastPickupLabel = `${stop.time} at ${stop.label}`;
+      }
+    }
+  }
+
+  let lastDepartureTime: number | null = null;
+  let lastDepartureLabel = '';
+
+  for (const stop of departureLocations) {
+    if (stop.time) {
+      const timeVal = parseTimeStr(stop.time);
+      if (timeVal !== null) {
+        if (lastDepartureTime !== null && timeVal <= lastDepartureTime) {
+          return `Departure time at ${stop.label} (${stop.time}) must be after the previous departure (${lastDepartureLabel}).`;
+        }
+        lastDepartureTime = timeVal;
+        lastDepartureLabel = `${stop.time} at ${stop.label}`;
+      }
+    }
+  }
+
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -345,6 +385,16 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { churchId, driverPhoto, destination, ...rest } = values;
 
+        const validationError = validateBusTimeAlignmentFrontend(
+          values.pickupLocations || [],
+          values.departureLocations || []
+        );
+
+        if (validationError) {
+          toast.error(validationError);
+          return;
+        }
+
         const payload = {
           ...rest,
           destinations: destination ? [{ label: destination }] : undefined,
@@ -401,6 +451,16 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
   const handleMakePublicSubmit = (busId: string, closeModal: () => void) => {
     return handlePublicSubmit(async (values) => {
       try {
+        const validationError = validateBusTimeAlignmentFrontend(
+          values.pickupLocations || [],
+          values.departureLocations || []
+        );
+
+        if (validationError) {
+          toast.error(validationError);
+          return;
+        }
+
         const payload = {
           driverName: values.driverName,
           pickupLocations: values.pickupLocations,
@@ -597,15 +657,16 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                             <Input
                               type="text"
                               label="Driver name"
-                              {...publicRegister('driverName', {
+                              name="driverName"
+                              validation={{
                                 required: 'Driver name is required',
-                              })}
+                              }}
                             />
 
                             <Input
                               type="date"
                               label="Pickup date"
-                              {...publicRegister('pickupDate')}
+                              name="pickupDate"
                             />
 
                             <StopListEditor
@@ -738,19 +799,21 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                       <Input
                                         type="text"
                                         label="Driver name"
-                                        {...editRegister('driverName', {
+                                        name="driverName"
+                                        validation={{
                                           required: 'Driver name is required',
-                                        })}
+                                        }}
                                       />
 
                                       <div className="flex flex-wrap items-center gap-6">
                                         <div className="flex-1 min-w-0">
                                           <Input
                                             label="Bus type"
-                                            {...editRegister('busType', {
+                                            name="busType"
+                                            validation={{
                                               required:
                                                 'Please enter the bus type',
-                                            })}
+                                            }}
                                           />
                                         </div>
                                       </div>
@@ -760,19 +823,21 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                           <Input
                                             type="text"
                                             label="Plate Number"
-                                            {...editRegister('plateNumber', {
+                                            name="plateNumber"
+                                            validation={{
                                               required:
                                                 'Plate number is required',
-                                            })}
+                                            }}
                                           />
                                         </div>
                                         <div className="flex-1">
                                           <Input
                                             type="text"
                                             label="Color"
-                                            {...editRegister('color', {
+                                            name="color"
+                                            validation={{
                                               required: 'Color is required',
-                                            })}
+                                            }}
                                           />
                                         </div>
                                       </div>
@@ -782,24 +847,73 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                           <Input
                                             type="number"
                                             label="Available seats"
-                                            {...editRegister('availableSeats', {
+                                            name="availableSeats"
+                                            onKeyDown={(e) => {
+                                              const allowed = [
+                                                'Backspace',
+                                                'Delete',
+                                                'Tab',
+                                                'ArrowLeft',
+                                                'ArrowRight',
+                                                'ArrowUp',
+                                                'ArrowDown',
+                                                'Home',
+                                                'End',
+                                              ];
+                                              if (
+                                                !allowed.includes(e.key) &&
+                                                !/^\d$/.test(e.key)
+                                              ) {
+                                                e.preventDefault();
+                                              }
+                                            }}
+                                            validation={{
                                               required:
                                                 'Available seats is required',
-                                            })}
+                                            }}
                                           />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                           <Input
                                             label="Year"
                                             type="number"
-                                            {...editRegister('year', {
+                                            onKeyDown={(e) => {
+                                              const allowed = [
+                                                'Backspace',
+                                                'Delete',
+                                                'Tab',
+                                                'ArrowLeft',
+                                                'ArrowRight',
+                                                'ArrowUp',
+                                                'ArrowDown',
+                                                'Home',
+                                                'End',
+                                              ];
+                                              if (
+                                                !allowed.includes(e.key) &&
+                                                !/^\d$/.test(e.key)
+                                              ) {
+                                                e.preventDefault();
+                                              }
+                                            }}
+                                            name="year"
+                                            validation={{
                                               required: 'Please enter bus year',
                                               valueAsNumber: true,
                                               min: {
-                                                value: 1900,
-                                                message: 'Enter a valid year',
+                                                value: 1990,
+                                                message:
+                                                  'Year must be 1990 or later',
                                               },
-                                            })}
+                                              max: {
+                                                value: new Date().getFullYear(),
+                                                message:
+                                                  'Year cannot be in the future',
+                                              },
+                                              validate: (val) =>
+                                                Number.isInteger(val) ||
+                                                'Please enter a valid year',
+                                            }}
                                           />
                                         </div>
                                       </div>
@@ -809,7 +923,7 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                           <Input
                                             type="date"
                                             label="Pickup date"
-                                            {...editRegister('pickupDate')}
+                                            name="pickupDate"
                                           />
                                         </div>
                                       </div>
