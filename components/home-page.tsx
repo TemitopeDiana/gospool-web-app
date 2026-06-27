@@ -10,6 +10,7 @@ import { Button } from '@/components/button';
 import SvgIcon from '@/components/svg-icon';
 import ConfirmActionCard from './confirm-action-card';
 import Drawer from './drawer';
+import CreateTeamForm from './forms/create-team.form';
 import CreateChurchForm from './forms/create-church.form';
 import Modal from './modal-component';
 import Popover from './popover';
@@ -592,12 +593,12 @@ const BranchLeaderHomePage = ({
                 Add Team
               </Button>
             }
-            title="Create Church Profile"
+            title="Create Team"
             description="Enter details to begin"
             disableEscapeDown
             disableOutsideClick
           >
-            {(close) => <CreateChurchForm close={close} />}
+            {(close) => <CreateTeamForm close={close} />}
           </Drawer>
         </div>
 

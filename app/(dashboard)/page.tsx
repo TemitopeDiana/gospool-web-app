@@ -104,10 +104,6 @@ async function renderBranchLeaderView(user: UserProfile) {
     getOverallStats(),
   ]);
 
-  if (!teamMembers.success) {
-    return [];
-  }
-
   return (
     <BranchLeaderHomePage
       user={{ user: { firstName: user.firstName, lastName: user.lastName } }}
