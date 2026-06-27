@@ -169,6 +169,4 @@ const TeamsPage = ({
   );
 };
 
-export {
-  TeamsPage
-};
+export { TeamsPage };

@@ -11,7 +11,6 @@ export type ChurchRow = {
   status: string;
 };
 
-
 export default async function Page() {
   const user = await currentUser();
   // const router = useRouter();
@@ -27,7 +26,12 @@ export default async function Page() {
 
   return (
     <TeamsPage
-      user={{ user: { firstName: user.user?.firstName, lastName: user.user?.lastName } }}
+      user={{
+        user: {
+          firstName: user.user?.firstName,
+          lastName: user.user?.lastName,
+        },
+      }}
       teamsData={teamMembers.data || []}
       totalChurches={stats.data?.churches || 0}
       totalRides={stats.data?.rides || 0}
