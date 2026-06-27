@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { type IconName } from '@/types/icon.type';
 import { type Role, RoleLabels } from '@/types/user.type';
 import { SidebarItems } from './sidebar-layout';
+import RBAC from './rbac';
 
 interface MobileSidebarProps {
   menu: SidebarItems[];
@@ -96,22 +97,28 @@ const MobileSideBar = ({ menu, name, role }: MobileSidebarProps) => {
 
           <ul className="flex flex-col gap-3 border-y-2">
             {menu.map((item, index) => (
-              <li key={index}>
-                <Link
-                  href={item.link}
-                  className={cn(
-                    'flex gap-3 items-center justify-start w-full p-5',
-                    isActive(item.link) && 'bg-white text-primary'
-                  )}
-                  data-test={item.label}
-                >
-                  <SvgIcon
-                    name={item.svg as IconName}
-                    className={`h-6 w-6 ${isActive(item.link) && 'text-primary'}`}
-                  />
-                  <p>{item.label}</p>
-                </Link>
-              </li>
+              <RBAC
+                key={item.label}
+                roles={[role]}
+                requiredPermission={item.minimumPermission}
+              >
+                <li key={index}>
+                  <Link
+                    href={item.link}
+                    className={cn(
+                      'flex gap-3 items-center justify-start w-full p-5',
+                      isActive(item.link) && 'bg-white text-primary'
+                    )}
+                    data-test={item.label}
+                  >
+                    <SvgIcon
+                      name={item.svg as IconName}
+                      className={`h-6 w-6 ${isActive(item.link) && 'text-primary'}`}
+                    />
+                    <p>{item.label}</p>
+                  </Link>
+                </li>
+              </RBAC>
             ))}
           </ul>
         </div>
