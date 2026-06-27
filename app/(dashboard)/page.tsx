@@ -7,13 +7,13 @@ import {
   HomePage,
   ChurchAdminHomePage,
   BranchLeaderHomePage,
+  // BranchLeaderHomePage,
 } from '@/components/home-page';
 import { RoleEnum, UserProfile } from '@/types/user.type';
 import { verifyUserHasOnboarded } from './util';
 import { use } from 'react';
-import SvgIcon from '@/components/svg-icon';
+// import SvgIcon from '@/components/svg-icon';
 import { redirect } from 'next/navigation';
-import { getTeamMembers } from '@/actions/getUsers';
 
 export type ChurchRow = {
   name: string;
@@ -45,41 +45,41 @@ async function renderGospoolAdminView(user: UserProfile) {
 }
 
 async function renderChurchAdminView(user: UserProfile) {
-  if (!user.church?.churchId) {
-    return (
-      <div>
-        <div className="w-full md:mt-5.75">
-          <div className="xsm:flex justify-between items-center">
-            <div>
-              <h1 className="text-xl font-medium mb-2 md:text-3xl">
-                Welcome,
-                <span className="capitalize">{` ${user?.firstName} ${user?.lastName}`}</span>
-              </h1>
-              <p className="text-gray-500 text-xs md:text-base">
-                Owner - Gospool
-              </p>
-            </div>
-          </div>
-        </div>
+  // if (!user.church?.churchId) {
+  //   return (
+  //     <div>
+  //       <div className="w-full md:mt-5.75">
+  //         <div className="xsm:flex justify-between items-center">
+  //           <div>
+  //             <h1 className="text-xl font-medium mb-2 md:text-3xl">
+  //               Welcome,
+  //               <span className="capitalize">{` ${user?.firstName} ${user?.lastName}`}</span>
+  //             </h1>
+  //             <p className="text-gray-500 text-xs md:text-base">
+  //               Owner - Gospool
+  //             </p>
+  //           </div>
+  //         </div>
+  //       </div>
 
-        <div className="dashboard-card p-10 flex flex-col items-center justify-center mt-8 gap-4">
-          <div className="bg-red-100 inline-block p-4 rounded-full">
-            <SvgIcon name="church" className="w-8 h-8 text-red-500" />
-          </div>
-          <span className="text-lg font-medium">
-            No church assigned to you yet.
-          </span>
-          {/* <Button
-            type="button"
-            className="block capitalize mb-2 mt-8 ml-auto xsm:m-0"
-            // onClick={() => redirect('/create-church-profile')}
-          >
-            Complete Church Profile
-          </Button> */}
-        </div>
-      </div>
-    );
-  }
+  //       <div className="dashboard-card p-10 flex flex-col items-center justify-center mt-8 gap-4">
+  //         <div className="bg-red-100 inline-block p-4 rounded-full">
+  //           <SvgIcon name="church" className="w-8 h-8 text-red-500" />
+  //         </div>
+  //         <span className="text-lg font-medium">
+  //           No church assigned to you yet.
+  //         </span>
+  //         {/* <Button
+  //           type="button"
+  //           className="block capitalize mb-2 mt-8 ml-auto xsm:m-0"
+  //           // onClick={() => redirect('/create-church-profile')}
+  //         >
+  //           Complete Church Profile
+  //         </Button> */}
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   const [branches, stats] = await Promise.all([
     getChurchBranches(user.church?.churchId || ''),
@@ -98,22 +98,8 @@ async function renderChurchAdminView(user: UserProfile) {
   );
 }
 
-async function renderBranchLeaderView(user: UserProfile) {
-  const [teamMembers, stats] = await Promise.all([
-    getTeamMembers(user.branch?.branchId || ''),
-    getOverallStats(),
-  ]);
-
-  return (
-    <BranchLeaderHomePage
-      user={{ user: { firstName: user.firstName, lastName: user.lastName } }}
-      teamsData={teamMembers.data || []}
-      totalChurches={stats.data?.churches || 0}
-      totalRides={stats.data?.rides || 0}
-      totalDrivers={stats.data?.drivers || 0}
-      totalPassengers={stats.data?.passengers || 0}
-    />
-  );
+async function renderBranchLeaderView() {
+  return <BranchLeaderHomePage />;
 }
 
 export default function Page() {
@@ -140,7 +126,7 @@ export default function Page() {
   }
 
   if (userRoles.includes(RoleEnum.BRANCH_LEADER)) {
-    return renderBranchLeaderView(user.user);
+    return renderBranchLeaderView();
   }
 
   return renderChurchAdminView(user.user);
