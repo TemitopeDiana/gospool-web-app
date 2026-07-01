@@ -32,6 +32,8 @@ import { createBusProfile } from '@/actions/createBusProfile';
 import { getChurchBranches } from '@/actions/getChurchBranches';
 import { Bus, PickupStop } from '@/types/bus.type';
 import { Branch, Church, Pagination } from '@/types/church.type';
+import { currentUser } from '@/actions/current-user';
+import { UserProfile } from '@/types/user.type';
 
 import Select from './select';
 import InputFooterText from './input-footer-text';
@@ -224,8 +226,23 @@ function validateBusTimeAlignmentFrontend(
 // ---------------------------------------------------------------------------
 
 export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [branches, setBranches] = useState<Branch[]>([]);
   const [loadingBranches, setLoadingBranches] = useState(false);
+
+  const roles = profile?.roles || [];
+  const isGospoolAdmin = roles.includes('gospoolAdmin') || roles.length === 0;
+  const isBranchStaff = roles.includes('branchLeader') || roles.includes('hod');
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await currentUser();
+      if (res.success && res.user) {
+        setProfile(res.user);
+      }
+    };
+    fetchUser();
+  }, []);
   const modalCloseRef = useRef<(() => void) | null>(null);
 
   const router = useRouter();
@@ -534,6 +551,9 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
           branches={branches}
           loadingBranches={loadingBranches}
           selectedChurchId={selectedChurchId}
+          roles={profile?.roles || []}
+          userChurchId={profile?.church?.churchId}
+          userBranchId={profile?.branch?.branchId}
         />
         <Button
           type="submit"
@@ -1010,75 +1030,85 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                         </div>
                                       </div>
 
-                                      <div className="flex flex-col md:flex-row flex-wrap gap-6 md:items-center">
-                                        <div className="flex-1 min-w-0">
-                                          <label className="block text-sm font-normal mb-2">
-                                            Church
-                                          </label>
-                                          <Controller
-                                            name="churchId"
-                                            control={editControl}
-                                            rules={{
-                                              required:
-                                                'Please select a church',
-                                            }}
-                                            render={({ field }) => (
-                                              <Select
-                                                options={churchOptions}
-                                                value={field.value}
-                                                onChange={field.onChange}
-                                                placeholder="Select a church"
-                                                className="bg-gray-50"
-                                                noBorder
+                                      {!isBranchStaff && (
+                                        <div className="flex flex-col md:flex-row flex-wrap gap-6 md:items-center">
+                                          {isGospoolAdmin && (
+                                            <div className="flex-1 min-w-0">
+                                              <label className="block text-sm font-normal mb-2">
+                                                Church
+                                              </label>
+                                              <Controller
+                                                name="churchId"
+                                                control={editControl}
+                                                rules={{
+                                                  required:
+                                                    'Please select a church',
+                                                }}
+                                                render={({ field }) => (
+                                                  <Select
+                                                    options={churchOptions}
+                                                    value={field.value}
+                                                    onChange={field.onChange}
+                                                    placeholder="Select a church"
+                                                    className="bg-gray-50"
+                                                    noBorder
+                                                  />
+                                                )}
                                               />
-                                            )}
-                                          />
-                                          {typeof editErrors.churchId
-                                            ?.message === 'string' && (
-                                            <InputFooterText
-                                              text={editErrors.churchId.message}
-                                              isError
-                                            />
+                                              {typeof editErrors.churchId
+                                                ?.message === 'string' && (
+                                                <InputFooterText
+                                                  text={
+                                                    editErrors.churchId.message
+                                                  }
+                                                  isError
+                                                />
+                                              )}
+                                            </div>
                                           )}
-                                        </div>
 
-                                        <div className="flex-1 min-w-0">
-                                          <label className="block text-sm font-normal mb-2">
-                                            Branch
-                                          </label>
-                                          <Controller
-                                            name="branchId"
-                                            control={editControl}
-                                            rules={{
-                                              required:
-                                                'Please select a branch',
-                                            }}
-                                            render={({ field }) => (
-                                              <Select
-                                                options={branchOptions}
-                                                value={field.value}
-                                                onChange={field.onChange}
-                                                placeholder={
-                                                  loadingBranches
-                                                    ? 'Loading branches...'
-                                                    : editSelectedChurchId
-                                                      ? 'Select a branch'
-                                                      : 'Select church first'
+                                          <div className="flex-1 min-w-0">
+                                            <label className="block text-sm font-normal mb-2">
+                                              Branch
+                                            </label>
+                                            <Controller
+                                              name="branchId"
+                                              control={editControl}
+                                              rules={{
+                                                required:
+                                                  'Please select a branch',
+                                              }}
+                                              render={({ field }) => (
+                                                <Select
+                                                  options={branchOptions}
+                                                  value={field.value}
+                                                  onChange={field.onChange}
+                                                  placeholder={
+                                                    loadingBranches
+                                                      ? 'Loading branches...'
+                                                      : editSelectedChurchId ||
+                                                          profile?.church
+                                                            ?.churchId
+                                                        ? 'Select a branch'
+                                                        : 'Select church first'
+                                                  }
+                                                  className="bg-gray-50"
+                                                  noBorder
+                                                />
+                                              )}
+                                            />
+                                            {typeof editErrors.branchId
+                                              ?.message === 'string' && (
+                                              <InputFooterText
+                                                text={
+                                                  editErrors.branchId.message
                                                 }
-                                                className="bg-gray-50"
-                                                noBorder
+                                                isError
                                               />
                                             )}
-                                          />
-                                          {typeof editErrors.branchId
-                                            ?.message === 'string' && (
-                                            <InputFooterText
-                                              text={editErrors.branchId.message}
-                                              isError
-                                            />
-                                          )}
+                                          </div>
                                         </div>
-                                      </div>
+                                      )}
 
                                       <div className="ml-auto flex flex-wrap items-center gap-5 max-w-fit mt-20">
                                         <Button
