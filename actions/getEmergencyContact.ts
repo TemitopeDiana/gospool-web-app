@@ -1,9 +1,8 @@
 'use server';
 
-import { AxiosError } from 'axios';
-
 import { apiV1 } from '@/lib/api';
 import { ApiResponse } from '@/types/api.type';
+import { normalizeError } from '@/lib/normaliseError';
 
 export interface EmergencyContact {
   contactId: string;
@@ -37,14 +36,7 @@ export const getEmergencyContact = async (
 
     return { success: false, error: response.data ?? 'Unexpected response' };
   } catch (error) {
-    if (error instanceof AxiosError) {
-      return {
-        success: false,
-        error: error.response?.data ?? error.message,
-      };
-    }
-
     console.error('Unexpected error in getEmergencyContacts:', error);
-    return { success: false, error: 'Network or unexpected error' };
+    return normalizeError(error);
   }
 };
