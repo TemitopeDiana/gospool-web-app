@@ -26,15 +26,7 @@ export const getEmergencyContact = async (
       data: EmergencyContact[];
     }>('/user/admin/emergency-contacts', { params: { userId } });
 
-    if (
-      response?.data &&
-      response.data.success &&
-      Array.isArray(response.data.data)
-    ) {
-      return { success: true, data: response.data.data };
-    }
-
-    return { success: false, error: response.data ?? 'Unexpected response' };
+    return { success: true, data: response.data.data };
   } catch (error) {
     console.error('Unexpected error in getEmergencyContacts:', error);
     return normalizeError(error);
