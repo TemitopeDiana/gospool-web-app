@@ -82,7 +82,7 @@ async function renderChurchAdminView(user: UserProfile) {
   // }
 
   const [branches, stats] = await Promise.all([
-    getChurchBranches(user.church?.churchId || ''),
+    getChurchBranches(user.church?.id || ''),
     getOverallStats(),
   ]);
 

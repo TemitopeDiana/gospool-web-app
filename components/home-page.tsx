@@ -20,6 +20,10 @@ import { Branch, Church } from '@/types/church.type';
 import { IconName } from '@/types/icon.type';
 import { redirect } from 'next/navigation';
 import { TeamMember } from '@/types/user.type';
+import CreateChurchBranch from './forms/create-church-branch.form';
+import ShowView from './show-view';
+import NoDataCard from './no-data-card';
+import { useStore } from '@/client--store';
 
 interface UserShape {
   user?: { firstName?: string; lastName?: string } | null;
@@ -299,13 +303,17 @@ const GospoolAdminHomePage = ({
   );
 };
 
-const ChurchAdminHomePage = ({
-  user,
-  totalBranches,
-  branchData,
-}: Omit<HomePageProps, 'totalChurches' | 'churchData' | 'teamsData'>) => {
+const ChurchAdminHomePage = (
+  props: Omit<HomePageProps, 'totalChurches' | 'churchData' | 'teamsData'>
+) => {
   const [isTogglingChurchStatus, setIsTogglingChurchStatus] = useState(false);
   const [isDeletingChurch, setIsDeletingChurch] = useState(false);
+
+  const { user: currentUser } = useStore();
+
+  const user = props.user;
+  const totalBranches = props.totalBranches;
+  const branchData = props.branchData;
 
   const handleChurchStatusToggle = async (
     churchId: string,
@@ -344,6 +352,8 @@ const ChurchAdminHomePage = ({
     }
   };
 
+  console.log({ branchData });
+
   return (
     <div>
       <div className="w-full md:mt-5.75">
@@ -353,26 +363,28 @@ const ChurchAdminHomePage = ({
               Welcome,
               <span className="capitalize">{` ${user?.user?.firstName} ${user?.user?.lastName}`}</span>
             </h1>
-            <p className="text-gray-500 text-xs md:text-base">
-              Owner - Gospool
-            </p>
+            <p className="text-gray-500 text-xs md:text-base">Church Admin</p>
           </div>
 
           <Drawer
-            trigger={
-              <Button
-                type="button"
-                className="block capitalize mb-2 mt-2 ml-auto xsm:m-0"
-              >
-                New branch
-              </Button>
-            }
-            title="Create Church Profile"
-            description="Enter details to begin"
             disableEscapeDown
             disableOutsideClick
+            trigger={<Button>Add branch</Button>}
+            title="Add Church Branch"
+            description={
+              <>
+                Only <strong>Lagos branches</strong> are supported at this time.
+              </>
+            }
           >
-            {(close) => <CreateChurchForm close={close} />}
+            {(close) => (
+              <div>
+                <CreateChurchBranch
+                  close={close}
+                  churchId={currentUser?.church?.id as string}
+                />
+              </div>
+            )}
           </Drawer>
         </div>
 
@@ -433,7 +445,6 @@ const ChurchAdminHomePage = ({
                 {branchData?.map((el, index) => {
                   const isActive = el.status === 'active';
                   const statusLabel = isActive ? 'Disable' : 'Enable';
-                  console.log('LOGO', el.church.logo);
                   return (
                     <tr key={index}>
                       <td className="capitalize">
@@ -534,6 +545,14 @@ const ChurchAdminHomePage = ({
                     </tr>
                   );
                 })}
+
+                <ShowView when={!branchData.length}>
+                  <tr>
+                    <td colSpan={5}>
+                      <NoDataCard />
+                    </td>
+                  </tr>
+                </ShowView>
               </tbody>
             </table>
           </div>

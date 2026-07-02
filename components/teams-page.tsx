@@ -15,6 +15,8 @@ import { toggleChurchStatus } from '@/actions/toggleChurchStatus';
 import { routes } from '@/lib/routes';
 import { useRouter } from 'next/navigation';
 import { TeamMember } from '@/types/user.type';
+import ShowView from './show-view';
+import NoDataCard from './no-data-card';
 
 interface UserShape {
   user?: { firstName?: string; lastName?: string } | null;
@@ -160,6 +162,12 @@ const TeamsPage = ({
                     </tr>
                   );
                 })}
+
+                <ShowView when={!teamsData.length}>
+                  <td colSpan={5}>
+                    <NoDataCard />
+                  </td>
+                </ShowView>
               </tbody>
             </table>
           </div>

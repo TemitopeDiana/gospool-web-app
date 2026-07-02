@@ -17,7 +17,7 @@ const GetStarted = ({ setUpdatePassword }: IGetStartedProps) => {
   return (
     <div>
       <div className="h-screen bg-primary items-center justify-center flex px-5">
-        <div className="bg-white py-6 md:py-10 md:px-8 px-3 rounded-[20px] max-w-[442px] w-full animate-fadeIn">
+        <div className="bg-white py-6 md:py-10 md:px-8 px-3 rounded-20 max-w-110.5 w-full animate-fadeIn">
           <Image
             src="/assets/logo-green.png"
             alt="gospool-logo"
@@ -30,7 +30,7 @@ const GetStarted = ({ setUpdatePassword }: IGetStartedProps) => {
           <FormProvider {...methods}>
             <form className="mt-8 flex flex-col gap-4">
               <h1 className="text-xl md:text-2xl font-semibold">
-                Let's get you started
+                Let&apos;s get you started
               </h1>
               <div className="flex flex-col gap-5">
                 <Input
@@ -50,7 +50,7 @@ const GetStarted = ({ setUpdatePassword }: IGetStartedProps) => {
               <Button
                 variant="default"
                 type="button"
-                className="place-self-end py-[13.5px] px-[39px]"
+                className="place-self-end py-[13.5px] px-9.75"
                 onClick={() => setUpdatePassword(true)}
               >
                 Login

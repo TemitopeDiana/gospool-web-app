@@ -76,6 +76,7 @@ export interface UserProfile {
     churchId?: string;
     name?: string;
     uniqueIdentifier?: string;
+    id?: string;
   } | null;
   branch?: {
     name?: string;

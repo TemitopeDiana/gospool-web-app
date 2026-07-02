@@ -2,12 +2,16 @@ import Image from 'next/image';
 import { ReactNode } from 'react';
 
 interface Props {
-  heading: string;
-  description: string;
+  heading?: string;
+  description?: string;
   children?: ReactNode;
 }
 
-const NoDataCard = ({ heading, description, children }: Props) => {
+const NoDataCard = ({
+  heading = 'Nothing to show',
+  description = "We couldn't find any records to display.",
+  children,
+}: Props) => {
   return (
     <div className="w-full aspect-video max-h-a-300 place-items-center">
       <div className="w-full max-w-a-400 my-30 mx-auto text-center">
