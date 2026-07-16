@@ -1,4 +1,5 @@
 export type IconName =
+  | 'email'
   | 'menu'
   | 'close'
   | 'church'
@@ -48,6 +49,7 @@ export type IconName =
   | 'plus';
 
 export const iconNames: IconName[] = [
+  'email',
   'toggle',
   'plus',
   'chevron-down',
