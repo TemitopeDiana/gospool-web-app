@@ -305,6 +305,7 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
     formState: { isSubmitting: handlePublicSubmitting },
   } = publicMethods;
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const selectedChurchId = watch('churchId');
   const selectedBranchId = watch('branchId');
   const editSelectedChurchId = editWatch('churchId');
@@ -730,14 +731,14 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                             <div className="mt-6 flex items-center justify-between">
                               <Button
                                 variant="outline"
-                                className="xxs:py-[13px] xxs:px-10"
+                                className="xxs:py-3.25 xxs:px-10"
                                 onClick={closeModal}
                               >
                                 Cancel
                               </Button>
                               <Button
                                 variant="default"
-                                className="xxs:py-[13px] xxs:px-[34px]"
+                                className="xxs:py-3.25 xxs:px-8.5"
                                 disabled={handlePublicSubmitting}
                               >
                                 {handlePublicSubmitting
@@ -1113,7 +1114,7 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                       <div className="ml-auto flex flex-wrap items-center gap-5 max-w-fit mt-20">
                                         <Button
                                           variant="outline"
-                                          className="xxs:py-[13.5px] xxs:px-15"
+                                          className="xxs:py-[13.5px] xxs:px-a-60"
                                           onClick={closeDrawer}
                                         >
                                           Cancel
@@ -1123,6 +1124,7 @@ export function BusPageComponent({ buses, churches }: BusPageComponentProps) {
                                           variant="default"
                                           className="xxs:py-[13.5px] xxs:px-[34.5px]"
                                           disabled={isEditSubmitting}
+                                          loading={isEditSubmitting}
                                         >
                                           {isEditSubmitting
                                             ? 'Saving...'
