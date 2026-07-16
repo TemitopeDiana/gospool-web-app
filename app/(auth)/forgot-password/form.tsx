@@ -43,7 +43,7 @@ const ForgotPasswordForm = () => {
         className="place-self-end py-[13.5px] px-9.75"
         loading={isPending}
       >
-        Send OTP
+        Request OTP
       </Button>
     </form>
   );

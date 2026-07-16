@@ -9,6 +9,7 @@ import { InitialSignInState, signIn } from './action';
 import Input from '@/components/forms/Input-plain';
 import PasswordInput from '@/components/forms/password-input-plain';
 import { routes } from '@/lib/routes';
+import Link from 'next/link';
 
 const initialState: InitialSignInState = {};
 
@@ -40,13 +41,27 @@ const SignInForm = () => {
         error={state.errors?.email?.[0]}
         defaultValue={state.values?.email as string}
       />
-      <PasswordInput
-        name="password"
-        label="Password"
-        placeholder="******************"
-        error={state.errors?.password?.[0]}
-        defaultValue={state.values?.password as string}
-      />
+      <div>
+        <PasswordInput
+          name="password"
+          label="Password"
+          placeholder="******************"
+          error={state.errors?.password?.[0]}
+          defaultValue={state.values?.password as string}
+        />
+
+        <small className="ml-auto block w-fit text-a-14 mt-2 disabled:cursor-not-allowed disabled:opacity-50">
+          <span>Forgot password?</span>
+
+          <Link
+            href={routes.forgotPassword()}
+            className="text-primary-500 hover:underline"
+          >
+            {' '}
+            Click here
+          </Link>
+        </small>
+      </div>
       <Button
         className="place-self-end py-[13.5px] px-9.75"
         loading={isPending}
