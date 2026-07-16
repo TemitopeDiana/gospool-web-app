@@ -18,6 +18,10 @@ const rides = () => '/rides';
 const bus = () => '/bus';
 const busProfile = (busId: string) => `${bus()}/${busId}`;
 
+const forgotPassword = () => '/forgot-password';
+const resetPassword = () => '/reset-password';
+const icons = () => '/icons';
+
 export const routes = {
   branches: home,
   teams,
@@ -37,4 +41,7 @@ export const routes = {
   busProfile,
   churches,
   signUp,
+  forgotPassword,
+  resetPassword,
+  icons,
 };
