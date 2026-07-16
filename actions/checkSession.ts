@@ -10,13 +10,13 @@ export const checkSession = async () => {
 
   const headerList = await headers();
   const fullUrl = headerList.get('x-url') || headerList.get('referer');
-  let pathname = routes.home();
+  let pathname = routes.branches();
 
   try {
     if (fullUrl) {
       pathname = new URL(fullUrl).pathname;
     } else {
-      pathname = headerList.get('x-pathname') || routes.home();
+      pathname = headerList.get('x-pathname') || routes.branches();
     }
   } catch {
     pathname = '/';

@@ -30,6 +30,7 @@ interface IModalProps {
   disableOutsideClick?: boolean;
   alignTop?: boolean;
   customClassName?: string;
+  contentClassName?: string;
 }
 
 export type ModalRefActions = {
@@ -48,6 +49,7 @@ const Modal = forwardRef<unknown, IModalProps>(
       disableOutsideClick,
       alignTop = false,
       customClassName,
+      contentClassName,
     },
     ref
   ) => {
@@ -81,7 +83,10 @@ const Modal = forwardRef<unknown, IModalProps>(
                 disableOutsideClick && e.preventDefault()
               }
               onEscapeKeyDown={(e) => disableEscapeDown && e.preventDefault()}
-              className="data-[state=open]:animate-contentShow max-h-[90vh] lg:max-h-[85vh] w-full overflow-hidden max-w-[1200px] mx-auto focus:outline-none"
+              className={cn(
+                'data-[state=open]:animate-contentShow max-h-[90vh] lg:max-h-[85vh] w-full overflow-hidden max-w-[1200px] mx-auto focus:outline-none',
+                contentClassName
+              )}
             >
               <ShowView when={!hideCloseButton}>
                 <Close className="bg-brand-gray-50  ml-auto grid place-items-center  w-8 h-8 bg-white border-2 mb-5 text-primary  rounded-full">

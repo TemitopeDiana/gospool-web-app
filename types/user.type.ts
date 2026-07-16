@@ -73,12 +73,15 @@ export interface UserProfile {
   email: string;
   avatar?: string;
   church?: {
+    churchId?: string;
     name?: string;
     uniqueIdentifier?: string;
+    id?: string;
   } | null;
   branch?: {
     name?: string;
     branchIdentifier?: string;
+    branchId?: string;
   } | null;
   department?: {
     name?: string;
@@ -95,4 +98,17 @@ export interface UserProfile {
   otp: string;
   otpExpires: string;
   __v: number;
+}
+
+export interface TeamMember {
+  teamId: string;
+  firstName: string;
+  lastName: string;
+  avatar?: string;
+  email: string;
+  phoneNumber: string;
+  roles: Role[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

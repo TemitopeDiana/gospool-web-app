@@ -2,14 +2,18 @@
 
 import { apiV1 } from '@/lib/api';
 import { ApiResponse } from '@/types/api.type';
-import { AxiosError } from 'axios';
+import { PickupStop, DestinationStop } from '@/types/bus.type';
+import { handleActionError } from '@/lib/utils';
 
 export interface MakeBusPublicPayload {
   driverPhoto?: string;
   driverName: string;
-  pickupLocation: string;
-  destination: string;
-  departureTime: string;
+  isRoundTrip?: boolean;
+  pickupLocations: PickupStop[];
+  pickupDate?: string;
+  destinations: DestinationStop[];
+  departureLocations?: PickupStop[];
+  departureDate?: string;
 }
 
 export async function toggleBusPresence(
@@ -24,13 +28,10 @@ export async function toggleBusPresence(
       message: res.data?.message || 'Bus is now public',
     };
   } catch (err) {
-    const axiosError = err as AxiosError<{ message?: string }>;
-
+    const result = handleActionError(err);
     return {
       success: false,
-      message:
-        axiosError.response?.data?.message ||
-        'Failed to make bus public. Please try again.',
+      message: result.error || 'Failed to make bus public. Please try again.',
     };
   }
 }

@@ -90,9 +90,14 @@ const Drawer = forwardRef<unknown, IDrawerProps>(
               >
                 <Content
                   ref={ref as ForwardedRef<HTMLDivElement>}
-                  onPointerDownOutside={(e) =>
-                    disableOutsideClick && e.preventDefault()
-                  }
+                  onPointerDownOutside={(e) => {
+                    const target = e.detail.originalEvent.target as Element;
+                    if (target?.closest?.('.pac-container')) {
+                      e.preventDefault();
+                      return;
+                    }
+                    if (disableOutsideClick) e.preventDefault();
+                  }}
                   onEscapeKeyDown={(e) =>
                     disableEscapeDown && e.preventDefault()
                   }

@@ -24,7 +24,7 @@ const getPermissionsForRoles = (roles: (keyof typeof permissionRules)[]) => {
  * Sample usage:
  * ```tsx
  * <RBAC
- *   roles={['churchAdmin', 'branchAdmin']}
+ *   roles={['churchAdmin', 'branchLeader']}
  *   requiredPermission="church:edit"
  *   renderNoAccess={<div>No access</div>}
  * >
@@ -44,7 +44,7 @@ export default function RBAC({
   requiredPermission,
   renderNoAccess = null,
   roles,
-}: RBACProps) {
+}: Readonly<RBACProps>) {
   const permissions = getPermissionsForRoles(roles);
   if (!permissions.includes(requiredPermission)) {
     return renderNoAccess || null;

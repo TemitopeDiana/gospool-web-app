@@ -30,7 +30,7 @@ const IconsPage = () => {
   return (
     <>
       <header className="app-padding p-8">
-        <Link href={routes.home()} className="relative w-32 h-8 block  ">
+        <Link href={routes.branches()} className="relative w-32 h-8 block  ">
           <Image
             src="/assets/logo-green.png"
             alt="gospool logo"
@@ -48,11 +48,8 @@ const IconsPage = () => {
           </p>
         </div>
         <div className=" flex justify-center w-full pt-8">
-          <div className="flex justify-center gap-1 bg-white rounded-[100px] p-2 lg:min-h-[33px] border w-[40%]">
-            <SvgIcon
-              name="search"
-              className="h-[20px] w-[20px] text-gray-400"
-            />
+          <div className="flex justify-center gap-1 bg-white rounded-[100px] p-2 lg:min-h-8.25 border w-[40%]">
+            <SvgIcon name="search" className="size-5 text-gray-400" />
             <input
               className=" bg-transparent focus:outline-0 focus:border-brand-gray-100 border-transparent pl-2 w-full"
               placeholder="Search Icon Names Here..."

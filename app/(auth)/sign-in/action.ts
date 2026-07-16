@@ -10,7 +10,7 @@ import type { SignResponse } from '@/types/auth.type';
 import { encrypt } from '@/utils/encrypt';
 
 const SignInSchema = z.object({
-  email: z.string().email({ message: 'Please enter a valid email address' }),
+  email: z.email({ message: 'Please enter a valid email address' }),
   password: z
     .string()
     .min(4, { message: 'Password must be at least 4 characters' }),

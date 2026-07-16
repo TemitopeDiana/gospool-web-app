@@ -3,6 +3,8 @@ const passengers = () => '/passengers';
 const churches = () => '/churches';
 const passengerProfile = (passengerId: string) =>
   `${passengers()}/${passengerId}`;
+const teams = () => `/teams`;
+const teamProfile = (teamId: string) => `teams/${teamId}`;
 const churchProfile = (churchId: string) => `${churches()}/${churchId}`;
 const createSuperAdminProfile = () => '/create-super-admin-profile';
 const branchPage = (churchId: string, branchId: string) =>
@@ -16,12 +18,19 @@ const rides = () => '/rides';
 const bus = () => '/bus';
 const busProfile = (busId: string) => `${bus()}/${busId}`;
 
+const forgotPassword = () => '/forgot-password';
+const resetPassword = () => '/reset-password';
+const icons = () => '/icons';
+
 export const routes = {
+  branches: home,
+  teams,
   home,
   passengers,
   passengerProfile,
   churchProfile,
   createSuperAdminProfile,
+  teamProfile,
   branchPage,
   addBranch,
   drivers,
@@ -32,4 +41,7 @@ export const routes = {
   busProfile,
   churches,
   signUp,
+  forgotPassword,
+  resetPassword,
+  icons,
 };

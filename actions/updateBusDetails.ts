@@ -2,10 +2,10 @@
 
 import { apiV1 } from '@/lib/api';
 import { ApiResponse } from '@/types/api.type';
-import { AxiosError } from 'axios';
+import { PickupStop, DestinationStop } from '@/types/bus.type';
+import { handleActionError } from '@/lib/utils';
 
 export interface UpdateBusPayload {
-  name?: string;
   busType?: string;
   plateNumber?: string;
   year?: number;
@@ -13,9 +13,12 @@ export interface UpdateBusPayload {
   availableSeats?: number;
   driverName?: string;
   driverPhoto?: string;
-  pickupLocation?: string;
-  destination?: string;
-  departureTime?: string;
+  isRoundTrip?: boolean;
+  pickupLocations?: PickupStop[];
+  pickupDate?: string;
+  destinations?: DestinationStop[];
+  departureLocations?: PickupStop[];
+  departureDate?: string;
   isPublic?: boolean;
   isActive?: boolean;
   branchId?: string;
@@ -33,13 +36,11 @@ export async function updateBusDetails(
       message: res.data?.message || 'Bus updated successfully',
     };
   } catch (err) {
-    const axiosError = err as AxiosError<{ message?: string }>;
-
+    const result = handleActionError(err);
     return {
       success: false,
       message:
-        axiosError.response?.data?.message ||
-        'Failed to update bus profile. Please try again.',
+        result.error || 'Failed to update bus profile. Please try again.',
     };
   }
 }

@@ -14,12 +14,14 @@ import { cn } from '@/lib/utils';
 import { type IconName } from '@/types/icon.type';
 import { type Role } from '@/types/user.type';
 import { useGetUser } from '@/hooks/useGetUser';
+import RBAC from './rbac';
 // import { useCheckSession } from '@/hooks/useCheckSession';
 
 export interface SidebarItems {
   label: string;
   link: string;
   svg: IconName;
+  minimumPermission: string;
 }
 
 interface SidebarLayoutProps {
@@ -35,9 +37,9 @@ const SidebarLayout = ({ menu, children, name, role }: SidebarLayoutProps) => {
   const pathname = usePathname();
 
   const isActive = (route: string) => {
-    if (route === routes.home()) {
+    if (route === routes.branches()) {
       return (
-        pathname === routes.home() || pathname.startsWith(routes.churches())
+        pathname === routes.branches() || pathname.startsWith(routes.churches())
       );
     }
 
@@ -48,7 +50,7 @@ const SidebarLayout = ({ menu, children, name, role }: SidebarLayoutProps) => {
     <div className="flex">
       <aside className="bg-primary text-white w-full sticky top-0 left-0 h-screen overflow-y-auto max-lg:hidden max-w-a-300 p-8 pt-0">
         <div className="p-8 pl-0 sticky top-0 bg-primary mb-4">
-          <Link href={routes.home()} className="block relative  w-32 h-6">
+          <Link href={routes.branches()} className="block relative  w-32 h-6">
             <Image
               src="/assets/logo-white.png"
               alt="gospool logo"
@@ -61,20 +63,36 @@ const SidebarLayout = ({ menu, children, name, role }: SidebarLayoutProps) => {
 
         <ul className="">
           {menu.map((item) => (
-            <li key={item.label}>
-              <Link
-                href={item.link}
-                className={cn(
-                  'flex gap-2 items-center p-a-10 rounded mb-1',
-                  isActive(item.link) && 'bg-white text-primary font-semibold'
-                )}
-              >
-                <SvgIcon name={item.svg} className="w-5 h-5" />
-                {item.label}
-              </Link>
-            </li>
+            <RBAC
+              key={item.label}
+              roles={[role]}
+              requiredPermission={item.minimumPermission}
+            >
+              <li>
+                <Link
+                  href={item.link}
+                  className={cn(
+                    'flex gap-2 items-center p-a-10 rounded mb-1',
+                    isActive(item.link) && 'bg-white text-primary font-semibold'
+                  )}
+                >
+                  <SvgIcon name={item.svg} className="w-5 h-5" />
+                  {item.label}
+                </Link>
+              </li>
+            </RBAC>
           ))}
         </ul>
+
+        <div className="absolute bottom-8 left-8 right-8">
+          <Link
+            href="/privacy-policy"
+            target="_blank"
+            className="text-sm text-gray-300 hover:text-white hover:underline flex items-center gap-2"
+          >
+            Privacy Policy
+          </Link>
+        </div>
       </aside>
 
       <div className="min-h-screen w-full bg-gray-100 flex-1">

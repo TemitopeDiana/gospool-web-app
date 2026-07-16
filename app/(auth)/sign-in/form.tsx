@@ -9,6 +9,7 @@ import { InitialSignInState, signIn } from './action';
 import Input from '@/components/forms/Input-plain';
 import PasswordInput from '@/components/forms/password-input-plain';
 import { routes } from '@/lib/routes';
+import Link from 'next/link';
 
 const initialState: InitialSignInState = {};
 
@@ -30,18 +31,17 @@ const SignInForm = () => {
   }, [state, router]);
 
   return (
-    <form className="mt-8 flex flex-col gap-4" action={formAction}>
-      <h1 className="text-2xl font-semibold">Login</h1>
-      <div className="flex flex-col gap-5">
-        <Input
-          type="email"
-          name="email"
-          label="Email"
-          placeholder="your-name@example.com"
-          autoComplete="email"
-          error={state.errors?.email?.[0]}
-          defaultValue={state.values?.email as string}
-        />
+    <form className="flex flex-col gap-4" action={formAction}>
+      <Input
+        type="email"
+        name="email"
+        label="Email"
+        placeholder="your-name@example.com"
+        autoComplete="email"
+        error={state.errors?.email?.[0]}
+        defaultValue={state.values?.email as string}
+      />
+      <div>
         <PasswordInput
           name="password"
           label="Password"
@@ -49,6 +49,18 @@ const SignInForm = () => {
           error={state.errors?.password?.[0]}
           defaultValue={state.values?.password as string}
         />
+
+        <small className="ml-auto block w-fit text-a-14 mt-2 disabled:cursor-not-allowed disabled:opacity-50">
+          <span>Forgot password?</span>
+
+          <Link
+            href={routes.forgotPassword()}
+            className="text-primary-500 hover:underline"
+          >
+            {' '}
+            Click here
+          </Link>
+        </small>
       </div>
       <Button
         className="place-self-end py-[13.5px] px-9.75"

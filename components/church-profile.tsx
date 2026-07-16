@@ -2,12 +2,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/button';
 import Input from '@/components/input';
+import Select, { SelectOptionType } from './select/select';
 import SvgIcon from '@/components/svg-icon';
 import BranchesTable from './branches-table';
 import ConfirmActionCard from './confirm-action-card';
@@ -27,7 +28,10 @@ import { routes } from '@/lib/routes';
 import profilePic from '@/public/assets/profile-pic.png';
 import { type Branch } from '@/types/church.type';
 import { type IconName } from '@/types/icon.type';
-import { type User } from '@/types/user.type';
+import { RoleEnum, type User } from '@/types/user.type';
+import { getUsers } from '@/actions/getUsers';
+import { assignChurchToAdmin } from '@/actions/assign-church-to-admin';
+import { inviteAdmin } from '@/actions/invite-admin';
 
 type ProfileType = 'passenger' | 'driver' | 'all' | null;
 type FormatType = 'csv' | 'pdf' | null;
@@ -63,7 +67,6 @@ const ChurchProfile = ({
   churchLogo,
   adminAvatar,
 }: ChurchProfileProps) => {
-  const methods = useForm();
   const [profile, setProfile] = useState<ProfileType>(null);
   const [format, setFormat] = useState<FormatType>(null);
   const [isDeletingChurch, setIsDeletingChurch] = useState(false);
@@ -83,7 +86,7 @@ const ChurchProfile = ({
 
       if (result.success) {
         toast.success(result.message);
-        router.push(routes.home());
+        router.push(routes.branches());
         close();
       } else {
         toast.error(result.message);
@@ -107,8 +110,8 @@ const ChurchProfile = ({
               />
             </div>
             <div>
-              <h1 className="font-semibold md:text-xl">{churchName}</h1>
-              <p>
+              <h1 className="font-medium md:text-3xl">{churchName}</h1>
+              <p className="text-sm">
                 {totalBranches} branch{totalBranches > 1 && 'es'}
               </p>
             </div>
@@ -276,6 +279,7 @@ const ChurchProfile = ({
                 </Drawer>
                 <li>
                   <Modal
+                    contentClassName="max-w-[768px]"
                     trigger={
                       <button className="flex items-center gap-2">
                         <SvgIcon
@@ -285,59 +289,16 @@ const ChurchProfile = ({
                         Reassign
                       </button>
                     }
-                    // title="Reassign branch leader"
-                    // contentCardClassName="text-left"
                   >
-                    {(close) => (
-                      <div className="mt-6">
-                        <div className="flex flex-1 items-center gap-3 mb-10">
-                          <div className="flex-none relative w-12 h-12">
-                            <Image
-                              src={profilePic}
-                              alt="profile-pic"
-                              fill
-                              sizes="100%"
-                            />
-                          </div>
-
-                          <div>
-                            <p className="text-gray-800 font-semibold capitalize mb-1">
-                              {adminName}
-                            </p>
-                            <p className="">Current branch leader</p>
-                          </div>
-                        </div>
-                        <FormProvider {...methods}>
-                          <form className="flex flex-col gap-5">
-                            <Input
-                              label="New branch leader full name"
-                              name="new-branch-leader-name"
-                            />
-
-                            <Input
-                              label="Email address"
-                              name="branch-leader-email-address"
-                            />
-                          </form>
-                        </FormProvider>
-                        <div className="w-full mt-10 flex flex-wrap gap-2 md:gap-3 justify-between">
-                          <Button
-                            onClick={close}
-                            variant="outline"
-                            className="py-[13.5px]"
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            onClick={close}
-                            variant="default"
-                            className="py-[13.5px] px-7.5"
-                          >
-                            Send invite
-                          </Button>
-                        </div>
-                      </div>
-                    )}
+                    {(close) => {
+                      return (
+                        <ReassignAdminModal
+                          close={close}
+                          adminName={adminName}
+                          churchId={churchId}
+                        />
+                      );
+                    }}
                   </Modal>
                 </li>
                 <li className="text-error-700">
@@ -374,7 +335,7 @@ const ChurchProfile = ({
 
         <div className="w-full flex flex-col gap-2 xss:flex-row">
           <div className="flex flex-1 items-center gap-3 ">
-            <div className="flex-none relative w-12 h-12">
+            <div className="flex-none relative w-10 h-10">
               <Image
                 src={adminAvatar || '/assets/user-icon.png'}
                 alt="profile-pic"
@@ -384,10 +345,10 @@ const ChurchProfile = ({
             </div>
 
             <div>
-              <p className="text-gray-800 font-semibold capitalize mb-1">
+              <p className="text-gray-800 font-semibold capitalize mb-0.5">
                 {adminName}
               </p>
-              <p className="">Church admin</p>
+              <p className="text-sm">Church admin</p>
             </div>
           </div>
 
@@ -429,6 +390,221 @@ const ChurchProfile = ({
             },
           ]}
         ></Tabs>
+      </div>
+    </div>
+  );
+};
+
+const ReassignAdminModal = ({
+  adminName,
+  close,
+  churchId,
+}: {
+  adminName: string;
+  close: () => void;
+  churchId: string;
+}) => {
+  const router = useRouter();
+  const [reassignTab, setReassignTab] = useState<'choose' | 'invite'>('choose');
+  const [selectedAdmin, setSelectedAdmin] = useState<SelectOptionType | null>(
+    null
+  );
+
+  const methods = useForm<{
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+  }>({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneNumber: '',
+    },
+  });
+
+  const [churchAdmins, getAdmins, isGettingAdmins] = useActionState(
+    () => getUsers(RoleEnum.CHURCH_ADMIN),
+    {}
+  );
+
+  const adminOptions =
+    churchAdmins.data?.map((member) => ({
+      value: member.id,
+      label: `${member.firstName} ${member.lastName}`,
+    })) || [];
+
+  const [isAssigning, setIsAssigning] = useState(false);
+  const [isInviting, setIsInviting] = useState(false);
+
+  const handleAssign = async (close: () => void) => {
+    if (!selectedAdmin) {
+      toast.error('Please choose an admin to assign');
+      return;
+    }
+
+    try {
+      setIsAssigning(true);
+      const res = await assignChurchToAdmin({
+        adminId: selectedAdmin.value,
+        churchId,
+      });
+
+      if (res?.success) {
+        toast.success(res.message || `Assigned ${selectedAdmin.label}`);
+        router.refresh();
+        close();
+      } else {
+        toast.error(res?.message || 'Failed to assign church');
+      }
+    } catch {
+      toast.error('Failed to assign church. Please try again.');
+    } finally {
+      setIsAssigning(false);
+    }
+  };
+
+  const handleSendInvite = async (data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+  }) => {
+    try {
+      setIsInviting(true);
+      const res = await inviteAdmin({
+        churchId,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+      });
+
+      if (res?.success) {
+        toast.success(res.message || `Invite sent to ${data.email}`);
+        router.refresh();
+        close();
+      } else {
+        toast.error(res?.message || 'Failed to send invite');
+      }
+    } catch {
+      toast.error('Failed to send invite. Please try again.');
+    } finally {
+      setIsInviting(false);
+    }
+  };
+
+  useEffect(() => {
+    getAdmins();
+  }, [getAdmins]);
+
+  return (
+    <div className="mt-6 dashboard-card">
+      <div className="flex flex-1 items-center gap-3 mb-10">
+        <div className="flex-none relative w-12 h-12">
+          <Image src={profilePic} alt="profile-pic" fill sizes="100%" />
+        </div>
+
+        <div>
+          <p className="text-gray-800 font-semibold capitalize mb-1">
+            {adminName}
+          </p>
+          <p className="">Current branch leader</p>
+        </div>
+      </div>
+
+      <div className="flex gap-2 mb-6">
+        <Button
+          variant={reassignTab === 'choose' ? 'default' : 'outline'}
+          className="text-xs"
+          onClick={() => setReassignTab('choose')}
+        >
+          Choose Admin
+        </Button>
+        <Button
+          variant={reassignTab === 'invite' ? 'default' : 'outline'}
+          className="text-xs"
+          onClick={() => setReassignTab('invite')}
+        >
+          Send Invite
+        </Button>
+      </div>
+
+      {reassignTab === 'choose' ? (
+        <div className="space-y-5">
+          <Select
+            label="Choose admin"
+            options={adminOptions}
+            value={selectedAdmin}
+            onChange={(option) => setSelectedAdmin(option as SelectOptionType)}
+            placeholder="Select an admin"
+          />
+          {adminOptions.length === 0 && (
+            <p className="text-sm text-gray-500">
+              No church admins available to assign.
+            </p>
+          )}
+        </div>
+      ) : (
+        <FormProvider {...methods}>
+          <form className="flex flex-col gap-5">
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <Input
+                  label="First Name"
+                  name="firstName"
+                  validation={{ required: 'First name is required' }}
+                />
+              </div>
+              <div className="flex-1">
+                <Input
+                  label="Last Name"
+                  name="lastName"
+                  validation={{ required: 'Last name is required' }}
+                />
+              </div>
+            </div>
+
+            <Input
+              label="Email address"
+              name="email"
+              type="email"
+              validation={{
+                required: 'Email address is required',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Invalid email address',
+                },
+              }}
+            />
+
+            <Input
+              label="Phone number"
+              name="phoneNumber"
+              type="tel"
+              validation={{ required: 'Phone number is required' }}
+            />
+          </form>
+        </FormProvider>
+      )}
+
+      <div className="w-full mt-10 flex flex-wrap gap-2 md:gap-3 justify-between">
+        <Button onClick={close} variant="outline" className="py-[13.5px]">
+          Cancel
+        </Button>
+        <Button
+          onClick={
+            reassignTab === 'choose'
+              ? () => handleAssign(close)
+              : methods.handleSubmit((data) => handleSendInvite(data))
+          }
+          loading={isGettingAdmins || isAssigning || isInviting}
+          variant="default"
+          className="py-[13.5px] px-7.5"
+        >
+          {reassignTab === 'choose' ? 'Assign' : 'Send invite'}
+        </Button>
       </div>
     </div>
   );

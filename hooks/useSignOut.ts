@@ -1,4 +1,4 @@
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import { routes } from '@/lib/routes';
 import { cookieStorage } from '@/utils/cookies';
@@ -7,7 +7,7 @@ import { useStore } from '@/client--store';
 export const useSignOut = (aFunction?: () => void) => {
   const router = useRouter();
 
-  const pathname = usePathname();
+  // const pathname = usePathname();
 
   const clearUser = useStore((state) => state.clearUser);
 
@@ -15,7 +15,7 @@ export const useSignOut = (aFunction?: () => void) => {
     cookieStorage.clearAll();
     clearUser();
     aFunction?.();
-    return router.push(`${routes.signIn()}?redirectTo=${pathname}`);
+    return router.push(`${routes.signIn()}?redirectTo=/`);
   };
 
   return signOut;

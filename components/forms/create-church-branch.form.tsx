@@ -108,8 +108,8 @@ const CreateChurchBranch = ({ close, churchId }: Props) => {
                 required: 'Please enter your address',
               }}
               onPlaceSelected={(place) => {
-                field.onChange(place.formatted_address);
-                setValue('address', place.formatted_address);
+                field.onChange(place.formatted_address ?? '');
+                setValue('address', place.formatted_address ?? '');
                 setValue(
                   'location.coordinates.latitude',
                   place.geometry?.location?.lat() ?? 0

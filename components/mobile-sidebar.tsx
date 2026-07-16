@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { type IconName } from '@/types/icon.type';
 import { type Role, RoleLabels } from '@/types/user.type';
 import { SidebarItems } from './sidebar-layout';
+import RBAC from './rbac';
 
 interface MobileSidebarProps {
   menu: SidebarItems[];
@@ -28,9 +29,9 @@ const MobileSideBar = ({ menu, name, role }: MobileSidebarProps) => {
   const signOut = useSignOut();
 
   const isActive = (route: string) => {
-    if (route === routes.home()) {
+    if (route === routes.branches()) {
       return (
-        pathname === routes.home() || pathname.startsWith(routes.churches())
+        pathname === routes.branches() || pathname.startsWith(routes.churches())
       );
     }
 
@@ -71,7 +72,7 @@ const MobileSideBar = ({ menu, name, role }: MobileSidebarProps) => {
         <div className="flex flex-col gap-5">
           <div className="flex justify-between bg-primary items-center p-5 sticky top-0  default-bg-color">
             <Link
-              href={routes.home()}
+              href={routes.branches()}
               className="relative block w-32 h-6 lg:hidden"
             >
               <Image
@@ -96,22 +97,28 @@ const MobileSideBar = ({ menu, name, role }: MobileSidebarProps) => {
 
           <ul className="flex flex-col gap-3 border-y-2">
             {menu.map((item, index) => (
-              <li key={index}>
-                <Link
-                  href={item.link}
-                  className={cn(
-                    'flex gap-3 items-center justify-start w-full p-5',
-                    isActive(item.link) && 'bg-white text-primary'
-                  )}
-                  data-test={item.label}
-                >
-                  <SvgIcon
-                    name={item.svg as IconName}
-                    className={`h-6 w-6 ${isActive(item.link) && 'text-primary'}`}
-                  />
-                  <p>{item.label}</p>
-                </Link>
-              </li>
+              <RBAC
+                key={item.label}
+                roles={[role]}
+                requiredPermission={item.minimumPermission}
+              >
+                <li key={index}>
+                  <Link
+                    href={item.link}
+                    className={cn(
+                      'flex gap-3 items-center justify-start w-full p-5',
+                      isActive(item.link) && 'bg-white text-primary'
+                    )}
+                    data-test={item.label}
+                  >
+                    <SvgIcon
+                      name={item.svg as IconName}
+                      className={`h-6 w-6 ${isActive(item.link) && 'text-primary'}`}
+                    />
+                    <p>{item.label}</p>
+                  </Link>
+                </li>
+              </RBAC>
             ))}
           </ul>
         </div>
@@ -141,6 +148,16 @@ const MobileSideBar = ({ menu, name, role }: MobileSidebarProps) => {
             <span>Sign out</span>
           </button>
         </ExpandableMenu>
+
+        <div className="mt-8">
+          <Link
+            href="/privacy-policy"
+            target="_blank"
+            className="text-sm text-gray-400 hover:text-white hover:underline flex items-center gap-2"
+          >
+            Privacy Policy
+          </Link>
+        </div>
       </aside>
     </div>
   );
