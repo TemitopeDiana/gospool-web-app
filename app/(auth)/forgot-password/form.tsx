@@ -5,32 +5,30 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/button';
-import { InitialSignInState, signIn } from './action';
+import { InitialForgetPasswordInState, forgotPassword } from './action';
 import Input from '@/components/forms/Input-plain';
-import PasswordInput from '@/components/forms/password-input-plain';
 import { routes } from '@/lib/routes';
 
-const initialState: InitialSignInState = {};
+const initialState: InitialForgetPasswordInState = {};
 
-const SignInForm = () => {
-  const [state, formAction, isPending] = useActionState(signIn, initialState);
+const ForgotPasswordForm = () => {
+  const [state, formAction, isPending] = useActionState(
+    forgotPassword,
+    initialState
+  );
   const router = useRouter();
 
   useEffect(() => {
-    const redirectTo =
-      typeof window !== 'undefined'
-        ? new URL(window.location.href).searchParams.get('redirectTo')
-        : null;
     if (state?.success) {
       toast.success(state.message);
-      router.push(redirectTo || routes.home());
+      router.replace(routes.resetPassword());
     } else if (state?.message) {
       toast.error(state.message);
     }
   }, [state, router]);
 
   return (
-    <form className="flex flex-col gap-4" action={formAction}>
+    <form className="flex flex-col gap-5" action={formAction}>
       <Input
         type="email"
         name="email"
@@ -40,21 +38,15 @@ const SignInForm = () => {
         error={state.errors?.email?.[0]}
         defaultValue={state.values?.email as string}
       />
-      <PasswordInput
-        name="password"
-        label="Password"
-        placeholder="******************"
-        error={state.errors?.password?.[0]}
-        defaultValue={state.values?.password as string}
-      />
+
       <Button
         className="place-self-end py-[13.5px] px-9.75"
         loading={isPending}
       >
-        Login
+        Send OTP
       </Button>
     </form>
   );
 };
 
-export default SignInForm;
+export default ForgotPasswordForm;
