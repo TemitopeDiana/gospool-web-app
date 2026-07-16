@@ -70,5 +70,8 @@
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix --cache",
     "*.{js,jsx,ts,tsx,css,md}": "prettier --write"
+  },
+  "portless": {
+    "appPort": 3007
   }
 }
