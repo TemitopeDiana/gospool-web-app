@@ -17,6 +17,7 @@ const signUp = () => '/sign-up';
 const rides = () => '/rides';
 const bus = () => '/bus';
 const busProfile = (busId: string) => `${bus()}/${busId}`;
+const events = () => '/events';
 
 const forgotPassword = () => '/forgot-password';
 const resetPassword = () => '/reset-password';
@@ -44,4 +45,5 @@ export const routes = {
   forgotPassword,
   resetPassword,
   icons,
+  events,
 };

@@ -59,7 +59,7 @@ const menu: {
   },
   {
     label: 'Events',
-    link: '#',
+    link: routes.events(),
     svg: 'calendar',
     minimumPermission: permissions.event_view,
   },
