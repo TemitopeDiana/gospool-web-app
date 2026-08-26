@@ -50,9 +50,13 @@ export type IconNameOld =
   | 'check-circle';
 
 export const iconNames = [
+  'profile-users',
+  'profile',
   'check-circle',
   'email',
   'toggle',
+  'download',
+  'generate',
   'plus',
   'chevron-down',
   'image',
