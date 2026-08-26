@@ -69,8 +69,6 @@ function RidesMonitoring({ rides, initialStatus }: IRides) {
     });
   };
 
-  console.log({ rides });
-
   return (
     <div>
       <h1 className="capitalize text-2xl md:text-3xl font-medium">
@@ -133,7 +131,7 @@ function RidesMonitoring({ rides, initialStatus }: IRides) {
                           <div className="flex isolate">
                             <Avatar src={driverAvatar} alt="driver avatar" />
                             <Avatar
-                              src={el.church.logo}
+                              src={el.church?.logo}
                               alt="church logo"
                               className=""
                             />
