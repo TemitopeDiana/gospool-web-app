@@ -2,7 +2,7 @@ import { Driver, Vehicle } from './driver.type';
 
 export type DriverInfo = Pick<
   Driver,
-  'userId' | 'firstName' | 'lastName' | 'email' | 'phoneNumber'
+  'userId' | 'firstName' | 'lastName' | 'email' | 'phoneNumber' | 'avatar'
 >;
 
 export interface Passenger {
@@ -25,6 +25,30 @@ export interface Passenger {
     phoneNumber: string;
   };
   passengersCount: 0;
+}
+
+export interface VehicleDocument {
+  fileUrl: string;
+  issuanceDate: string;
+  expiryDate: string;
+}
+
+export interface CarInfo {
+  carInsurance: VehicleDocument;
+  certificateOfOwnership: VehicleDocument;
+  _id: string;
+  ownerId: string;
+  plateNumber: string;
+  carModel: string;
+  year: number;
+  color: string;
+  isOwner: boolean;
+  clearanceToDrive: boolean;
+  status: string;
+  vehicleId: string;
+  createdAt: string;
+  updatedAt: string;
+  carImage: string;
 }
 
 export default interface Trip {
@@ -66,14 +90,18 @@ export default interface Trip {
   confirmedPassengers: 0;
   totalPassengers: 0;
   passengers: Passenger[];
-
   status: 'scheduled' | 'in-progress' | 'completed' | 'cancelled' | 'active';
   createdAt: Date;
   updatedAt: Date;
-  driver: DriverInfo;
+  driver: DriverInfo & { carInfo?: CarInfo };
   branch: {
     name: string;
     address: string;
+  };
+  church: {
+    logo: string;
+    name: string;
+    _id: string;
   };
 }
 export interface RideHistoryResponse {
