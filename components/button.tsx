@@ -68,10 +68,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={loading || disabled}
       >
         <ShowView when={loading}>
-          <div className="inline-flex btn py-1 gap-1 justify-center items-center text-center *:w-2 *:h-2 *:bg-current *:animate-bounce *:rounded-1/2 *:text-a-16">
-            <div className="delay-700!" />
-            <div className="delay-500!" />
-            <div className="delay-1000!" />
+          <div className="inline-flex btn py-1 gap-1 justify-center items-center *:animate-[bounce_0.6s_infinite]">
+            <span className="size-2 rounded-full bg-current animate-[bounce_0.6s_infinite] [animation-delay:-0.4s]" />
+            <span className="size-2 rounded-full bg-current animate-[bounce_0.6s_infinite] [animation-delay:-0.2s]" />
+            <span className="size-2 rounded-full bg-current animate-[bounce_0.6s_infinite]" />
           </div>
         </ShowView>
 

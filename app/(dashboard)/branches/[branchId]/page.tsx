@@ -68,7 +68,7 @@ const ChurchBranchPage = async ({ params }: Props) => {
         churchAddress={branchInfo.data?.address ?? 'SWorld'}
         churchAdmin={
           leaderInfo
-            ? `${leaderInfo.lastName} ${leaderInfo.firstName}`
+            ? `${leaderInfo.firstName} ${leaderInfo.lastName}`
             : 'Not assigned'
         }
         totalDrivers={stats.data?.drivers || 0}
