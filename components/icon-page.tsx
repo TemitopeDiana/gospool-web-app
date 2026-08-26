@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-const sortedIconNames = iconNames.sort();
+const sortedIconNames = [...iconNames].sort();
 
 const IconsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
