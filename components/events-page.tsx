@@ -12,6 +12,7 @@ import ShowView from './show-view';
 import ToolTip from './tooltip';
 import StatusTag from './status-tag';
 import NoDataCard from './no-data-card';
+import Popover from './popover';
 
 interface EventsPageProps {
   initialEventType: string;
@@ -223,7 +224,7 @@ const EventsPage = ({ initialEventType }: EventsPageProps) => {
                         <p> {event.church}</p>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 capitalize">
                       <StatusTag
                         warning={event?.status == 'pending'}
                         danger={event?.status == 'expired'}
@@ -235,7 +236,30 @@ const EventsPage = ({ initialEventType }: EventsPageProps) => {
                         text={event.status}
                       />
                     </td>
-                    <td className="px-4 py-3">action</td>
+                    <td className="px-4 py-3">
+                      <Popover
+                        trigger={
+                          <button className="block w-max">
+                            <SvgIcon name="dotted-menu" className="w-7 h-5" />
+                          </button>
+                        }
+                      >
+                        <ul className="table-action-popover">
+                          <li className="">
+                            <button>
+                              <SvgIcon name="check" />
+                              <p>Approve</p>
+                            </button>
+                          </li>
+                          <li className="text-error-700">
+                            <button>
+                              <SvgIcon name="flag" className="text-error-700" />
+                              <p className="text-error-700">Reject</p>
+                            </button>
+                          </li>
+                        </ul>
+                      </Popover>
+                    </td>
                   </tr>
                 ))}
               </tbody>
