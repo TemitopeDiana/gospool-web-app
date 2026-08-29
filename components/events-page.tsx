@@ -3,8 +3,7 @@
 import Image from 'next/image';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import dayjs from 'dayjs';
-
-import { DAY_MONTH_FORMAT, TIME_FORMAT_12HR } from '@/lib/constants';
+import Link from 'next/link';
 
 import { Button } from './button';
 import SvgIcon from './svg-icon';
@@ -13,6 +12,9 @@ import ToolTip from './tooltip';
 import StatusTag from './status-tag';
 import NoDataCard from './no-data-card';
 import Popover from './popover';
+
+import { DAY_MONTH_FORMAT, TIME_FORMAT_12HR } from '@/lib/constants';
+import { routes } from '@/lib/routes';
 
 interface EventsPageProps {
   initialEventType: string;
@@ -105,7 +107,9 @@ const EventsPage = ({ initialEventType }: EventsPageProps) => {
           <p className="mt-1">Manage events for gospool</p>
         </div>
         <div>
-          <Button>Create event</Button>
+          <Link href={routes.createEvent()}>
+            <Button>Create event</Button>
+          </Link>
         </div>
       </div>
 
