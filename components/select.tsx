@@ -11,6 +11,7 @@ interface SelectProps {
   placeholder?: string;
   className?: string;
   noBorder?: boolean;
+  renderOption?: (option: Option) => React.ReactNode;
 }
 
 export default function TypeSelect({
@@ -21,6 +22,7 @@ export default function TypeSelect({
   placeholder = 'Select',
   className = '',
   noBorder,
+  renderOption,
 }: SelectProps) {
   const [open, setOpen] = useState(false);
   const [activeIdx, setActiveIdx] = useState<number>(-1);
@@ -172,7 +174,11 @@ export default function TypeSelect({
                   active ? 'bg-gray-50' : ''
                 } ${selected ? 'font-semibold' : 'text-gray-700'}`}
               >
-                <span className="truncate">{opt.label}</span>
+                {renderOption ? (
+                  renderOption(opt)
+                ) : (
+                  <span className="truncate">{opt.label}</span>
+                )}
                 {selected && (
                   <SvgIcon name="check" className="w-4 h-4 text-primary-500" />
                 )}
