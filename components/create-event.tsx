@@ -1,9 +1,14 @@
 'use client';
 
-import { Controller, FormProvider, useForm } from 'react-hook-form';
+import {
+  Controller,
+  FormProvider,
+  useFieldArray,
+  useForm,
+} from 'react-hook-form';
 import { Description, Title } from '@radix-ui/react-dialog';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Input from './input';
 import ImageUploadInput from './forms/image-input';
@@ -48,7 +53,6 @@ const branches: Branches[] = [
 ];
 
 const CreateEvent = ({ churches, buses }: CreateEventFormProps) => {
-  const methods = useForm();
   const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
   const [visibleToOtherBranches, setVisibleToOtherBranches] =
     useState<boolean>(true);
@@ -60,12 +64,42 @@ const CreateEvent = ({ churches, buses }: CreateEventFormProps) => {
   const [isBusBooking, setIsBusBooking] = useState<boolean>(true);
   const [isRoundTrip, setIsRoundTrip] = useState<boolean>(true);
 
+  const methods = useForm({
+    defaultValues: {
+      eventLogo: '',
+      eventName: '',
+      event: '',
+      eventDate: '',
+      eventTime: '',
+      address: '',
+      location: {
+        coordinates: {
+          latitude: 0,
+          longitude: 0,
+        },
+      },
+      bus: '',
+      locations: [
+        {
+          pickupLocation: '',
+          pickupTime: '',
+          departureTime: '',
+        },
+      ],
+    },
+  });
+
   const {
     register,
     control,
     setValue,
     formState: { errors },
   } = methods;
+
+  const { fields, append, remove } = useFieldArray({
+    name: 'locations',
+    control,
+  });
 
   const selectBranch = (id: string) => {
     setSelectedBranches((prev) =>
@@ -82,6 +116,16 @@ const CreateEvent = ({ churches, buses }: CreateEventFormProps) => {
     value: bus.busId,
     label: bus.busType,
   }));
+
+  useEffect(() => {
+    if (fields.length === 0) {
+      append({
+        pickupLocation: '',
+        pickupTime: '',
+        departureTime: '',
+      });
+    }
+  }, [fields.length, append]);
 
   return (
     <div className="w-full max-w-169">
@@ -386,115 +430,138 @@ const CreateEvent = ({ churches, buses }: CreateEventFormProps) => {
                   </div>
 
                   <div className="mt-6">
+                    {fields.map((field, index) => (
+                      <div key={field.id} className="mb-6">
+                        {/* Pickup location */}
+                        <Controller
+                          name={`locations.${index}.pickupLocation`}
+                          control={control}
+                          render={({ field }) => (
+                            <AddressSearchInput
+                              name={`locations.${index}.pickupLocation`}
+                              label="Pickup location"
+                              defaultValue={field.value}
+                              validation={{
+                                required: 'Enter pickup location',
+                              }}
+                              onPlaceSelected={(place) => {
+                                field.onChange(place.formatted_address ?? '');
+                              }}
+                            />
+                          )}
+                        />
+
+                        {/* Arrival + Departure */}
+                        <div className="flex items-center justify-between gap-6 flex-wrap mt-4">
+                          <div className="flex-1">
+                            <Input
+                              label="Pickup time (Arrival)"
+                              placeholder="Enter pickup time"
+                              type="time"
+                              {...register(`locations.${index}.pickupTime`, {
+                                required: 'Please enter pickup time',
+                              })}
+                            />
+                          </div>
+
+                          <div className="flex-1">
+                            <Input
+                              label="Pickup time (Departure)"
+                              placeholder="Enter pickup time"
+                              type="time"
+                              {...register(`locations.${index}.departureTime`, {
+                                required: 'Please enter departure time',
+                              })}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Remove button */}
+                        {fields.length > 1 && (
+                          <div className="flex justify-end mt-3">
+                            <button
+                              type="button"
+                              className="text-error-700 text-sm font-medium"
+                              onClick={() => remove(index)}
+                            >
+                              <span className="mr-1">-</span>
+                              Remove
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+
+                    {/* Add more location */}
+                    <button
+                      type="button"
+                      className="font-semibold text-a-16 text-primary"
+                      onClick={() =>
+                        append({
+                          pickupLocation: '',
+                          pickupTime: '',
+                          departureTime: '',
+                        })
+                      }
+                    >
+                      <span className="mr-1">+</span>
+                      More locations
+                    </button>
+                  </div>
+
+                  <div className="flex-1 min-w-0 mt-4">
+                    <label className="block text-sm font-normal mb-2">
+                      Bus
+                    </label>
                     <Controller
-                      name="pickup-location"
+                      name="bus"
                       control={control}
+                      rules={{ required: 'Please select a bus' }}
                       render={({ field }) => (
-                        <AddressSearchInput
-                          name="address"
-                          label="Pickup location"
-                          defaultValue={field.value}
-                          validation={{
-                            required: 'Enter pickup location',
-                          }}
-                          onPlaceSelected={(place) => {
-                            field.onChange(place.formatted_address ?? '');
-                            setValue('address', place.formatted_address ?? '');
-                            setValue(
-                              'location.coordinates.latitude',
-                              place.geometry?.location?.lat() ?? 0
+                        <Select
+                          options={busOptions}
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="Select a bus"
+                          className="bg-gray-50"
+                          noBorder
+                          renderOption={(option) => {
+                            const bus = buses.find(
+                              (bus) => bus.busId === option.value
                             );
-                            setValue(
-                              'location.coordinates.longitude',
-                              place.geometry?.location?.lng() ?? 0
+
+                            if (!bus) return option.label;
+
+                            return (
+                              <div className="flex items-center gap-3">
+                                <Image
+                                  src="/assets/bus.png"
+                                  alt=""
+                                  width={54}
+                                  height={54}
+                                  className="object-contain"
+                                />
+
+                                <div>
+                                  <p className="font-medium text-gray-800">
+                                    {bus.availableSeats} seater
+                                  </p>
+
+                                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                                    <div className="bg-gray-100 p-1 rounded-sm w-fit border border-b border-gray-300 border-4-4-dashed">
+                                      <p className="text-gray-900 font-medium capitalize">
+                                        {bus.plateNumber}
+                                      </p>
+                                    </div>
+                                    <p>{bus.driverName} Gbenga</p>
+                                  </div>
+                                </div>
+                              </div>
                             );
                           }}
                         />
                       )}
                     />
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between gap-6 flex-wrap">
-                      <div className="flex-1">
-                        <Input
-                          label="Event date"
-                          placeholder="Enter event date"
-                          type="date"
-
-                          {...register('eventDate', {
-                            required: 'Please enter event date',
-                          })}
-                        />
-                      </div>
-
-                      <div className="flex-1">
-                        <Input
-                          label="Event time"
-                          placeholder="Enter event host"
-                          type="time"
-
-                          {...register('eventTime', {
-                            required: 'Please enter event time',
-                          })}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex-1 min-w-0 mt-4">
-                      <label className="block text-sm font-normal mb-2">
-                        Bus
-                      </label>
-                      <Controller
-                        name="bus"
-                        control={control}
-                        rules={{ required: 'Please select a bus' }}
-                        render={({ field }) => (
-                          <Select
-                            options={busOptions}
-                            value={field.value}
-                            onChange={field.onChange}
-                            placeholder="Select a bus"
-                            className="bg-gray-50"
-                            noBorder
-                            renderOption={(option) => {
-                              const bus = buses.find(
-                                (bus) => bus.busId === option.value
-                              );
-
-                              if (!bus) return option.label;
-
-                              return (
-                                <div className="flex items-center gap-3">
-                                  <Image
-                                    src="/assets/bus.png"
-                                    alt=""
-                                    width={54}
-                                    height={54}
-                                    className="object-contain"
-                                  />
-
-                                  <div>
-                                    <p className="font-medium text-gray-800">
-                                      {bus.availableSeats} seater
-                                    </p>
-
-                                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                                      <div className="bg-gray-100 p-1 rounded-sm w-fit border border-b border-gray-300 border-4-4-dashed">
-                                        <p className="text-gray-900 font-medium capitalize">
-                                          {bus.plateNumber}
-                                        </p>
-                                      </div>
-                                      <p>{bus.driverName} Gbenga</p>
-                                    </div>
-                                  </div>
-                                </div>
-                              );
-                            }}
-                          />
-                        )}
-                      />
-                    </div>
                   </div>
 
                   <div className="mt-8 flex justify-end">
@@ -512,7 +579,7 @@ const CreateEvent = ({ churches, buses }: CreateEventFormProps) => {
 
               <ShowView when={currentStep == 3}>
                 <div>
-                  <div className="flex flex-wrap gap-5">
+                  <div className="flex flex-wrap gap-5 items-center">
                     <div className="relative w-25 h-22 md:w-a-150 md:h-35 shrink-0">
                       <Image
                         src="/assets/event.png"
