@@ -21,6 +21,7 @@ interface EventsPageProps {
 }
 
 interface EventsDataProps {
+  id: string;
   date: string;
   event: {
     src: string;
@@ -34,6 +35,7 @@ interface EventsDataProps {
 
 const EventData: EventsDataProps[] = [
   {
+    id: '1',
     // ISO datetime string (date + time) so component can format separately
     date: '2023-08-01T19:00:00',
     event: {
@@ -46,6 +48,7 @@ const EventData: EventsDataProps[] = [
     status: 'pending',
   },
   {
+    id: '2',
     date: '2023-08-02T20:30:00',
     event: {
       src: '/assets/deafult-church-logo.png',
@@ -58,6 +61,7 @@ const EventData: EventsDataProps[] = [
     status: 'single',
   },
   {
+    id: '3',
     date: '2023-08-03T18:15:00',
     event: {
       src: '/assets/deafult-church-logo.png',
@@ -69,6 +73,7 @@ const EventData: EventsDataProps[] = [
     status: 'public',
   },
   {
+    id: '4',
     date: '2023-08-04T21:45:00',
     event: {
       src: '/assets/deafult-church-logo.png',
@@ -249,17 +254,20 @@ const EventsPage = ({ initialEventType }: EventsPageProps) => {
                         }
                       >
                         <ul className="table-action-popover">
-                          <li className="">
-                            <button>
-                              <SvgIcon name="check" />
-                              <p>Approve</p>
-                            </button>
+                          <Link
+                            className="flex items-center gap-2"
+                            href={routes.eventProfile(event.id)}
+                          >
+                            <SvgIcon name="eye" />
+                            <p>View</p>
+                          </Link>
+                          <li className="flex items-center gap-2">
+                            <SvgIcon name="check" />
+                            <p>Approve</p>
                           </li>
-                          <li className="text-error-700">
-                            <button>
-                              <SvgIcon name="flag" className="text-error-700" />
-                              <p className="text-error-700">Reject</p>
-                            </button>
+                          <li className="text-error-700 flex items-center gap-2">
+                            <SvgIcon name="flag" className="text-error-700" />
+                            <p className="text-error-700">Reject</p>
                           </li>
                         </ul>
                       </Popover>
