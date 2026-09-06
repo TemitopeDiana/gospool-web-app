@@ -6,17 +6,16 @@ import {
   useFieldArray,
   useForm,
 } from 'react-hook-form';
-import { Description, Title } from '@radix-ui/react-dialog';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 import Input from './input';
-import ImageUploadInput from './forms/image-input';
 import { Button } from './button';
 import AddressSearchInput from './forms/address-input';
 import Select from './select';
 import ShowView from './show-view';
 import SvgIcon from './svg-icon';
+import EventForm from './event-form';
 
 import checkMark from '@/public/assets/check.png';
 import { Bus } from '@/types/bus.type';
@@ -28,38 +27,7 @@ interface CreateEventFormProps {
   buses: Bus[];
 }
 
-interface Branches {
-  id: string;
-  src: string;
-  name: string;
-}
-
-const branches: Branches[] = [
-  {
-    id: '1',
-    src: '/assets/default-church-logo.png',
-    name: 'CCI Ikeja',
-  },
-  {
-    id: '2',
-    src: '/assets/default-church-logo.png',
-    name: 'Harvesters Maryland',
-  },
-  {
-    id: '3',
-    src: '/assets/default-church-logo.png',
-    name: 'CCI Yaba',
-  },
-];
-
 const CreateEvent = ({ churches, buses }: CreateEventFormProps) => {
-  const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
-  const [visibleToOtherBranches, setVisibleToOtherBranches] =
-    useState<boolean>(true);
-  const [requiresRSVP, setRequiresRSVP] = useState<boolean>(true);
-  const [branchSelection, setBranchSelection] = useState<'all' | 'select'>(
-    'all'
-  );
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
   const [isBusBooking, setIsBusBooking] = useState<boolean>(true);
   const [isRoundTrip, setIsRoundTrip] = useState<boolean>(true);
@@ -92,7 +60,6 @@ const CreateEvent = ({ churches, buses }: CreateEventFormProps) => {
   const {
     register,
     control,
-    setValue,
     formState: { errors },
   } = methods;
 
@@ -100,17 +67,6 @@ const CreateEvent = ({ churches, buses }: CreateEventFormProps) => {
     name: 'locations',
     control,
   });
-
-  const selectBranch = (id: string) => {
-    setSelectedBranches((prev) =>
-      prev.includes(id) ? prev.filter((b) => b !== id) : [...prev, id]
-    );
-  };
-
-  const churchOptions = churches.map((c) => ({
-    value: c.churchId,
-    label: c.name,
-  }));
 
   const busOptions = buses.map((bus) => ({
     value: bus.busId,
@@ -144,231 +100,8 @@ const CreateEvent = ({ churches, buses }: CreateEventFormProps) => {
           <FormProvider {...methods}>
             <form action="" className="space-y-4">
               <ShowView when={currentStep == 1}>
-                <ImageUploadInput
-                  label=""
-                  {...register('eventLogo', {
-                    required: 'Please upload an event logo',
-                  })}
-                  className="hidden"
-                />
-                <div className="mt-4">
-                  <Input
-                    label="Event name"
-                    placeholder="Enter event name"
-                    {...register('eventName', {
-                      required: 'Please enter Enter event name number',
-                    })}
-                  />
-                </div>
+                <EventForm churches={churches} />
 
-                <div className="flex-1 min-w-0">
-                  <label className="block text-sm font-normal mb-2">
-                    Event host
-                  </label>
-                  <Controller
-                    name="event"
-                    control={control}
-                    rules={{ required: 'Please select event host' }}
-                    render={({ field }) => (
-                      <Select
-                        options={churchOptions}
-                        value={field.value}
-                        onChange={field.onChange}
-                        placeholder="Select an event"
-                        className="bg-gray-50"
-                        noBorder
-                      />
-                    )}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between gap-6 flex-wrap">
-                  <div className="flex-1">
-                    <Input
-                      label="Event date"
-                      placeholder="Enter event name"
-                      type="date"
-
-                      {...register('eventDate', {
-                        required: 'Please enter event date',
-                      })}
-                    />
-                  </div>
-
-                  <div className="flex-1">
-                    <Input
-                      label="Event time"
-                      placeholder="Enter event host"
-                      type="time"
-
-                      {...register('eventTime', {
-                        required: 'Please enter event time',
-                      })}
-                    />
-                  </div>
-                </div>
-
-                <Controller
-                  name="address"
-                  control={control}
-                  render={({ field }) => (
-                    <AddressSearchInput
-                      name="address"
-                      label="Event Venue"
-                      defaultValue={field.value}
-                      validation={{
-                        required: 'Enter event venue',
-                      }}
-                      onPlaceSelected={(place) => {
-                        field.onChange(place.formatted_address ?? '');
-                        setValue('address', place.formatted_address ?? '');
-                        setValue(
-                          'location.coordinates.latitude',
-                          place.geometry?.location?.lat() ?? 0
-                        );
-                        setValue(
-                          'location.coordinates.longitude',
-                          place.geometry?.location?.lng() ?? 0
-                        );
-                      }}
-                    />
-                  )}
-                />
-
-                <div className="mb-3">
-                  <p>Does event require registration or RSVP?</p>
-                  <div className="flex gap-3 items-center mt-3">
-                    <Button
-                      className="px-10"
-                      type="button"
-                      variant={requiresRSVP ? 'default' : 'outline'}
-                      onClick={() => setRequiresRSVP(true)}
-                    >
-                      Yes
-                    </Button>
-                    <Button
-                      className="px-10"
-                      type="button"
-                      variant={!requiresRSVP ? 'default' : 'outline'}
-                      onClick={() => setRequiresRSVP(false)}
-                    >
-                      No
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="mb-3">
-                  <div>
-                    <p>Visible to other branches?</p>
-                    <div className="flex gap-3 items-center mt-3">
-                      <Button
-                        className="px-10"
-                        type="button"
-                        variant={visibleToOtherBranches ? 'default' : 'outline'}
-                        onClick={() => setVisibleToOtherBranches(true)}
-                      >
-                        Yes
-                      </Button>
-                      <Button
-                        className="px-10"
-                        type="button"
-                        variant={
-                          !visibleToOtherBranches ? 'default' : 'outline'
-                        }
-                        onClick={() => setVisibleToOtherBranches(false)}
-                      >
-                        No
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="mt-3">
-                    <p>what branches?</p>
-                    <div className="flex gap-3 items-center mt-3">
-                      <Button
-                        className="w-26 md:w-30"
-                        variant="default"
-                        type="button"
-                        onClick={() => {
-                          setBranchSelection('all');
-                          setSelectedBranches([]);
-                        }}
-                      >
-                        All
-                      </Button>
-
-                      <Modal
-                        trigger={
-                          <Button
-                            className="w-26 md:w-30 flex items-center justify-between"
-                            variant="outline"
-                            type="button"
-                            onClick={() => setBranchSelection('select')}
-                          >
-                            <p>Select</p>
-                            <ShowView when={selectedBranches.length > 0}>
-                              <div className="bg-green-500 w-4 h-4 rounded-full text-white">
-                                <p className="text-a-10">
-                                  {selectedBranches.length}
-                                </p>
-                              </div>
-                            </ShowView>
-                          </Button>
-                        }
-                        disableOutsideClick
-                      >
-                        {(close) => (
-                          <div className="px-5 py-10 bg-white rounded-20 mx-auto shadow-lg focus:outline-none md:px-10 max-w-110.5">
-                            <Title className="text-xl font-semibold mb-2 md:text-2xl capitalize">
-                              Select branch
-                            </Title>
-
-                            <Description className="text-sm text-gray-500 font-normal mb-3">
-                              Event will ve visible to all branches you select
-                            </Description>
-
-                            <div className="flex gap-3 items-center mt-8 flex-wrap">
-                              {branches.map((branch) => (
-                                <Button
-                                  variant={
-                                    selectedBranches.includes(branch.id)
-                                      ? 'outline'
-                                      : 'gray'
-                                  }
-                                  key={branch.id}
-                                  className="px-2"
-                                  onClick={() => {
-                                    selectBranch(branch.id);
-                                  }}
-                                >
-                                  <div className="relative w-6 h-6 rounded-full">
-                                    <Image
-                                      src={branch.src}
-                                      alt={branch.name}
-                                      className="w-6 h-6 rounded-full object-cover"
-                                      sizes="24px"
-                                      fill
-                                    />
-                                  </div>
-                                  {branch.name}
-                                </Button>
-                              ))}
-                            </div>
-
-                            <div className="flex w-full justify-between mt-10 gap-5">
-                              <Button variant="outline" onClick={close}>
-                                Close
-                              </Button>
-
-                              <Button variant="default" onClick={close}>
-                                Confirm
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                      </Modal>
-                    </div>
-                  </div>
-                </div>
                 <div className="mt-8 flex justify-end">
                   <Button
                     variant="default"
