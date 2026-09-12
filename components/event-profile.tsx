@@ -10,17 +10,72 @@ import EventForm from './event-form';
 
 import Tabs from '@/components/tabs';
 import { Church } from '@/types/church.type';
+import { IconName } from '@/types/icon.type';
 
 interface EventProfileProps {
   churches: Church[];
 }
 
+interface AttendeesProps {
+  name: string;
+  src: string;
+  date: string;
+  busStop: string;
+  branch: string;
+  role: string;
+  phone: string;
+}
+
+const attendees: AttendeesProps[] = [
+  {
+    name: 'favour umeh',
+    src: '/assets/profile-pic.png',
+    date: '12 June, 2025',
+    busStop: 'charlie boy',
+    branch: 'cci ikeja',
+    role: 'passenger',
+    phone: '0702531726',
+  },
+  {
+    name: 'Benjamin njoku',
+    src: '/assets/profile-pic.png',
+    date: '13 July, 2025',
+    busStop: 'charlie boy',
+    branch: 'cci yaba',
+    role: 'driver',
+    phone: '0702531726',
+  },
+  {
+    name: 'ifeoluwa oladapo',
+    src: '/assets/profile-pic.png',
+    date: '12 June, 2025',
+    busStop: 'charlie boy',
+    branch: 'cci ago',
+    role: 'passenger',
+    phone: '0702531726',
+  },
+];
+
+const cards: {
+  name: string;
+  iconName: IconName;
+  count: number;
+}[] = [
+  { name: 'All', iconName: 'document-text', count: 24 },
+  {
+    name: 'Passengers',
+    iconName: 'profile',
+    count: 22,
+  },
+  { name: 'Drivers', iconName: 'car', count: 2 },
+];
+
 const EventProfile = ({ churches }: EventProfileProps) => {
   const editMethods = useForm();
 
   return (
-    <div className="w-full max-w-169">
-      <div className="dashboard-card">
+    <div className="w-full max-w-169 mx-auto">
+      <div className="dashboard-card md:p-10">
         <h1 className="dashboard-heading-text">Event</h1>
 
         <Tabs
@@ -165,7 +220,72 @@ const EventProfile = ({ churches }: EventProfileProps) => {
             },
             {
               label: 'Attendees',
-              content: <></>,
+              content: (
+                <>
+                  <div className="mb-5">
+                    <div className="max-w-screen mt-4 md:mt-8.75 pb-3 flex items-center overflow-x-auto gap-4 snap-x snap-mandatory">
+                      {cards.map((card, idx) => (
+                        <div
+                          key={idx}
+                          className="flex-1 h-19.75 rounded-xl snap-start bg-background px-3 border border-gray-50 flex items-center"
+                        >
+                          <div className="h-full flex items-center justify-center gap-2">
+                            <div className="w-11.5 h-11.5 border border-gray-50 rounded-40 flex items-center justify-center">
+                              <SvgIcon
+                                name={card.iconName}
+                                className="w-5 h-5"
+                              />
+                            </div>
+                            <div>
+                              <p className="font-medium text-xl">
+                                {card.count}
+                              </p>
+                              <p className="text-gray-500 text-sm mb-1 capitalize">
+                                {card.name}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-4">
+                      {attendees.map((attendee, idx) => (
+                        <div key={idx} className="flex  gap-3 mt-3">
+                          <div className="relative w-8 h-8">
+                            <Image
+                              src={attendee.src}
+                              alt={attendee.name}
+                              className="w-8 h-8 rounded-full object-cover"
+                              sizes="100%"
+                              fill
+                            />
+                          </div>
+                          <div>
+                            <p className="capitalize text-sm">
+                              {attendee.name}
+                            </p>
+
+                            <div className="text-xs text-gray-500 mb-1 capitalize flex items-center gap-1">
+                              {attendee.date}
+                              <div className="w-0.5 h-0.5 rounded-full bg-gray-600"></div>
+                              {attendee.busStop}
+                            </div>
+
+                            <div className="text-xs text-gray-500 mb-1 capitalize flex items-center gap-1">
+                              {attendee.role}
+                              <div className="w-0.5 h-0.5 rounded-full bg-gray-600"></div>
+                              {attendee.branch}
+                              <div className="w-0.5 h-0.5 rounded-full bg-gray-600"></div>
+                              {attendee.phone}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ),
             },
           ]}
         ></Tabs>
