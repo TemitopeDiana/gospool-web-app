@@ -124,6 +124,7 @@ const EventForm = ({ churches }: EventFormProps) => {
             <AddressSearchInput
               name="address"
               label="Event Venue"
+              noTopMargin
               defaultValue={field.value}
               validation={{ required: 'Enter event venue' }}
               onPlaceSelected={(place) => {
@@ -206,7 +207,7 @@ const EventForm = ({ churches }: EventFormProps) => {
             <Modal
               trigger={
                 <Button
-                  className="w-26 md:w-30 flex items-center justify-between"
+                  className="w-26 md:w-30 flex items-center justify-center"
                   variant="outline"
                   type="button"
                   onClick={() => setBranchSelection('select')}

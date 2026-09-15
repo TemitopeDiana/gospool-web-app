@@ -16,6 +16,7 @@ interface AddressInputProps extends ReactGoogleAutocompleteInputProps {
   validation: RegisterOptions;
   footerText?: string;
   icon?: IconName;
+  noTopMargin?: boolean;
 }
 
 const AddressSearchInput: FC<AddressInputProps> = ({
@@ -24,6 +25,7 @@ const AddressSearchInput: FC<AddressInputProps> = ({
   validation,
   footerText,
   icon,
+  noTopMargin = false,
   ...props
 }) => {
   const {
@@ -47,7 +49,7 @@ const AddressSearchInput: FC<AddressInputProps> = ({
       >
         {icon && <SvgIcon name={icon} className="h-5 w-5" />}
         <div
-          className={`flex w-full flex-row items-center bg-gray-50 py-[13.5px] px-4 min-w-[169px] gap-4 mt-2 rounded-8`}
+          className={`flex w-full flex-row items-center bg-gray-50 py-[13.5px] px-4 min-w-42.25 gap-4 ${noTopMargin ? '' : 'mt-2'}rounded-8`}
         >
           <Autocomplete
             {...register(name, validation)}

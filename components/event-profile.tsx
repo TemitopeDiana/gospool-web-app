@@ -268,6 +268,7 @@ const EventProfile = ({ churches, buses }: EventProfileProps) => {
                                                 control={control}
                                                 render={({ field }) => (
                                                   <AddressSearchInput
+                                                    noTopMargin
                                                     name={`locations.${index}.pickupLocation`}
                                                     label="Pickup location"
                                                     defaultValue={field.value}
