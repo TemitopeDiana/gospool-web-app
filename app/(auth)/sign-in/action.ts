@@ -40,7 +40,6 @@ export async function signIn(
   }
 
   try {
-    // ✅ Correct API typing
     const response = await api.post<ApiResponse<SignResponse>>(
       '/auth/login',
       validated.data
@@ -50,7 +49,6 @@ export async function signIn(
 
     console.log('Sign In Response:', result);
 
-    // 🔴 Backend returned failure
     if (!result.success || !result.data) {
       return {
         success: false,
@@ -61,7 +59,6 @@ export async function signIn(
 
     const { token, refreshToken } = result.data;
 
-    // 🔴 Extra safety check
     if (!token || !refreshToken) {
       throw new Error('Invalid authentication response');
     }

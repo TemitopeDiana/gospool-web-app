@@ -1,4 +1,4 @@
-export type IconName =
+export type IconNameOld =
   | 'email'
   | 'menu'
   | 'close'
@@ -46,11 +46,17 @@ export type IconName =
   | 'info'
   | 'toggle'
   | 'chevron-down'
-  | 'plus';
+  | 'plus'
+  | 'check-circle';
 
-export const iconNames: IconName[] = [
+export const iconNames = [
+  'profile-users',
+  'profile',
+  'check-circle',
   'email',
   'toggle',
+  'download',
+  'generate',
   'plus',
   'chevron-down',
   'image',
@@ -93,4 +99,6 @@ export const iconNames: IconName[] = [
   'message-text',
   'user-minus',
   'emergency',
-];
+] as const;
+
+export type IconName = (typeof iconNames)[number];
