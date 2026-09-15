@@ -1,7 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import { FormProvider, useForm } from 'react-hook-form';
+import {
+  Controller,
+  FormProvider,
+  useFieldArray,
+  useForm,
+} from 'react-hook-form';
+import { useEffect } from 'react';
 
 import SvgIcon from './svg-icon';
 import { Button } from './button';
@@ -11,9 +17,14 @@ import EventForm from './event-form';
 import Tabs from '@/components/tabs';
 import { Church } from '@/types/church.type';
 import { IconName } from '@/types/icon.type';
+import { Bus } from '@/types/bus.type';
+import AddressSearchInput from './forms/address-input';
+import Input from './input';
+import Select from './select';
 
 interface EventProfileProps {
   churches: Church[];
+  buses: Bus[];
 }
 
 interface AttendeesProps {
@@ -70,8 +81,55 @@ const cards: {
   { name: 'Drivers', iconName: 'car', count: 2 },
 ];
 
-const EventProfile = ({ churches }: EventProfileProps) => {
-  const editMethods = useForm();
+const EventProfile = ({ churches, buses }: EventProfileProps) => {
+  const editMethods = useForm({
+    defaultValues: {
+      eventLogo: '',
+      eventName: '',
+      event: '',
+      eventDate: '',
+      eventTime: '',
+      address: '',
+      location: {
+        coordinates: {
+          latitude: 0,
+          longitude: 0,
+        },
+      },
+      bus: '',
+      locations: [
+        {
+          pickupLocation: '',
+          pickupTime: '',
+        },
+      ],
+    },
+  });
+
+  const {
+    register,
+    control,
+    formState: { errors },
+  } = editMethods;
+
+  const { fields, append, remove } = useFieldArray({
+    name: 'locations',
+    control,
+  });
+
+  const busOptions = buses.map((bus) => ({
+    value: bus.busId,
+    label: bus.busType,
+  }));
+
+  useEffect(() => {
+    if (fields.length === 0) {
+      append({
+        pickupLocation: '',
+        pickupTime: '',
+      });
+    }
+  }, [fields.length, append]);
 
   return (
     <div className="w-full max-w-169 mx-auto">
@@ -182,7 +240,7 @@ const EventProfile = ({ churches }: EventProfileProps) => {
                       >
                         {(close) => (
                           <FormProvider {...editMethods}>
-                            <div>
+                            <form onSubmit={editMethods.handleSubmit(() => {})}>
                               <Tabs
                                 tabsStyle="flex-wrap"
                                 tabs={[
@@ -191,25 +249,183 @@ const EventProfile = ({ churches }: EventProfileProps) => {
                                     content: (
                                       <>
                                         <EventForm churches={churches} />
-                                        <div className="mt-12 flex justify-end">
-                                          <Button
-                                            variant="default"
-                                            className="px-12 py-3.25"
-                                            type="button"
-                                          >
-                                            Save Changes
-                                          </Button>
-                                        </div>
                                       </>
                                     ),
                                   },
                                   {
                                     label: 'Bus',
-                                    content: <></>,
+                                    content: (
+                                      <>
+                                        <div className="mt-6">
+                                          {fields.map((field, index) => (
+                                            <div
+                                              key={field.id}
+                                              className="mb-6"
+                                            >
+                                              {/* Pickup location */}
+                                              <Controller
+                                                name={`locations.${index}.pickupLocation`}
+                                                control={control}
+                                                render={({ field }) => (
+                                                  <AddressSearchInput
+                                                    name={`locations.${index}.pickupLocation`}
+                                                    label="Pickup location"
+                                                    defaultValue={field.value}
+                                                    validation={{
+                                                      required:
+                                                        'Enter pickup location',
+                                                    }}
+                                                    onPlaceSelected={(
+                                                      place
+                                                    ) => {
+                                                      field.onChange(
+                                                        place.formatted_address ??
+                                                          ''
+                                                      );
+                                                    }}
+                                                  />
+                                                )}
+                                              />
+
+                                              <div className="flex-1 mt-4">
+                                                <Input
+                                                  label="Pickup time"
+                                                  placeholder="Enter pickup time"
+                                                  type="time"
+                                                  {...register(
+                                                    `locations.${index}.pickupTime`,
+                                                    {
+                                                      required:
+                                                        'Please enter pickup time',
+                                                    }
+                                                  )}
+                                                />
+                                              </div>
+
+                                              <div className="flex-1 min-w-0 mt-4">
+                                                <label className="block text-sm font-normal mb-2">
+                                                  Bus
+                                                </label>
+                                                <Controller
+                                                  name="bus"
+                                                  control={control}
+                                                  rules={{
+                                                    required:
+                                                      'Please select a bus',
+                                                  }}
+                                                  render={({ field }) => (
+                                                    <Select
+                                                      options={busOptions}
+                                                      value={field.value}
+                                                      onChange={field.onChange}
+                                                      placeholder="Select a bus"
+                                                      className="bg-gray-50"
+                                                      noBorder
+                                                      renderOption={(
+                                                        option
+                                                      ) => {
+                                                        const bus = buses.find(
+                                                          (bus) =>
+                                                            bus.busId ===
+                                                            option.value
+                                                        );
+
+                                                        if (!bus)
+                                                          return option.label;
+
+                                                        return (
+                                                          <div className="flex items-center gap-3">
+                                                            <Image
+                                                              src="/assets/bus.png"
+                                                              alt=""
+                                                              width={54}
+                                                              height={54}
+                                                              className="object-contain"
+                                                            />
+
+                                                            <div>
+                                                              <p className="font-medium text-gray-800">
+                                                                {
+                                                                  bus.availableSeats
+                                                                }{' '}
+                                                                seater
+                                                              </p>
+
+                                                              <div className="flex items-center gap-2 text-xs text-gray-500">
+                                                                <div className="bg-gray-100 p-1 rounded-sm w-fit border border-b border-gray-300 border-4-4-dashed">
+                                                                  <p className="text-gray-900 font-medium capitalize">
+                                                                    {
+                                                                      bus.plateNumber
+                                                                    }
+                                                                  </p>
+                                                                </div>
+                                                                <p>
+                                                                  {
+                                                                    bus.driverName
+                                                                  }{' '}
+                                                                  Gbenga
+                                                                </p>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        );
+                                                      }}
+                                                    />
+                                                  )}
+                                                />
+                                              </div>
+
+                                              {/* Remove button */}
+                                              {fields.length > 1 && (
+                                                <div className="flex justify-end mt-3">
+                                                  <button
+                                                    type="button"
+                                                    className="text-error-700 text-sm font-medium"
+                                                    onClick={() =>
+                                                      remove(index)
+                                                    }
+                                                  >
+                                                    <span className="mr-1">
+                                                      -
+                                                    </span>
+                                                    Remove
+                                                  </button>
+                                                </div>
+                                              )}
+                                            </div>
+                                          ))}
+
+                                          {/* Add more location */}
+                                          <button
+                                            type="button"
+                                            className="font-semibold text-a-16 text-primary"
+                                            onClick={() =>
+                                              append({
+                                                pickupLocation: '',
+                                                pickupTime: '',
+                                              })
+                                            }
+                                          >
+                                            <span className="mr-1">+</span>
+                                            Add pickup
+                                          </button>
+                                        </div>
+                                      </>
+                                    ),
                                   },
                                 ]}
                               />
-                            </div>
+
+                              <div className="mt-12 flex justify-end">
+                                <Button
+                                  variant="default"
+                                  className="md:px-12 md:py-3.25"
+                                  type="button"
+                                >
+                                  Save Changes
+                                </Button>
+                              </div>
+                            </form>
                           </FormProvider>
                         )}
                       </Drawer>
