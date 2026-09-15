@@ -296,8 +296,16 @@ const CreateEvent = ({ churches, buses }: CreateEventFormProps) => {
                       )}
                     />
                   </div>
+                  <div className="mt-8 flex items-center justify-between">
+                    <Button
+                      variant="outline"
+                      className="px-12"
+                      onClick={() => setCurrentStep(1)}
+                      type="button"
+                    >
+                      Back
+                    </Button>
 
-                  <div className="mt-8 flex justify-end">
                     <Button
                       variant="default"
                       className="px-12"
@@ -377,10 +385,19 @@ const CreateEvent = ({ churches, buses }: CreateEventFormProps) => {
                     </div>
                   </div>
 
-                  <div className="mt-8 flex justify-end">
+                  <div className="mt-8 flex items-center justify-between">
+                    <Button
+                      variant="outline"
+                      className="md:px-12"
+                      onClick={() => setCurrentStep(2)}
+                      type="button"
+                    >
+                      Back
+                    </Button>
+
                     <Modal
                       trigger={
-                        <Button variant="default" className="px-12">
+                        <Button variant="default" className="md:px-12">
                           Publish
                         </Button>
                       }
